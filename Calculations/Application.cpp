@@ -1,16 +1,13 @@
 #include "pch.h"
 #include "Application.h"
 #include <System/Services.h>
-
-#include <Graphics/Texture.h>
-#include <Graphics/ProgressBar.h>
-SDL_Texture* textureA;
-SDL_Texture* textureB;
-ProgressBar* testBarA;
-ProgressBar* testBarB;
+#include <System/SceneManager.h>
+#include <Gameplay/Player/Player.h>
 
 Application::Application()
 {
+	m_SceneManager = nullptr;
+	m_Player = nullptr;
 	m_Renderer = nullptr;
 	m_Window = nullptr;
 	m_WindowFlags = 0;
@@ -37,22 +34,12 @@ bool Application::Initialise()
 
 	SDL_Log("SDL setup complete.");
 
-	Services::Initialise(m_Renderer, m_Window);
+	m_Player = new Player();
 
-	SDL_FRect rect;
-	rect.w = 100;
-	rect.h = 25;
-	rect.x = INITIAL_WINDOW_WIDTH / 2.0f - 50 - 250;
-	rect.y = INITIAL_WINDOW_HEIGHT / 2.0f - 12.5 + 100;
+	Services::Initialise(m_Renderer, m_Window, m_Player);
 
-	testBarA = new ProgressBar(rect);
-
-	rect.x += 400;
-	testBarB = new ProgressBar(rect);
-	testBarB->SetProgressValue(0.75f);
-
-	Texture::LoadPNG("Content/cat.png", textureA);
-	Texture::LoadPNG("Content/cat2.png", textureB);
+	m_SceneManager = new SceneManager();
+	m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_TEST);
 
 	m_IsRunning = true;
 	return true;
@@ -108,6 +95,12 @@ void Application::Shutdown()
 {
 	ShutdownSDL();
 
+	if (m_SceneManager != nullptr)
+	{
+		delete m_SceneManager;
+		m_SceneManager = nullptr;
+	}
+
 	Services::Shutdown();
 }
 
@@ -117,8 +110,6 @@ void Application::ShutdownSDL()
 	SDL_DestroyWindow(m_Window);
 	SDL_Quit();
 }
-
-float zoomlevel = 1.0f;
 
 void Application::ProcessEvents(const float& deltaTime)
 {
@@ -134,7 +125,7 @@ void Application::ProcessEvents(const float& deltaTime)
 				int height = 0;
 				SDL_GetWindowSize(m_Window, &width, &height);
 				SDL_RendererLogicalPresentation scalingType = SDL_LOGICAL_PRESENTATION_INTEGER_SCALE;
-				SDL_SetRenderLogicalPresentation(m_Renderer, width * zoomlevel, height * zoomlevel, scalingType);
+				SDL_SetRenderLogicalPresentation(m_Renderer, width, height, scalingType);
 			}
 			break;
 
@@ -160,6 +151,12 @@ void Application::ProcessEvents(const float& deltaTime)
 			{
 				switch (e.key.key)
 				{
+					case SDLK_F1: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_MAIN_MENU); } break;
+					case SDLK_F2: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_MAP); } break;
+					case SDLK_F3: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_SHOP); } break;
+					case SDLK_F4: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE); } break;
+					case SDLK_F8: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_TEST); } break;
+
 					case SDLK_F5:
 					{
 						bool success = SDL_SetWindowFullscreen(m_Window, !m_IsFullscreen);
@@ -192,13 +189,20 @@ void Application::ProcessEvents(const float& deltaTime)
 			}
 			break;
 		}
+
+		if (m_SceneManager != nullptr)
+		{
+			m_SceneManager->PassEventToScene(e);
+		}
 	}
 }
 
 void Application::Update(const float& deltaTime)
 {
-	testBarA->Update(deltaTime);
-	testBarB->Update(deltaTime);
+	if (m_SceneManager != nullptr)
+	{
+		m_SceneManager->Update(deltaTime);
+	}
 }
 
 void Application::Render() const
@@ -206,20 +210,10 @@ void Application::Render() const
 	SDL_SetRenderDrawColorFloat(m_Renderer, CLEAR_COLOUR[0], CLEAR_COLOUR[1], CLEAR_COLOUR[2], CLEAR_COLOUR[3]);
 	SDL_RenderClear(m_Renderer);
 
-	testBarA->Render(*m_Renderer);
-	testBarB->Render(*m_Renderer);
-
-	SDL_FRect textureRect = testBarA->GetDimensions();
-	textureRect.y -= 100;
-	textureRect.w = 64;
-	textureRect.h = 64;
-	SDL_RenderTexture(m_Renderer, textureA, nullptr, &textureRect);
-
-	textureRect = testBarB->GetDimensions();
-	textureRect.y -= 100;
-	textureRect.w = 64;
-	textureRect.h = 64;
-	SDL_RenderTexture(m_Renderer, textureB, nullptr, &textureRect);
+	if (m_SceneManager != nullptr)
+	{
+		m_SceneManager->Render(*m_Renderer);
+	}
 
 	SDL_RenderPresent(m_Renderer);
 }

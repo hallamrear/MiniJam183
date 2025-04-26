@@ -48,8 +48,7 @@ const SDL_FRect& ProgressBar::GetDimensions() const
 
 void ProgressBar::Update(const float& deltaTime)
 {
-	m_FillLevel += deltaTime;
-	m_FillLevel = SDL_fmodf(m_FillLevel, 1.0f);
+	
 }
 
 void ProgressBar::Render(SDL_Renderer& renderer) const

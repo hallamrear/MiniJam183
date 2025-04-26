@@ -1,8 +1,12 @@
 #pragma once
 
+class SceneManager;
+class Player;
+
 class Application
 {
 private:
+	Player* m_Player;
 	SDL_Renderer* m_Renderer;
 	SDL_Window* m_Window; 
 	SDL_WindowFlags m_WindowFlags;
@@ -12,6 +16,7 @@ private:
 	bool InitSDL();
 	void ShutdownSDL();
 
+	SceneManager* m_SceneManager;
 
 public:
 	Application();
