@@ -34,9 +34,10 @@ bool Application::Initialise()
 
 	SDL_Log("SDL setup complete.");
 
-	m_Player = new Player();
+	Services::Initialise(m_Renderer, m_Window);
 
-	Services::Initialise(m_Renderer, m_Window, m_Player);
+	m_Player = new Player();
+	Services::ProvidePlayer(m_Player);
 
 	m_SceneManager = new SceneManager();
 	m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_TEST);

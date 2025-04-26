@@ -13,6 +13,8 @@
 #include <iostream>
 #include <string>
 #include <cassert>
+#include <algorithm>
+#include <random>
 
 //SDL Includes
 #include <SDL3/SDL.h>

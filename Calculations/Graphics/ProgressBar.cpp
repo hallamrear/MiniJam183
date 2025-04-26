@@ -46,6 +46,11 @@ const SDL_FRect& ProgressBar::GetDimensions() const
 	return m_Dimensions;
 }
 
+const void ProgressBar::SetDimensions(const SDL_FRect& dimensions)
+{
+	m_Dimensions = dimensions;
+}
+
 void ProgressBar::Update(const float& deltaTime)
 {
 	

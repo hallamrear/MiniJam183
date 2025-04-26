@@ -6,17 +6,16 @@ SDL_Renderer* Services::m_Renderer = nullptr;
 SDL_Window* Services::m_Window = nullptr;
 Player* Services::m_Player = nullptr;
 
-bool Services::Initialise(SDL_Renderer* renderer, SDL_Window* window, Player* player)
+bool Services::Initialise(SDL_Renderer* renderer, SDL_Window* window)
 {
 	assert(renderer);
 	assert(window);
-	assert(player);
 
 	m_Renderer = renderer;
 	m_Window = window;
-	m_Player = player;
+	m_Player = nullptr;
 
-	return false;
+	return true;
 }
 
 bool Services::Shutdown()
@@ -37,6 +36,12 @@ bool Services::Shutdown()
 	}
 
 	return true;
+}
+
+void Services::ProvidePlayer(Player* player)
+{
+	assert(player);
+	m_Player = player;
 }
 
 SDL_Renderer& Services::GetRenderer()

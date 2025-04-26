@@ -21,6 +21,7 @@ public:
 	void SetProgressValue(const float& progressLevel);
 
 	const SDL_FRect& GetDimensions() const;
+	const void SetDimensions(const SDL_FRect& dimensions);
 
 	void Update(const float& deltaTime);
 	void Render(SDL_Renderer& renderer) const;

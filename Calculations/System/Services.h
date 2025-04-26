@@ -10,8 +10,10 @@ private:
 	static Player* m_Player;
 
 public:
-	static bool Initialise(SDL_Renderer* renderer, SDL_Window* window, Player* player);
+	static bool Initialise(SDL_Renderer* renderer, SDL_Window* window);
 	static bool Shutdown();
+
+	static void ProvidePlayer(Player* player);
 
 	static SDL_Renderer& GetRenderer();
 	static SDL_Window& GetWindow();
