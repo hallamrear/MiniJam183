@@ -1,9 +1,13 @@
 #include "pch.h"
 #include "Application.h"
-#include <Graphics/Texture.h>
 #include <System/Services.h>
 
-SDL_Texture* texture = nullptr;
+#include <Graphics/Texture.h>
+#include <Graphics/ProgressBar.h>
+SDL_Texture* textureA;
+SDL_Texture* textureB;
+ProgressBar* testBarA;
+ProgressBar* testBarB;
 
 Application::Application()
 {
@@ -35,7 +39,20 @@ bool Application::Initialise()
 
 	Services::Initialise(m_Renderer, m_Window);
 
-	Texture::LoadPNG("Content/cat.png", texture);
+	SDL_FRect rect;
+	rect.w = 100;
+	rect.h = 25;
+	rect.x = INITIAL_WINDOW_WIDTH / 2.0f - 50 - 250;
+	rect.y = INITIAL_WINDOW_HEIGHT / 2.0f - 12.5 + 100;
+
+	testBarA = new ProgressBar(rect);
+
+	rect.x += 400;
+	testBarB = new ProgressBar(rect);
+	testBarB->SetProgressValue(0.75f);
+
+	Texture::LoadPNG("Content/cat.png", textureA);
+	Texture::LoadPNG("Content/cat2.png", textureB);
 
 	m_IsRunning = true;
 	return true;
@@ -180,20 +197,29 @@ void Application::ProcessEvents(const float& deltaTime)
 
 void Application::Update(const float& deltaTime)
 {
-
+	testBarA->Update(deltaTime);
+	testBarB->Update(deltaTime);
 }
 
 void Application::Render() const
 {
 	SDL_SetRenderDrawColorFloat(m_Renderer, CLEAR_COLOUR[0], CLEAR_COLOUR[1], CLEAR_COLOUR[2], CLEAR_COLOUR[3]);
 	SDL_RenderClear(m_Renderer);
-	
-	SDL_FRect rect{ 64, 64, INITIAL_WINDOW_WIDTH / 2 - 64, INITIAL_WINDOW_HEIGHT / 2 - 64 };
-	SDL_SetRenderDrawColorFloat(m_Renderer, 1.0F, 0.0F, 0.0F, 1.0F);
-	SDL_RenderRect(m_Renderer, &rect);
 
-	SDL_FRect R{ INITIAL_WINDOW_WIDTH / 2 - 64, INITIAL_WINDOW_HEIGHT / 2 - 64, INITIAL_WINDOW_WIDTH / 2 - 64, INITIAL_WINDOW_HEIGHT / 2 - 64 };
-	SDL_RenderTexture(m_Renderer, texture, nullptr, &R);
+	testBarA->Render(*m_Renderer);
+	testBarB->Render(*m_Renderer);
+
+	SDL_FRect textureRect = testBarA->GetDimensions();
+	textureRect.y -= 100;
+	textureRect.w = 64;
+	textureRect.h = 64;
+	SDL_RenderTexture(m_Renderer, textureA, nullptr, &textureRect);
+
+	textureRect = testBarB->GetDimensions();
+	textureRect.y -= 100;
+	textureRect.w = 64;
+	textureRect.h = 64;
+	SDL_RenderTexture(m_Renderer, textureB, nullptr, &textureRect);
 
 	SDL_RenderPresent(m_Renderer);
 }

@@ -207,12 +207,14 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Graphics\ProgressBar.cpp" />
     <ClCompile Include="System\Services.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Graphics\ProgressBar.h" />
     <ClInclude Include="System\Services.h" />
     <ClInclude Include="Graphics\Texture.h" />
   </ItemGroup>
