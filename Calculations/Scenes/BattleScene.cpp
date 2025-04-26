@@ -14,6 +14,9 @@ constexpr const float c_HealthBarGapFromAvatar = 16.0f;
 BattleScene::BattleScene() : Scene(), m_Player(Services::GetPlayer())
 {
 	m_Enemy = nullptr;
+	m_LeftClickDown = false;
+	m_MouseX = -1;
+	m_MouseY = -1;
 
 	SDL_Window& window = Services::GetWindow();
 	m_WindowCenterX = 0;
@@ -26,6 +29,9 @@ BattleScene::BattleScene() : Scene(), m_Player(Services::GetPlayer())
 
 	m_PlayerHealthBar = new ProgressBar(SDL_FRect{ (INITIAL_WINDOW_WIDTH / 4) * 1 - 100.0f, (INITIAL_WINDOW_HEIGHT / 4) * 3, 200.0f, 20.0f });
 	m_EnemyHealthBar  = new ProgressBar(SDL_FRect{ (INITIAL_WINDOW_WIDTH / 4) * 3 - 100.0f, (INITIAL_WINDOW_HEIGHT / 4) * 3, 200.0f, 20.0f });
+
+	m_OperandHandDrawRects = std::vector<SDL_FRect>();
+	m_NumbersHandDrawRects = std::vector<SDL_FRect>();
 }
 
 BattleScene::~BattleScene()
@@ -59,7 +65,23 @@ void BattleScene::HandleEvent(const SDL_Event& e)
 	{
 	case SDL_EVENT_MOUSE_BUTTON_DOWN:
 	{
+		if (e.button.button == SDL_BUTTON_LEFT)
+		{
+			m_LeftClickDown = true;
+			m_MouseX = e.button.x;
+			m_MouseY = e.button.y;
+		}
+	}
+	break;
 
+	case SDL_EVENT_MOUSE_BUTTON_UP:
+	{
+		if (e.button.button == SDL_BUTTON_LEFT)
+		{
+			m_LeftClickDown = false;
+			m_MouseX = -1;
+			m_MouseY = -1;
+		}
 	}
 	break;
 
@@ -150,26 +172,77 @@ void BattleScene::Update(const float& deltaTime)
 	m_WindowCenterX = m_WindowWidth / 2; 
 	m_WindowCenterY = m_WindowHeight / 2;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	CalculateUpdatedDrawPositions(deltaTime);
+}
 
+void BattleScene::CalculateUpdatedDrawPositions(const float& deltaTime)
+{
+	CalculateCardHandDrawPositions(deltaTime);
+	CalculateUpdatedAvatarDrawPositions(deltaTime);
+}
 
+void BattleScene::CalculateCardHandDrawPositions(const float& deltaTime)
+{
+	m_OperandHandDrawRects.clear();
+	m_NumbersHandDrawRects.clear();
 
+	int numbersCount = m_Player.GetNumbersHand().size();
 
+	int totalWidth = numbersCount * c_NumbersCardDrawSize + (numbersCount * c_GapBetweenNumbersCards);
+	int drawPositionX = m_WindowCenterX - (totalWidth / 2) + (c_GapBetweenNumbersCards / 2);
+	int drawPositionY = (((m_WindowHeight / 3) * 2) + m_WindowHeight) / 2 - c_NumbersCardDrawSize;
 
+	for (size_t i = 0; i < numbersCount; i++)
+	{
+		SDL_FRect drawRect;
+		drawRect.x = drawPositionX;
+		drawRect.y = drawPositionY;
+		drawRect.w = c_NumbersCardDrawSize;
+		drawRect.h = c_NumbersCardDrawSize;
 
+		m_NumbersHandDrawRects.push_back(drawRect);
 
+		drawPositionX += c_NumbersCardDrawSize;
+		drawPositionX += c_GapBetweenNumbersCards;
+	}
 
+	int operandCount = m_Player.GetOperandHand().size();
 
+	totalWidth = operandCount * c_OperandCardDrawSize + (operandCount * c_GapBetweenOperandsCards);
+	drawPositionX = m_WindowCenterX - (totalWidth / 2) + (c_GapBetweenOperandsCards / 2);
 
+	for (size_t i = 0; i < operandCount; i++)
+	{
+		SDL_FRect drawRect;
+		drawRect.x = drawPositionX;
+		drawRect.y = drawPositionY + c_NumbersCardDrawSize + (c_OperandCardDrawSize / 2);
+		drawRect.w = c_OperandCardDrawSize;
+		drawRect.h = c_OperandCardDrawSize;
 
+		m_OperandHandDrawRects.push_back(drawRect);
 
-
-
+		drawPositionX += c_OperandCardDrawSize;
+		drawPositionX += c_GapBetweenOperandsCards;
+	}
 
 
 }
 
-void BattleScene::CalculateUpdatedDrawPositions(const float& deltaTime)
+void BattleScene::CalculateUpdatedAvatarDrawPositions(const float& deltaTime)
 {
 	m_CharacterDrawRect.x = m_WindowCenterX / 2 - (c_AvatarDrawSize / 2);
 	m_CharacterDrawRect.y = m_WindowCenterY / 2 - (c_AvatarDrawSize / 2);
@@ -208,6 +281,22 @@ void BattleScene::CalculateUpdatedDrawPositions(const float& deltaTime)
 
 void BattleScene::Render(SDL_Renderer& renderer) const
 {
+	//int splitCount = 4;
+	//int splitX = m_WindowWidth / splitCount;
+	//int splitY = m_WindowHeight / splitCount;
+	//for (size_t i = 0; i < splitCount; i++)
+	//{
+	//	for (size_t j = 0; j < splitCount; j++)
+	//	{
+	//		SDL_FRect rect;
+	//		rect.w = splitX;
+	//		rect.h = splitY;
+	//		rect.x = i * splitX;
+	//		rect.y = j * splitY;
+	//
+	//		SDL_RenderRect(&renderer, &rect);
+	//	}
+	//}
 
 	RenderCharacters(renderer);
 	RenderCardHands(renderer);
@@ -238,73 +327,44 @@ void BattleScene::RenderCharacters(SDL_Renderer& renderer) const
 
 void BattleScene::RenderCardHands(SDL_Renderer& renderer) const
 {
-	int splitCount = 4;
-	int splitX = m_WindowWidth / splitCount;
-	int splitY = m_WindowHeight / splitCount;
-	for (size_t i = 0; i < splitCount; i++)
-	{
-		for (size_t j = 0; j < splitCount; j++)
-		{
-			SDL_FRect rect;
-			rect.w = splitX;
-			rect.h = splitY;
-			rect.x = i * splitX;
-			rect.y = j * splitY;
-
-			SDL_RenderRect(&renderer, &rect);
-		}
-	}
-
-
-
-
-
-
-
-
-
-
-
+	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 
 	const std::vector<NumberCard*>& numbersHand = m_Player.GetNumbersHand();
 	int numbersCount = numbersHand.size();
 
-	int totalWidth = numbersCount * c_NumbersCardDrawSize + (numbersCount * c_GapBetweenNumbersCards);
-	int drawPositionX = m_WindowCenterX - (totalWidth / 2) + (c_GapBetweenNumbersCards / 2);
-	int drawPositionY = (((m_WindowHeight / 3) * 2) + m_WindowHeight) / 2 - c_NumbersCardDrawSize;
-
-	for (size_t i = 0; i < numbersHand.size(); i++)
+	for (size_t i = 0; i < numbersCount; i++)
 	{
-		SDL_FRect drawRect;
-		drawRect.x = drawPositionX;
-		drawRect.y = drawPositionY;
-		drawRect.w = c_NumbersCardDrawSize;
-		drawRect.h = c_NumbersCardDrawSize;
-
-		SDL_RenderRect(&renderer, &drawRect);
-
-		drawPositionX += c_NumbersCardDrawSize;
-		drawPositionX += c_GapBetweenNumbersCards;
+		std::string str = std::to_string(numbersHand[i]->GetValue());
+		SDL_RenderDebugText(&renderer, m_NumbersHandDrawRects[i].x + m_NumbersHandDrawRects[i].w / 2, m_NumbersHandDrawRects[i].y + m_NumbersHandDrawRects[i].h / 2, str.c_str());
+		SDL_RenderRect(&renderer, &m_NumbersHandDrawRects[i]);
 	}
 
 	const std::vector<OperandCard*>& operandHand = m_Player.GetOperandHand();
 	int operandCount = operandHand.size();
-
-	totalWidth = operandCount * c_OperandCardDrawSize + (operandCount * c_GapBetweenOperandsCards);
-	drawPositionX = m_WindowCenterX - (totalWidth / 2) + (c_GapBetweenOperandsCards / 2);
-
-	for (size_t i = 0; i < operandHand.size(); i++)
+	for (size_t i = 0; i < operandCount; i++)
 	{
-		SDL_FRect drawRect;
-		drawRect.x = drawPositionX;
-		drawRect.y = drawPositionY + c_NumbersCardDrawSize + (c_OperandCardDrawSize / 2);
-		drawRect.w = c_OperandCardDrawSize;
-		drawRect.h = c_OperandCardDrawSize;
+		std::string str = "";
 
-		SDL_RenderRect(&renderer, &drawRect);
+		switch (operandHand[i]->GetOperand())
+		{
+		default:
+			break;
+		}
 
-		drawPositionX += c_OperandCardDrawSize;
-		drawPositionX += c_GapBetweenOperandsCards;
+		switch (operandHand[i]->GetOperand())
+		{
+		case ADDITION: { str = "+"; } break;
+		case SUBTRACTION: { str = "-"; } break;
+		case MULTIPLICATION: { str = "*"; } break;
+		case DIVISION: { str = "/"; } break;
+
+		default:
+			str = "ERROR";
+			break;
+		}
+
+		SDL_RenderDebugText(&renderer, m_OperandHandDrawRects[i].x + m_OperandHandDrawRects[i].w / 2, m_OperandHandDrawRects[i].y + m_OperandHandDrawRects[i].h / 2, str.c_str());
+		SDL_RenderRect(&renderer, &m_OperandHandDrawRects[i]);
 	}
 }
 
