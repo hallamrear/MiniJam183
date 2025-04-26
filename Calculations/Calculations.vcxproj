@@ -120,7 +120,8 @@
       <AdditionalDependencies>SDL3.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"</Command>
+      <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"
+xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,7 +146,8 @@
       <AdditionalDependencies>SDL3.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"</Command>
+      <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"
+xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -166,7 +168,8 @@
       <AdditionalDependencies>SDL3.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"</Command>
+      <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"
+xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -191,7 +194,8 @@
       <AdditionalDependencies>SDL3.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"</Command>
+      <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"
+xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -204,11 +208,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="System\Services.cpp" />
+    <ClCompile Include="Graphics\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="System\Services.h" />
+    <ClInclude Include="Graphics\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Content\cat.png">

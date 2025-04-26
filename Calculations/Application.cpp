@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Application.h"
+#include <Graphics/Texture.h>
 #include <System/Services.h>
+
+SDL_Texture* texture = nullptr;
 
 Application::Application()
 {
@@ -31,6 +34,8 @@ bool Application::Initialise()
 	SDL_Log("SDL setup complete.");
 
 	Services::Initialise(m_Renderer, m_Window);
+
+	Texture::LoadPNG("Content/cat.png", texture);
 
 	m_IsRunning = true;
 	return true;
@@ -96,6 +101,8 @@ void Application::ShutdownSDL()
 	SDL_Quit();
 }
 
+float zoomlevel = 1.0f;
+
 void Application::ProcessEvents(const float& deltaTime)
 {
 	SDL_Event e{};
@@ -110,13 +117,19 @@ void Application::ProcessEvents(const float& deltaTime)
 				int height = 0;
 				SDL_GetWindowSize(m_Window, &width, &height);
 				SDL_RendererLogicalPresentation scalingType = SDL_LOGICAL_PRESENTATION_INTEGER_SCALE;
-				SDL_SetRenderLogicalPresentation(m_Renderer, width, height, scalingType);
+				SDL_SetRenderLogicalPresentation(m_Renderer, width * zoomlevel, height * zoomlevel, scalingType);
 			}
 			break;
 
 			case SDL_EVENT_QUIT:
 			{
 				m_IsRunning = false;
+			}
+			break;
+
+			case SDL_EVENT_MOUSE_WHEEL:
+			{
+
 			}
 			break;
 
@@ -178,6 +191,9 @@ void Application::Render() const
 	SDL_FRect rect{ 64, 64, INITIAL_WINDOW_WIDTH / 2 - 64, INITIAL_WINDOW_HEIGHT / 2 - 64 };
 	SDL_SetRenderDrawColorFloat(m_Renderer, 1.0F, 0.0F, 0.0F, 1.0F);
 	SDL_RenderRect(m_Renderer, &rect);
+
+	SDL_FRect R{ INITIAL_WINDOW_WIDTH / 2 - 64, INITIAL_WINDOW_HEIGHT / 2 - 64, INITIAL_WINDOW_WIDTH / 2 - 64, INITIAL_WINDOW_HEIGHT / 2 - 64 };
+	SDL_RenderTexture(m_Renderer, texture, nullptr, &R);
 
 	SDL_RenderPresent(m_Renderer);
 }
