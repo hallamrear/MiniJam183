@@ -225,7 +225,6 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <ClCompile Include="Scenes\Scene.cpp" />
     <ClCompile Include="System\Services.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
-    <ClCompile Include="Scenes\TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -248,7 +247,6 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <ClInclude Include="Scenes\Scene.h" />
     <ClInclude Include="System\Services.h" />
     <ClInclude Include="Graphics\Texture.h" />
-    <ClInclude Include="Scenes\TestScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Content\Cards\Numbers\1.png">

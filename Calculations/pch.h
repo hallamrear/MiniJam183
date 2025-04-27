@@ -30,6 +30,9 @@ constexpr const char*	WINDOW_TITLE = "Calculations";
 constexpr const int		INITIAL_WINDOW_WIDTH = 1280;
 constexpr const int		INITIAL_WINDOW_HEIGHT = 720;
 constexpr const float	CLEAR_COLOUR[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+constexpr const float	TARGET_RESOLUTION_X = 1920;
+constexpr const float	TARGET_RESOLUTION_Y = 1080;
+
 
 //Game
 constexpr const int		INITIAL_ENTITY_HEALTH = 10;

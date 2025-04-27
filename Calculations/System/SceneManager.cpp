@@ -2,7 +2,6 @@
 #include "SceneManager.h"
 #include <Scenes/MenuScene.h>
 #include <Scenes/BattleScene.h>
-#include <Scenes/TestScene.h>
 #include <Scenes/ShopScene.h>
 #include <Scenes/MapScene.h>
 
@@ -13,9 +12,10 @@ SceneManager::SceneManager()
 	m_SceneList = std::unordered_map<SCENE_IDENTIFIER, Scene*>();
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_MAIN_MENU, new MenuScene(*this) });
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_BATTLE, new BattleScene(*this) });
-	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_TEST, new TestScene(*this) });
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_SHOP, new ShopScene(*this) });
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_MAP, new MapScene(*this) });
+
+	ChangeScene(SCENE_IDENTIFIER::SCENE_MAIN_MENU);
 }
 
 SceneManager::~SceneManager()

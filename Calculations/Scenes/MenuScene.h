@@ -3,6 +3,14 @@
 
 class MenuScene : public Scene
 {
+private:
+	SDL_FRect m_ExitButtonRect;
+	SDL_FRect m_PlayButtonRect;
+
+	SDL_Texture* m_BackgroundTexture;
+	SDL_Texture* m_ExitButtonTexture;
+	SDL_Texture* m_PlayButtonTexture;
+
 public:
 	MenuScene(SceneManager& manager);
 	~MenuScene();

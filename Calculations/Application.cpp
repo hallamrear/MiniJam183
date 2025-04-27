@@ -40,7 +40,6 @@ bool Application::Initialise()
 	Services::ProvidePlayer(m_Player);
 
 	m_SceneManager = new SceneManager();
-	m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_TEST);
 
 	m_IsRunning = true;
 	return true;
@@ -156,7 +155,6 @@ void Application::ProcessEvents(const float& deltaTime)
 					case SDLK_F2: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_MAP); } break;
 					case SDLK_F3: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_SHOP); } break;
 					case SDLK_F4: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE); } break;
-					case SDLK_F8: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_TEST); } break;
 
 					case SDLK_F5:
 					{
@@ -191,7 +189,7 @@ void Application::ProcessEvents(const float& deltaTime)
 			break;
 		}
 
-		if (m_SceneManager != nullptr)
+		if (m_SceneManager != nullptr && m_IsRunning == true)
 		{
 			m_SceneManager->PassEventToScene(e);
 		}

@@ -28,9 +28,6 @@ constexpr const float c_PlayerAttackAnimationLength = 5.0f;
 constexpr const float c_EnemyAttackAnimationLength = 5.0f;
 constexpr const float c_EnemyDyingAnimationLength = 5.0f;
 
-constexpr const float TARGET_RESOLUTION_X = 1920;
-constexpr const float TARGET_RESOLUTION_Y = 1080;
-
 BattleScene::BattleScene(SceneManager& manager) : Scene(manager), m_Player(Services::GetPlayer())
 {
 	m_WindowSizeScalingX = 0.0f;
