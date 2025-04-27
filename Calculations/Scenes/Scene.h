@@ -1,9 +1,12 @@
 #pragma once
 
+class SceneManager;
+
 class Scene
 {
 protected:
-	Scene();
+	SceneManager& m_SceneManager;
+	Scene(SceneManager& sceneManager);
 
 public:
 	virtual ~Scene() = 0;

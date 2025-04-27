@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "MapScene.h"
 
-MapScene::MapScene() : Scene()
+MapScene::MapScene(SceneManager& manager) : Scene(manager)
 {
 }
 

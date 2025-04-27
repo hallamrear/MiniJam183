@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "MenuScene.h"
 
-MenuScene::MenuScene() : Scene()
+MenuScene::MenuScene(SceneManager& manager) : Scene(manager)
 {
 }
 

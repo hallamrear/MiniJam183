@@ -4,7 +4,7 @@
 class ShopScene : public Scene
 {
 public:
-	ShopScene();
+	ShopScene(SceneManager& manager);
 	~ShopScene();
 
 	virtual void OnEnter() override;

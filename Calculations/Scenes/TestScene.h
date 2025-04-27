@@ -4,7 +4,7 @@
 class TestScene : public Scene
 {
 public:
-	TestScene();
+	TestScene(SceneManager& manager);
 	~TestScene();
 
 	virtual void OnEnter() override;

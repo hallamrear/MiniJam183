@@ -4,19 +4,29 @@
 #include <System/Services.h>
 #include <Gameplay/Enemies/Ghost.h>
 #include <System/Collision.h>
+#include <System/SceneManager.h>
 
 constexpr const float c_AvatarDrawSize = 256.0f;
-constexpr const float c_NumbersCardDrawSize = 128.0f;
-constexpr const float c_OperandCardDrawSize = c_NumbersCardDrawSize / 2.0f;
+constexpr const float c_NumbersCardDrawWidth = 128.0f;
+constexpr const float c_NumbersCardDrawHeight = 183.0f;
+constexpr const float c_NumbersCardDrawHeightRatio = c_NumbersCardDrawHeight / c_NumbersCardDrawWidth;
+constexpr const float c_OperandCardDrawSize = c_NumbersCardDrawWidth / 2.0f;
 constexpr const float c_GapBetweenNumbersCards = 32.0f;
 constexpr const float c_GapBetweenOperandsCards = c_GapBetweenNumbersCards / 2.0f;
 constexpr const float c_HealthBarGapFromAvatar = 16.0f;
 constexpr const float c_GapBetweenCardsAndButton = 32.0f;
 constexpr const float c_ButtonWidth = 256.0f;
 constexpr const float c_ButtonHeight = 64.0f;
+constexpr const float c_PlayerAttackAnimationLength = 5.0f;
+constexpr const float c_EnemyAttackAnimationLength = 5.0f;
+constexpr const float c_EnemyDyingAnimationLength = 5.0f;
 
-BattleScene::BattleScene() : Scene(), m_Player(Services::GetPlayer())
+constexpr const float TARGET_RESOLUTION_X = 1920;
+constexpr const float TARGET_RESOLUTION_Y = 1080;
+
+BattleScene::BattleScene(SceneManager& manager) : Scene(manager), m_Player(Services::GetPlayer())
 {
+	
 	m_Enemy = nullptr;
 	m_LeftClickDown = false;
 	m_MouseX = -1;
@@ -27,6 +37,10 @@ BattleScene::BattleScene() : Scene(), m_Player(Services::GetPlayer())
 	m_WindowCenterY = 0;
 	m_WindowWidth = 0;
 	m_WindowHeight = 0;
+
+	m_AttackAnimationTimerElapsed = 0.0f;
+	m_BattleState = BATTLE_STATE::PLAYER_MOVE;
+	m_CanPickCard = true;
 
 	m_CharacterDrawRect = SDL_FRect{ 0.0f };
 	m_EnemyDrawRect = SDL_FRect{ 0.0f };
@@ -39,10 +53,17 @@ BattleScene::BattleScene() : Scene(), m_Player(Services::GetPlayer())
 
 	m_SubmitButtonRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	m_ClearEquationButtonRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
+	m_ExitButtonRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 
 	m_SelectedNumbersForEquation[0] = nullptr;
 	m_SelectedNumbersForEquation[1] = nullptr;
 	m_SelectedOperandForEquation = nullptr;
+
+	m_NumberCardTexture = nullptr;
+	Texture::LoadPNG("Content/TestNumberCard.png", m_NumberCardTexture);
+
+	m_OperandCardTexture = nullptr;
+	Texture::LoadPNG("Content/TestOperandCard.png", m_OperandCardTexture);
 }
 
 BattleScene::~BattleScene()
@@ -50,6 +71,19 @@ BattleScene::~BattleScene()
 	m_SelectedNumbersForEquation[0] = nullptr;
 	m_SelectedNumbersForEquation[1] = nullptr;
 	m_SelectedOperandForEquation = nullptr;
+
+	if (m_NumberCardTexture != nullptr)
+	{
+		SDL_DestroyTexture(m_NumberCardTexture);
+		m_NumberCardTexture = nullptr;
+	}
+
+
+	if (m_OperandCardTexture != nullptr)
+	{
+		SDL_DestroyTexture(m_OperandCardTexture);
+		m_OperandCardTexture = nullptr;
+	}
 }
 
 void BattleScene::OnEnter()
@@ -91,6 +125,7 @@ void BattleScene::HandleEvent(const SDL_Event& e)
 	{
 		if (e.button.button == SDL_BUTTON_LEFT)
 		{
+			m_CanPickCard = true;
 			m_LeftClickDown = false;
 			m_MouseX = -1;
 			m_MouseY = -1;
@@ -104,6 +139,12 @@ void BattleScene::HandleEvent(const SDL_Event& e)
 	{
 		switch (e.key.key)
 		{
+		case SDLK_KP_1: { m_BattleState = BATTLE_STATE::PLAYER_MOVE;} break;
+		case SDLK_KP_2: { m_BattleState = BATTLE_STATE::PLAYER_ATTACK_ANIMATION;} break;
+		case SDLK_KP_3: { m_BattleState = BATTLE_STATE::ENEMY_MOVE;} break;
+		case SDLK_KP_4: { m_BattleState = BATTLE_STATE::ENEMY_ATTACK_ANIMATION; } break;
+		case SDLK_KP_5: { m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION; } break;
+		case SDLK_KP_6: { m_BattleState = BATTLE_STATE::BATTLE_END_SCREEN; } break;
 
 		case SDLK_G:
 		{
@@ -186,17 +227,147 @@ void BattleScene::Update(const float& deltaTime)
 	m_WindowCenterX = m_WindowWidth / 2; 
 	m_WindowCenterY = m_WindowHeight / 2;
 
+	m_WindowSizeScalingX = m_WindowWidth / TARGET_RESOLUTION_X;
+	m_WindowSizeScalingY = m_WindowHeight / TARGET_RESOLUTION_Y;
+
 	CalculateUpdatedDrawPositions(deltaTime);
 
-	if (m_LeftClickDown)
+	switch (m_BattleState)
 	{
-		CheckForClickCollisions();
-	}
+		case BattleScene::PLAYER_MOVE:
+		{
 
-	if (CheckForValidEquation())
-	{
-		ApplyEquation();
-		ClearEquation();
+			if (m_LeftClickDown && m_CanPickCard)
+			{
+				CheckForClickCollisions();
+			}
+
+			std::string c_x = "?";
+			std::string c_op = "?";
+			std::string c_y = "?";
+			std::string c_out = "?";
+
+			if (m_SelectedNumbersForEquation[0] != nullptr)
+			{
+				c_x = std::to_string(m_SelectedNumbersForEquation[0]->GetValue());
+			}
+
+			if (m_SelectedNumbersForEquation[1] != nullptr)
+			{
+				c_y = std::to_string(m_SelectedNumbersForEquation[1]->GetValue());
+			}
+
+			if (m_SelectedOperandForEquation != nullptr)
+			{
+				switch (m_SelectedOperandForEquation->GetOperand())
+				{
+				case OPERAND_TYPE::ADDITION: { c_op = "+";} break;
+				case OPERAND_TYPE::SUBTRACTION: { c_op = "-"; } break;
+				case OPERAND_TYPE::DIVISION: { c_op = "/"; } break;
+				case OPERAND_TYPE::MULTIPLICATION: { c_op = "*"; } break;
+
+				default:
+					assert(false);
+					break;
+				}
+			}
+
+			if (m_SelectedNumbersForEquation[0] != nullptr && m_SelectedNumbersForEquation[1] != nullptr && m_SelectedOperandForEquation != nullptr)
+			{
+				//This should be valid because CheckForValidEquation() makes sure theyre valid pointers.
+				int x = m_SelectedNumbersForEquation[0]->GetValue();
+				int y = m_SelectedNumbersForEquation[1]->GetValue();
+				int output = 0;
+
+				switch (m_SelectedOperandForEquation->GetOperand())
+				{
+				case OPERAND_TYPE::ADDITION: { output = x + y; } break;
+				case OPERAND_TYPE::SUBTRACTION: { output = x - y; } break;
+				case OPERAND_TYPE::DIVISION: { output = x / y; } break;
+				case OPERAND_TYPE::MULTIPLICATION: { output = x * y; } break;
+
+				default:
+					assert(false);
+					break;
+				}
+				c_out = std::to_string(output);
+			}
+
+			SDL_Log("%s %s %s = %s", c_x.c_str(), c_op.c_str(), c_y.c_str(), c_out.c_str());
+
+		}
+			break;
+
+		case BattleScene::PLAYER_ATTACK_ANIMATION:
+		{
+			m_AttackAnimationTimerElapsed += deltaTime;
+
+			if (m_AttackAnimationTimerElapsed >= c_PlayerAttackAnimationLength)
+			{
+				m_AttackAnimationTimerElapsed = 0.0f;
+				m_BattleState = BattleScene::ENEMY_MOVE;
+			}
+		}
+			break;
+
+		case BattleScene::ENEMY_MOVE:
+		{
+			m_AttackAnimationTimerElapsed += deltaTime;
+
+			if (m_AttackAnimationTimerElapsed >= 2.0f)
+			{
+				m_AttackAnimationTimerElapsed = 0.0f;
+				m_Player.TakeDamage(rand() % 10 + 1);
+				m_BattleState = BattleScene::ENEMY_ATTACK_ANIMATION;
+			}
+		}
+			break;
+
+		case BattleScene::ENEMY_ATTACK_ANIMATION:
+		{
+			m_AttackAnimationTimerElapsed += deltaTime;
+
+			if (m_AttackAnimationTimerElapsed >= c_EnemyAttackAnimationLength)
+			{
+				m_AttackAnimationTimerElapsed = 0.0f;
+				m_BattleState = BattleScene::PLAYER_MOVE;
+			}
+		}
+			break;
+
+		case BATTLE_STATE::ENEMY_DYING_ANIMATION:
+		{
+			m_AttackAnimationTimerElapsed += deltaTime;
+
+			if (m_AttackAnimationTimerElapsed >= c_EnemyDyingAnimationLength)
+			{
+				m_AttackAnimationTimerElapsed = 0.0f;
+				m_BattleState = BATTLE_STATE::BATTLE_END_SCREEN;
+			}
+		}
+		break;
+
+		case BATTLE_STATE::BATTLE_END_SCREEN:
+		{
+			//Check shop button press
+
+			//Check quit button press
+
+			int padding = 200;
+			m_ExitButtonRect = SDL_FRect{ (float)padding, (float)padding, (float)m_WindowWidth - (2 * padding), (float)m_WindowHeight - (2 * padding) };
+
+			if (m_LeftClickDown)
+			{
+				if (Collision::PointInRect(m_MouseX, m_MouseY, m_ExitButtonRect))
+				{
+					m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAIN_MENU);
+				}
+			}
+		}
+		break;
+
+		default:
+			break;
 	}
 }
 
@@ -252,6 +423,7 @@ void BattleScene::CheckForClickCollisions()
 
 	if (foundCard != nullptr)
 	{
+		m_CanPickCard = false;
 		AddCardToEquation(foundCard);
 	}
 
@@ -286,33 +458,39 @@ void BattleScene::ApplyEquation()
 	}
 
 	m_Enemy->TakeDamage(output);
+
+	if (m_Enemy->GetIsAlive() == false)
+	{
+		m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION;
+	}
+	else
+	{
+		m_BattleState = BATTLE_STATE::PLAYER_ATTACK_ANIMATION;
+	}
 }
 
 void BattleScene::ClearEquation()
 {
 	m_SelectedNumbersForEquation[0] = nullptr;
+	m_SelectedNumbersForEquation[1] = nullptr;
 	m_SelectedOperandForEquation = nullptr;
 }
 
 void BattleScene::CalculateUpdatedDrawPositions(const float& deltaTime)
 {
 	CalculateSelectedCardRectPositions(deltaTime);
-	CalculateEquationButtonRectPositions(deltaTime);
 	CalculateCardHandDrawPositions(deltaTime);
-	CalculateUpdatedAvatarDrawPositions(deltaTime); 
-	
-	
+	CalculateUpdatedAvatarDrawPositions(deltaTime); 	
 }
-
 
 void BattleScene::CalculateSelectedCardRectPositions(const float& deltaTime)
 {
-
+	
 }
 
-void BattleScene::CalculateEquationButtonRectPositions(const float& deltaTime)
+void BattleScene::CalculateEquationButtonRectPositions(const float& deltaTime, const float& topOfCardsPosition)
 {
-	int drawPositionY = (((m_WindowHeight / 3) * 2) + m_WindowHeight) / 2 - c_NumbersCardDrawSize - (c_GapBetweenCardsAndButton);
+	int drawPositionY = topOfCardsPosition - (c_GapBetweenCardsAndButton);
 
 	m_ClearEquationButtonRect.x = m_WindowCenterX - c_GapBetweenCardsAndButton - (c_ButtonWidth);
 	m_ClearEquationButtonRect.y = drawPositionY - c_ButtonHeight;
@@ -323,7 +501,6 @@ void BattleScene::CalculateEquationButtonRectPositions(const float& deltaTime)
 	m_SubmitButtonRect.y = drawPositionY - c_ButtonHeight;
 	m_SubmitButtonRect.w = c_ButtonWidth;
 	m_SubmitButtonRect.h = c_ButtonHeight;
-
 }
 
 void BattleScene::CalculateCardHandDrawPositions(const float& deltaTime)
@@ -333,44 +510,50 @@ void BattleScene::CalculateCardHandDrawPositions(const float& deltaTime)
 
 	int numbersCount = m_Player.GetNumbersHand().size();
 
-	int totalWidth = numbersCount * c_NumbersCardDrawSize + (numbersCount * c_GapBetweenNumbersCards);
+	float scaledNumbersCardDrawSizeX = c_NumbersCardDrawWidth * m_WindowSizeScalingX;
+	float scaledNumbersCardDrawSizeY = scaledNumbersCardDrawSizeX * c_NumbersCardDrawHeightRatio;
+
+	float scaledOperandCardDrawSizeX = c_OperandCardDrawSize * m_WindowSizeScalingX;
+	float scaledOperandCardDrawSizeY = scaledOperandCardDrawSizeX * c_NumbersCardDrawHeightRatio;
+
+	int totalWidth = numbersCount * scaledNumbersCardDrawSizeX + (numbersCount * c_GapBetweenNumbersCards);
 	int drawPositionX = m_WindowCenterX - (totalWidth / 2) + (c_GapBetweenNumbersCards / 2);
-	int drawPositionY = (((m_WindowHeight / 3) * 2) + m_WindowHeight) / 2 - c_NumbersCardDrawSize;
+	int drawPositionY = m_WindowHeight - c_GapBetweenNumbersCards - scaledOperandCardDrawSizeY - c_GapBetweenNumbersCards - scaledNumbersCardDrawSizeY;
 
 	for (size_t i = 0; i < numbersCount; i++)
 	{
 		SDL_FRect drawRect;
 		drawRect.x = drawPositionX;
 		drawRect.y = drawPositionY;
-		drawRect.w = c_NumbersCardDrawSize;
-		drawRect.h = c_NumbersCardDrawSize;
+		drawRect.w = scaledNumbersCardDrawSizeX;
+		drawRect.h = scaledNumbersCardDrawSizeY;
 
 		m_NumbersHandDrawRects.push_back(drawRect);
 
-		drawPositionX += c_NumbersCardDrawSize;
+		drawPositionX += scaledNumbersCardDrawSizeX;
 		drawPositionX += c_GapBetweenNumbersCards;
 	}
 
 	int operandCount = m_Player.GetOperandHand().size();
 
-	totalWidth = operandCount * c_OperandCardDrawSize + (operandCount * c_GapBetweenOperandsCards);
+	totalWidth = operandCount * scaledOperandCardDrawSizeX + (operandCount * c_GapBetweenOperandsCards);
 	drawPositionX = m_WindowCenterX - (totalWidth / 2) + (c_GapBetweenOperandsCards / 2);
 
 	for (size_t i = 0; i < operandCount; i++)
 	{
 		SDL_FRect drawRect;
 		drawRect.x = drawPositionX;
-		drawRect.y = drawPositionY + c_NumbersCardDrawSize + (c_OperandCardDrawSize / 2);
-		drawRect.w = c_OperandCardDrawSize;
-		drawRect.h = c_OperandCardDrawSize;
+		drawRect.y = drawPositionY + scaledNumbersCardDrawSizeY + (c_GapBetweenNumbersCards);
+		drawRect.w = scaledOperandCardDrawSizeX;
+		drawRect.h = scaledOperandCardDrawSizeY;
 
 		m_OperandHandDrawRects.push_back(drawRect);
 
-		drawPositionX += c_OperandCardDrawSize;
+		drawPositionX += scaledOperandCardDrawSizeX;
 		drawPositionX += c_GapBetweenOperandsCards;
 	}
 
-
+	CalculateEquationButtonRectPositions(deltaTime, drawPositionY);
 }
 
 void BattleScene::CalculateUpdatedAvatarDrawPositions(const float& deltaTime)
@@ -412,14 +595,9 @@ void BattleScene::CalculateUpdatedAvatarDrawPositions(const float& deltaTime)
 
 void BattleScene::Render(SDL_Renderer& renderer) const
 {
-
-	RenderCharacters(renderer);
-	RenderCardHands(renderer);
-
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 
-	
-	int splitCount = 4;
+	/*int splitCount = 4;
 	int splitX = m_WindowWidth / splitCount;
 	int splitY = m_WindowHeight / splitCount;
 	for (size_t i = 0; i < splitCount; i++)
@@ -434,15 +612,59 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 
 			SDL_RenderRect(&renderer, &rect);
 		}
-	}
+	}*/
 
-	//Render buttons
-	SDL_SetRenderDrawColorFloat(&renderer, 0.0f, 1.0f, 0.0f, 1.0f);
-	SDL_RenderRect(&renderer, &m_ClearEquationButtonRect);
-	SDL_RenderDebugText(&renderer, m_ClearEquationButtonRect.x, m_ClearEquationButtonRect.y + m_ClearEquationButtonRect.h / 2, "Clear Equation");
-	SDL_SetRenderDrawColorFloat(&renderer, 0.0f, 0.0f, 1.0f, 1.0f);
-	SDL_RenderRect(&renderer, &m_SubmitButtonRect);
-	SDL_RenderDebugText(&renderer, m_SubmitButtonRect.x, m_SubmitButtonRect.y + m_SubmitButtonRect.h / 2, "Submit Equation");
+	RenderCharacters(renderer);
+
+	switch (m_BattleState)
+	{
+		case BattleScene::PLAYER_MOVE:
+		{
+			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::PLAYER_MOVE");
+
+			RenderCardHands(renderer);
+
+			//Render buttons
+			SDL_SetRenderDrawColorFloat(&renderer, 0.0f, 1.0f, 0.0f, 1.0f);
+			SDL_RenderRect(&renderer, &m_ClearEquationButtonRect);
+			SDL_RenderDebugText(&renderer, m_ClearEquationButtonRect.x, m_ClearEquationButtonRect.y + m_ClearEquationButtonRect.h / 2, "Clear Equation");
+			SDL_SetRenderDrawColorFloat(&renderer, 0.0f, 0.0f, 1.0f, 1.0f);
+			SDL_RenderRect(&renderer, &m_SubmitButtonRect);
+			SDL_RenderDebugText(&renderer, m_SubmitButtonRect.x, m_SubmitButtonRect.y + m_SubmitButtonRect.h / 2, "Submit Equation");
+		}
+			break;
+
+		case BattleScene::PLAYER_ATTACK_ANIMATION:
+			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::PLAYER_ATTACK_ANIMATION");
+			break;
+
+		case BattleScene::ENEMY_MOVE:
+			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::ENEMY_MOVE");
+			break;
+
+		case BattleScene::ENEMY_ATTACK_ANIMATION:
+			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::ENEMY_ATTACK_ANIMATION");
+			break;
+
+		case BATTLE_STATE::ENEMY_DYING_ANIMATION:
+		{
+			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::ENEMY_DYING_ANIMATION");
+		}
+		break;
+
+		case BATTLE_STATE::BATTLE_END_SCREEN:
+		{
+			SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
+			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::BATTLE_END_SCREEN");
+			SDL_RenderFillRect(&renderer, &m_ExitButtonRect);
+			SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 0.0f, 0.0f, 1.0f);
+			SDL_RenderDebugText(&renderer, m_ExitButtonRect.x + 64, m_ExitButtonRect.y + 64, "EXIT BUTTON TO MENU");
+		}
+		break;
+
+		default:
+			break;
+	}
 }
 
 void BattleScene::AddCardToEquation(Card* card)
@@ -518,8 +740,17 @@ void BattleScene::RenderCardHands(SDL_Renderer& renderer) const
 	for (size_t i = 0; i < numbersCount; i++)
 	{
 		std::string str = std::to_string(numbersHand[i]->GetValue());
-		SDL_RenderDebugText(&renderer, m_NumbersHandDrawRects[i].x + m_NumbersHandDrawRects[i].w / 2, m_NumbersHandDrawRects[i].y + m_NumbersHandDrawRects[i].h / 2, str.c_str());
-		SDL_RenderRect(&renderer, &m_NumbersHandDrawRects[i]);
+
+		if (m_NumberCardTexture != nullptr)
+		{
+			SDL_RenderTexture(&renderer, m_NumberCardTexture, nullptr, &m_NumbersHandDrawRects[i]);
+		}
+		else
+		{
+			SDL_RenderRect(&renderer, &m_NumbersHandDrawRects[i]);
+		}
+
+		SDL_RenderDebugText(&renderer, m_NumbersHandDrawRects[i].x + m_NumbersHandDrawRects[i].w / 2 - 4, m_NumbersHandDrawRects[i].y + m_NumbersHandDrawRects[i].h / 2 - 4, str.c_str());
 	}
 
 	const std::vector<OperandCard*>& operandHand = m_Player.GetOperandHand();
@@ -546,15 +777,26 @@ void BattleScene::RenderCardHands(SDL_Renderer& renderer) const
 			break;
 		}
 
-		SDL_RenderDebugText(&renderer, m_OperandHandDrawRects[i].x + m_OperandHandDrawRects[i].w / 2, m_OperandHandDrawRects[i].y + m_OperandHandDrawRects[i].h / 2, str.c_str());
-		SDL_RenderRect(&renderer, &m_OperandHandDrawRects[i]);
+		if (m_OperandCardTexture != nullptr)
+		{
+			SDL_RenderTexture(&renderer, m_OperandCardTexture, nullptr, &m_OperandHandDrawRects[i]);
+		}
+		else
+		{
+			SDL_RenderRect(&renderer, &m_OperandHandDrawRects[i]);
+		}
+
+		SDL_RenderDebugText(&renderer, m_OperandHandDrawRects[i].x + m_OperandHandDrawRects[i].w / 2 - 4, m_OperandHandDrawRects[i].y + m_OperandHandDrawRects[i].h / 2 - 4, str.c_str());
 	}
 }
 
 void BattleScene::SetupNewBattle()
 {
+	m_BattleState = BATTLE_STATE::PLAYER_MOVE;
+
 	m_Enemy = new Ghost();
 
+	m_Player.Heal(100000);
 	m_Player.GetDeck().ResetDeck();
 	m_Player.EmptyHands();
 

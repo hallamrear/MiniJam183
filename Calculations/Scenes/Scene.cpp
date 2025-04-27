@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Scene.h"
+#include "System/SceneManager.h"
 
-Scene::Scene()
+Scene::Scene(SceneManager& sceneManager) : m_SceneManager(sceneManager)
 {
 
 }

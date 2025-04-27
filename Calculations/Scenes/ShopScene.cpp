@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ShopScene.h"
 
-ShopScene::ShopScene() : Scene()
+ShopScene::ShopScene(SceneManager& manager) : Scene(manager)
 {
 }
 

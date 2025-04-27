@@ -4,7 +4,7 @@
 class MapScene : public Scene
 {
 public:
-	MapScene();
+	MapScene(SceneManager& manager);
 	~MapScene();
 
 	virtual void OnEnter() override;

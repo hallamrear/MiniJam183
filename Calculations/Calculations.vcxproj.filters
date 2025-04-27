@@ -154,5 +154,11 @@
     <Image Include="Content\cat2.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Content\TestNumberCard.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\TestOperandCard.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

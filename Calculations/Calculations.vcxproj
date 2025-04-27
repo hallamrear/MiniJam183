@@ -257,6 +257,12 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\cat2.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Content\TestNumberCard.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\TestOperandCard.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

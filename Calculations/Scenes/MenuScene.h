@@ -4,7 +4,7 @@
 class MenuScene : public Scene
 {
 public:
-	MenuScene();
+	MenuScene(SceneManager& manager);
 	~MenuScene();
 
 	virtual void OnEnter() override;

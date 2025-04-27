@@ -7,6 +7,16 @@
 class BattleScene : public Scene
 {
 private:
+	enum BATTLE_STATE
+	{
+		PLAYER_MOVE,
+		PLAYER_ATTACK_ANIMATION,
+		ENEMY_MOVE,
+		ENEMY_ATTACK_ANIMATION,
+		ENEMY_DYING_ANIMATION,
+		BATTLE_END_SCREEN,
+	} m_BattleState;
+
 	NumberCard* m_SelectedNumbersForEquation[2];
 	OperandCard* m_SelectedOperandForEquation;
 
@@ -14,6 +24,8 @@ private:
 	ProgressBar* m_EnemyHealthBar;
 	Player& m_Player;
 	Enemy* m_Enemy;
+	SDL_Texture* m_NumberCardTexture;
+	SDL_Texture* m_OperandCardTexture;
 
 	std::vector<SDL_FRect> m_OperandHandDrawRects;
 	std::vector<SDL_FRect> m_NumbersHandDrawRects;
@@ -23,9 +35,14 @@ private:
 	int m_WindowCenterY = 0;
 	int m_WindowHeight = 0;
 	int m_WindowWidth = 0;
+	float m_WindowSizeScalingX;
+	float m_WindowSizeScalingY;
+
 	bool m_LeftClickDown;
+	bool m_CanPickCard;
 	int m_MouseX;
 	int m_MouseY;
+	float m_AttackAnimationTimerElapsed;
 
 	void SetupNewBattle();
 	void RenderCharacters(SDL_Renderer& renderer) const;
@@ -33,19 +50,20 @@ private:
 	void CalculateUpdatedDrawPositions(const float& deltaTime);
 	void CalculateUpdatedAvatarDrawPositions(const float& deltaTime);
 	void CalculateCardHandDrawPositions(const float& deltaTime);
-	void CalculateSelectedCardRectPositions(const float& deltaTime);
-	void CalculateEquationButtonRectPositions(const float& deltaTime);
+	void CalculateSelectedCardRectPositions(const float& deltaTime); 
+	void CalculateEquationButtonRectPositions(const float& deltaTime, const float& topOfCardsPosition);
 	void CheckForClickCollisions();
 	bool CheckForValidEquation();
 	void AddCardToEquation(Card* card);
 	void ClearEquation();
 	void ApplyEquation();
 
+	SDL_FRect m_ExitButtonRect;
 	SDL_FRect m_SubmitButtonRect;
 	SDL_FRect m_ClearEquationButtonRect;
 
 public:
-	BattleScene();
+	BattleScene(SceneManager& manager);
 	~BattleScene();
 
 	virtual void OnEnter() override;

@@ -11,11 +11,11 @@ SceneManager::SceneManager()
 	m_CurrentScene = nullptr;
 
 	m_SceneList = std::unordered_map<SCENE_IDENTIFIER, Scene*>();
-	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_MAIN_MENU, new MenuScene()	  });
-	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_BATTLE,	new BattleScene() });
-	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_TEST,		new TestScene()	  });
-	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_SHOP,		new ShopScene()	  });
-	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_MAP,		new MapScene()	  });
+	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_MAIN_MENU, new MenuScene(*this) });
+	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_BATTLE, new BattleScene(*this) });
+	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_TEST, new TestScene(*this) });
+	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_SHOP, new ShopScene(*this) });
+	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_MAP, new MapScene(*this) });
 }
 
 SceneManager::~SceneManager()

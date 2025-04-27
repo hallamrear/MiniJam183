@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "TestScene.h"
 
-TestScene::TestScene()
+TestScene::TestScene(SceneManager& manager) : Scene(manager)
 {
 
 }

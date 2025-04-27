@@ -25,7 +25,7 @@ int main(int argc, char* args[])
     {
         currentTime = SDL_GetTicks();
         deltaTime = (currentTime - previousTime) / 1000.0f;
-
+        
         app->ProcessEvents(deltaTime);
         app->Update(deltaTime);
         app->Render();
