@@ -3,6 +3,7 @@
 #include <Graphics/Texture.h>
 #include <System/Services.h>
 #include <Gameplay/Enemies/Ghost.h>
+#include <System/Collision.h>
 
 constexpr const float c_AvatarDrawSize = 256.0f;
 constexpr const float c_NumbersCardDrawSize = 128.0f;
@@ -10,6 +11,9 @@ constexpr const float c_OperandCardDrawSize = c_NumbersCardDrawSize / 2.0f;
 constexpr const float c_GapBetweenNumbersCards = 32.0f;
 constexpr const float c_GapBetweenOperandsCards = c_GapBetweenNumbersCards / 2.0f;
 constexpr const float c_HealthBarGapFromAvatar = 16.0f;
+constexpr const float c_GapBetweenCardsAndButton = 32.0f;
+constexpr const float c_ButtonWidth = 256.0f;
+constexpr const float c_ButtonHeight = 64.0f;
 
 BattleScene::BattleScene() : Scene(), m_Player(Services::GetPlayer())
 {
@@ -32,11 +36,20 @@ BattleScene::BattleScene() : Scene(), m_Player(Services::GetPlayer())
 
 	m_OperandHandDrawRects = std::vector<SDL_FRect>();
 	m_NumbersHandDrawRects = std::vector<SDL_FRect>();
+
+	m_SubmitButtonRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
+	m_ClearEquationButtonRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
+
+	m_SelectedNumbersForEquation[0] = nullptr;
+	m_SelectedNumbersForEquation[1] = nullptr;
+	m_SelectedOperandForEquation = nullptr;
 }
 
 BattleScene::~BattleScene()
 {
-
+	m_SelectedNumbersForEquation[0] = nullptr;
+	m_SelectedNumbersForEquation[1] = nullptr;
+	m_SelectedOperandForEquation = nullptr;
 }
 
 void BattleScene::OnEnter()
@@ -162,7 +175,8 @@ void BattleScene::HandleEvent(const SDL_Event& e)
 
 void BattleScene::OnExit()
 {
-
+	m_OperandHandDrawRects.clear();
+	m_NumbersHandDrawRects.clear();
 }
 
 void BattleScene::Update(const float& deltaTime)
@@ -172,27 +186,144 @@ void BattleScene::Update(const float& deltaTime)
 	m_WindowCenterX = m_WindowWidth / 2; 
 	m_WindowCenterY = m_WindowHeight / 2;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	CalculateUpdatedDrawPositions(deltaTime);
+
+	if (m_LeftClickDown)
+	{
+		CheckForClickCollisions();
+	}
+
+	if (CheckForValidEquation())
+	{
+		ApplyEquation();
+		ClearEquation();
+	}
+}
+
+SDL_FRect* rect = nullptr;
+
+void BattleScene::CheckForClickCollisions()
+{
+	if (Collision::PointInRect(m_MouseX, m_MouseY, m_ClearEquationButtonRect))
+	{
+		ClearEquation();
+		return;
+	}
+
+	if (Collision::PointInRect(m_MouseX, m_MouseY, m_SubmitButtonRect))
+	{
+		if (CheckForValidEquation())
+		{
+			ApplyEquation();
+			ClearEquation();
+		}
+		return;
+	}
+
+	bool foundClick = false;
+	Card* foundCard = nullptr;
+	rect = nullptr;
+
+	for (size_t i = 0; i < m_OperandHandDrawRects.size(); i++)
+	{
+		if (foundClick)
+			break;
+
+		if (Collision::PointInRect(m_MouseX, m_MouseY, m_OperandHandDrawRects[i]))
+		{
+			foundCard = m_Player.GetOperandHand()[i];
+			rect = &m_OperandHandDrawRects[i];
+			foundClick = true;
+		}
+	}
+
+	for (size_t i = 0; i < m_NumbersHandDrawRects.size(); i++)
+	{
+		if (foundClick)
+			break;
+
+		if (Collision::PointInRect(m_MouseX, m_MouseY, m_NumbersHandDrawRects[i]))
+		{
+			foundCard = m_Player.GetNumbersHand()[i];
+			rect = &m_NumbersHandDrawRects[i];
+			foundClick = true;
+		}
+	}
+
+	if (foundCard != nullptr)
+	{
+		AddCardToEquation(foundCard);
+	}
+
+}
+
+bool BattleScene::CheckForValidEquation()
+{
+	return ((m_SelectedNumbersForEquation[0] != nullptr) && (m_SelectedNumbersForEquation[1] != nullptr) && (m_SelectedOperandForEquation != nullptr));
+}
+
+void BattleScene::ApplyEquation()
+{
+	int x = 0;
+	int y = 0;
+	
+	//This should be valid because CheckForValidEquation() makes sure theyre valid pointers.
+	x = m_SelectedNumbersForEquation[0]->GetValue();
+	y = m_SelectedNumbersForEquation[1]->GetValue();
+
+	int output = 0;
+
+	switch (m_SelectedOperandForEquation->GetOperand())
+	{
+		case OPERAND_TYPE::ADDITION:		{ output = x + y; } break;
+		case OPERAND_TYPE::SUBTRACTION:		{ output = x - y; } break;
+		case OPERAND_TYPE::DIVISION:		{ output = x / y; } break;
+		case OPERAND_TYPE::MULTIPLICATION:  { output = x * y; } break;
+
+		default:
+			assert(false);
+			break;
+	}
+
+	m_Enemy->TakeDamage(output);
+}
+
+void BattleScene::ClearEquation()
+{
+	m_SelectedNumbersForEquation[0] = nullptr;
+	m_SelectedOperandForEquation = nullptr;
 }
 
 void BattleScene::CalculateUpdatedDrawPositions(const float& deltaTime)
 {
+	CalculateSelectedCardRectPositions(deltaTime);
+	CalculateEquationButtonRectPositions(deltaTime);
 	CalculateCardHandDrawPositions(deltaTime);
-	CalculateUpdatedAvatarDrawPositions(deltaTime);
+	CalculateUpdatedAvatarDrawPositions(deltaTime); 
+	
+	
+}
+
+
+void BattleScene::CalculateSelectedCardRectPositions(const float& deltaTime)
+{
+
+}
+
+void BattleScene::CalculateEquationButtonRectPositions(const float& deltaTime)
+{
+	int drawPositionY = (((m_WindowHeight / 3) * 2) + m_WindowHeight) / 2 - c_NumbersCardDrawSize - (c_GapBetweenCardsAndButton);
+
+	m_ClearEquationButtonRect.x = m_WindowCenterX - c_GapBetweenCardsAndButton - (c_ButtonWidth);
+	m_ClearEquationButtonRect.y = drawPositionY - c_ButtonHeight;
+	m_ClearEquationButtonRect.w = c_ButtonWidth;
+	m_ClearEquationButtonRect.h = c_ButtonHeight;
+
+	m_SubmitButtonRect.x = m_WindowCenterX + (c_GapBetweenCardsAndButton / 2);
+	m_SubmitButtonRect.y = drawPositionY - c_ButtonHeight;
+	m_SubmitButtonRect.w = c_ButtonWidth;
+	m_SubmitButtonRect.h = c_ButtonHeight;
+
 }
 
 void BattleScene::CalculateCardHandDrawPositions(const float& deltaTime)
@@ -281,25 +412,77 @@ void BattleScene::CalculateUpdatedAvatarDrawPositions(const float& deltaTime)
 
 void BattleScene::Render(SDL_Renderer& renderer) const
 {
-	//int splitCount = 4;
-	//int splitX = m_WindowWidth / splitCount;
-	//int splitY = m_WindowHeight / splitCount;
-	//for (size_t i = 0; i < splitCount; i++)
-	//{
-	//	for (size_t j = 0; j < splitCount; j++)
-	//	{
-	//		SDL_FRect rect;
-	//		rect.w = splitX;
-	//		rect.h = splitY;
-	//		rect.x = i * splitX;
-	//		rect.y = j * splitY;
-	//
-	//		SDL_RenderRect(&renderer, &rect);
-	//	}
-	//}
 
 	RenderCharacters(renderer);
 	RenderCardHands(renderer);
+
+	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
+
+	
+	int splitCount = 4;
+	int splitX = m_WindowWidth / splitCount;
+	int splitY = m_WindowHeight / splitCount;
+	for (size_t i = 0; i < splitCount; i++)
+	{
+		for (size_t j = 0; j < splitCount; j++)
+		{
+			SDL_FRect rect;
+			rect.w = splitX;
+			rect.h = splitY;
+			rect.x = i * splitX;
+			rect.y = j * splitY;
+
+			SDL_RenderRect(&renderer, &rect);
+		}
+	}
+
+	//Render buttons
+	SDL_SetRenderDrawColorFloat(&renderer, 0.0f, 1.0f, 0.0f, 1.0f);
+	SDL_RenderRect(&renderer, &m_ClearEquationButtonRect);
+	SDL_RenderDebugText(&renderer, m_ClearEquationButtonRect.x, m_ClearEquationButtonRect.y + m_ClearEquationButtonRect.h / 2, "Clear Equation");
+	SDL_SetRenderDrawColorFloat(&renderer, 0.0f, 0.0f, 1.0f, 1.0f);
+	SDL_RenderRect(&renderer, &m_SubmitButtonRect);
+	SDL_RenderDebugText(&renderer, m_SubmitButtonRect.x, m_SubmitButtonRect.y + m_SubmitButtonRect.h / 2, "Submit Equation");
+}
+
+void BattleScene::AddCardToEquation(Card* card)
+{
+	switch (card->GetCardType())
+	{
+	case CARD_TYPE::NUMBER_CARD:
+	{
+		if (m_SelectedNumbersForEquation[0] == nullptr)
+		{
+			m_SelectedNumbersForEquation[0] = (NumberCard*)card;
+			return;
+		}
+		else if (m_SelectedNumbersForEquation[1] == nullptr)
+		{
+			m_SelectedNumbersForEquation[1] = (NumberCard*)card;
+			return;
+		}
+		//else
+		//{
+		//	NO SPACE TO ADD CARD
+		//}
+	}
+	break;
+
+	case CARD_TYPE::OPERAND_CARD:
+	{
+		if (m_SelectedOperandForEquation == nullptr)
+		{
+			m_SelectedOperandForEquation = (OperandCard*)card;
+		}
+	}
+	break;
+
+	default:
+		break;
+	}
+	
+
+	
 }
 
 void BattleScene::RenderCharacters(SDL_Renderer& renderer) const

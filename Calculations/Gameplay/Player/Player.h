@@ -13,8 +13,8 @@ public:
 	Player();
 	~Player();
 
-	const std::vector<OperandCard*>& GetOperandHand() const;
-	const std::vector<NumberCard*>& GetNumbersHand() const;
+	std::vector<OperandCard*>& GetOperandHand();
+	std::vector<NumberCard*>& GetNumbersHand();
 
 	void EmptyOperandHand();
 	void EmptyNumberHand();

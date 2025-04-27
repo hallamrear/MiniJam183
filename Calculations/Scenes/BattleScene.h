@@ -7,6 +7,9 @@
 class BattleScene : public Scene
 {
 private:
+	NumberCard* m_SelectedNumbersForEquation[2];
+	OperandCard* m_SelectedOperandForEquation;
+
 	ProgressBar* m_PlayerHealthBar;
 	ProgressBar* m_EnemyHealthBar;
 	Player& m_Player;
@@ -30,6 +33,16 @@ private:
 	void CalculateUpdatedDrawPositions(const float& deltaTime);
 	void CalculateUpdatedAvatarDrawPositions(const float& deltaTime);
 	void CalculateCardHandDrawPositions(const float& deltaTime);
+	void CalculateSelectedCardRectPositions(const float& deltaTime);
+	void CalculateEquationButtonRectPositions(const float& deltaTime);
+	void CheckForClickCollisions();
+	bool CheckForValidEquation();
+	void AddCardToEquation(Card* card);
+	void ClearEquation();
+	void ApplyEquation();
+
+	SDL_FRect m_SubmitButtonRect;
+	SDL_FRect m_ClearEquationButtonRect;
 
 public:
 	BattleScene();

@@ -22,12 +22,12 @@ Player::~Player()
     EmptyHands();
 }
 
-const std::vector<OperandCard*>& Player::GetOperandHand() const
+std::vector<OperandCard*>& Player::GetOperandHand()
 {
     return m_OperandHand;
 }
 
-const std::vector<NumberCard*>& Player::GetNumbersHand() const
+std::vector<NumberCard*>& Player::GetNumbersHand()
 {
     return m_NumbersHand;
 }
