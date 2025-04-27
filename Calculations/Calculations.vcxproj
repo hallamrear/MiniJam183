@@ -251,10 +251,70 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <ClInclude Include="Scenes\TestScene.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Content\Cards\Numbers\1.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\10.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\12.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\15.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\18.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\2.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\20.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\3.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\4.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\5.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\50.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\6.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\7.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\8.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Numbers\9.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Operands\Addition.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Operands\Division.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Operands\Multiplication.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Cards\Operands\Subtraction.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\cat.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\cat2.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\MissingCard.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\TestNumberCard.png">

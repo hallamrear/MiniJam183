@@ -160,5 +160,65 @@
     <Image Include="Content\TestOperandCard.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Content\MissingCard.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Operands\Addition.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Operands\Division.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Operands\Multiplication.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Operands\Subtraction.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\6.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\7.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\8.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\9.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\10.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\12.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\15.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\18.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\20.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Cards\Numbers\50.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

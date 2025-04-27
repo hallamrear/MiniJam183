@@ -24,9 +24,11 @@ private:
 	ProgressBar* m_EnemyHealthBar;
 	Player& m_Player;
 	Enemy* m_Enemy;
+	SDL_Texture* m_MissingCardTexture;
 	SDL_Texture* m_NumberCardTexture;
 	SDL_Texture* m_OperandCardTexture;
 
+	SDL_FRect m_SelectedCardDrawRects[3];
 	std::vector<SDL_FRect> m_OperandHandDrawRects;
 	std::vector<SDL_FRect> m_NumbersHandDrawRects;
 	SDL_FRect m_CharacterDrawRect;
@@ -46,12 +48,15 @@ private:
 
 	void SetupNewBattle();
 	void RenderCharacters(SDL_Renderer& renderer) const;
+	void RenderEquation(SDL_Renderer& renderer) const;
 	void RenderCardHands(SDL_Renderer& renderer) const;
 	void CalculateUpdatedDrawPositions(const float& deltaTime);
-	void CalculateUpdatedAvatarDrawPositions(const float& deltaTime);
-	void CalculateCardHandDrawPositions(const float& deltaTime);
-	void CalculateSelectedCardRectPositions(const float& deltaTime); 
-	void CalculateEquationButtonRectPositions(const float& deltaTime, const float& topOfCardsPosition);
+	void CalculateUpdatedAvatarDrawPositions(const float& deltaTime, const float& rootPositionX, const float& rootPositionY);
+	void CalculateCardHandDrawPositions(const float& deltaTime, const float& rootPositionX, const float& rootPositionY);
+	void CalculateSelectedCardRectPositions(const float& deltaTime, const float& rootPositionX, const float& rootPositionY);
+	void CalculateEquationButtonRectPositions(const float& deltaTime, const float& rootPositionX, const float& rootPositionY);
+
+	void DiscardEquationCards();
 	void CheckForClickCollisions();
 	bool CheckForValidEquation();
 	void AddCardToEquation(Card* card);
@@ -59,6 +64,7 @@ private:
 	void ApplyEquation();
 
 	SDL_FRect m_ExitButtonRect;
+	SDL_FRect m_DiscardEquationButtonRect;
 	SDL_FRect m_SubmitButtonRect;
 	SDL_FRect m_ClearEquationButtonRect;
 
