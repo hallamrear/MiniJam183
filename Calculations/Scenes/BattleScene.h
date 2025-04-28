@@ -14,6 +14,7 @@ private:
 		ENEMY_MOVE,
 		ENEMY_ATTACK_ANIMATION,
 		ENEMY_DYING_ANIMATION,
+		PLAYER_DYING_ANIMATION,
 		BATTLE_END_SCREEN,
 	} m_BattleState;
 
@@ -24,9 +25,12 @@ private:
 	ProgressBar* m_EnemyHealthBar;
 	Player& m_Player;
 	Enemy* m_Enemy;
+
+	SDL_Texture* m_GoToShopButtonTexture;
+	SDL_Texture* m_ExitButtonTexture;
 	SDL_Texture* m_MissingCardTexture;
-	SDL_Texture* m_NumberCardTexture;
-	SDL_Texture* m_OperandCardTexture;
+	SDL_Texture* m_PlayerDeathTextTexture;
+	SDL_Texture* m_EnemyDeathTextTexture;
 
 	SDL_FRect m_SelectedCardDrawRects[3];
 	std::vector<SDL_FRect> m_OperandHandDrawRects;
@@ -44,7 +48,7 @@ private:
 	bool m_CanPickCard;
 	int m_MouseX;
 	int m_MouseY;
-	float m_AttackAnimationTimerElapsed;
+	float m_AnimationTimerElapsed;
 
 	void SetupNewBattle();
 	void RenderCharacters(SDL_Renderer& renderer) const;
@@ -64,9 +68,11 @@ private:
 	void ApplyEquation();
 
 	SDL_FRect m_ExitButtonRect;
+	SDL_FRect m_GoToShopButtonRect;
 	SDL_FRect m_DiscardEquationButtonRect;
 	SDL_FRect m_SubmitButtonRect;
 	SDL_FRect m_ClearEquationButtonRect;
+	SDL_FRect m_EndScreenMessageRect;
 
 public:
 	BattleScene(SceneManager& manager);

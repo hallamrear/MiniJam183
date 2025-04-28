@@ -3,6 +3,7 @@
 #include <Graphics/Texture.h>
 #include <System/Services.h>
 #include <System/Collision.h>
+#include <Gameplay/Player/Player.h>
 #include <System/SceneManager.h>
 
 constexpr const float c_ButtonWidth = 256.0f;
@@ -68,6 +69,7 @@ void MenuScene::HandleEvent(const SDL_Event& e)
 
 void MenuScene::OnExit()
 {
+	Services::GetPlayer().HardReset();
 }
 
 void MenuScene::Update(const float& deltaTime)

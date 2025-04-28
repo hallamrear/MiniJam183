@@ -37,5 +37,8 @@ constexpr const float	TARGET_RESOLUTION_Y = 1080;
 //Game
 constexpr const int		INITIAL_ENTITY_HEALTH = 10;
 constexpr const int		INITIAL_PLAYER_HEALTH = 30;
+constexpr const int		INITIAL_PLAYER_GOLD = 10;
+constexpr const int		INITIAL_PLAYER_NUMBER_HAND_SIZE = 6;
+constexpr const int		INITIAL_PLAYER_OPERAND_HAND_SIZE = 3;
 
 #endif //PCH_H

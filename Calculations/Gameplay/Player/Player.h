@@ -9,8 +9,13 @@ private:
 	std::vector<OperandCard*> m_OperandHand;
 	std::vector<NumberCard*> m_NumbersHand;
 
+	int m_NumbersHandSize;
+	int m_OperandHandSize;
+
 	void RemoveOperandCardFromHand(const OperandCard* card);
 	void RemoveNumbersCardFromHand(const NumberCard* card);
+
+	int m_GoldCount;
 
 public:
 	Player();
@@ -19,7 +24,16 @@ public:
 	std::vector<OperandCard*>& GetOperandHand();
 	std::vector<NumberCard*>& GetNumbersHand();
 
-	void FullReset();
+	void HardReset();
+
+	const int GetOperandHandSize() const;
+	const int GetNumbersHandSize() const;
+
+	void IncreaseNumbersHandSize(const int& count);
+	void IncreaseOperandsHandSize(const int& count);
+	const int& GetGoldCount() const; 
+	const void IncreaseGold(const int& count);
+	const void DecreaseGold(const int& count);
 
 	void EmptyOperandHand();
 	void EmptyNumberHand();

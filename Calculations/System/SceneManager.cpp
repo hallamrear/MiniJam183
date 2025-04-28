@@ -39,6 +39,12 @@ void SceneManager::PassEventToScene(const SDL_Event& e)
 
 void SceneManager::ChangeScene(const SCENE_IDENTIFIER& targetScene)
 {
+	m_IsPendingSceneChange = true;
+	m_PendingScene = targetScene;
+}
+
+void SceneManager::ApplyPendingSceneChange()
+{
 	if (m_CurrentScene != nullptr)
 	{
 		m_CurrentScene->OnExit();
@@ -46,12 +52,13 @@ void SceneManager::ChangeScene(const SCENE_IDENTIFIER& targetScene)
 
 	m_CurrentScene = nullptr;
 
-	std::unordered_map<SCENE_IDENTIFIER, Scene*>::iterator found = m_SceneList.find(targetScene);
+	std::unordered_map<SCENE_IDENTIFIER, Scene*>::iterator found = m_SceneList.find(m_PendingScene);
 	if (found != m_SceneList.end())
 	{
 		if (found->second != nullptr)
 		{
 			m_CurrentScene = found->second;
+			m_IsPendingSceneChange = false;
 		}
 	}
 
@@ -63,6 +70,11 @@ void SceneManager::ChangeScene(const SCENE_IDENTIFIER& targetScene)
 
 void SceneManager::Update(const float& deltaTime)
 {
+	if (m_IsPendingSceneChange == true)
+	{
+		ApplyPendingSceneChange();
+	}
+
 	if (m_CurrentScene != nullptr)
 	{
 		m_CurrentScene->Update(deltaTime);

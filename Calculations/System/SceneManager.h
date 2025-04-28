@@ -13,8 +13,12 @@ enum SCENE_IDENTIFIER
 class SceneManager
 {
 private:
+	bool m_IsPendingSceneChange;
+	SCENE_IDENTIFIER m_PendingScene;
 	std::unordered_map<SCENE_IDENTIFIER, Scene*> m_SceneList;
 	Scene* m_CurrentScene;
+
+	void ApplyPendingSceneChange();
 
 public:
 	SceneManager();
@@ -22,6 +26,7 @@ public:
 
 	void PassEventToScene(const SDL_Event& e);
 	void ChangeScene(const SCENE_IDENTIFIER& targetScene);
+
 
 	void Update(const float& deltaTime);
 	void Render(SDL_Renderer& renderer) const;
