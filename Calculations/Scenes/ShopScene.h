@@ -26,10 +26,6 @@ private:
 	int m_WindowHeight;
 	int m_WindowCentreX;
 	int m_WindowCentreY;
-	int m_MouseX;
-	int m_MouseY;
-
-	bool m_IsLeftClickDown;
 	bool m_CanClickButtons;
 
 	void RegenerateShop();

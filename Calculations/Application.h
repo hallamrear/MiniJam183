@@ -2,10 +2,12 @@
 
 class SceneManager;
 class Player;
+class Input;
 
 class Application
 {
 private:
+	Input* m_InputManager;
 	Player* m_Player;
 	SDL_Renderer* m_Renderer;
 	SDL_Window* m_Window; 

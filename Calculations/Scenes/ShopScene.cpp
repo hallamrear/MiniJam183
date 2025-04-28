@@ -4,6 +4,7 @@
 #include <System/Collision.h>
 #include <Gameplay/Player/Player.h>
 #include <System/SceneManager.h>
+#include <System/Input.h>
 
 ShopScene::ShopScene(SceneManager& manager) : Scene(manager), m_Player(Services::GetPlayer())
 {
@@ -22,9 +23,6 @@ ShopScene::ShopScene(SceneManager& manager) : Scene(manager), m_Player(Services:
 	m_WindowCentreX = 0;
 	m_WindowCentreY = 0;
 	m_IncreaseHandCost = 0;
-	m_MouseX = 0;
-	m_MouseY = 0;
-	m_IsLeftClickDown = false;
 	m_CanClickButtons = true;
 }
 
@@ -41,28 +39,8 @@ void ShopScene::HandleEvent(const SDL_Event& e)
 {
 	switch (e.type)
 	{
-	case SDL_EVENT_MOUSE_MOTION:
-	{
-		m_MouseX = e.button.x;
-		m_MouseY = e.button.y;
-	}
-	break;
-
-	case SDL_EVENT_MOUSE_BUTTON_DOWN:
-	{
-		m_IsLeftClickDown = true;
-	}
-	break;
-
-	case SDL_EVENT_MOUSE_BUTTON_UP:
-	{
-		m_IsLeftClickDown = false;
-		m_CanClickButtons = true;
-	}
-	break;
-
-	default:
-		break;
+		default:
+			break;
 	}
 }
 
@@ -78,6 +56,11 @@ void ShopScene::RegenerateShop()
 
 void ShopScene::Update(const float& deltaTime)
 {
+	if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
+	{
+		m_CanClickButtons = true;
+	}
+
 	SDL_Window& window = Services::GetWindow();
 	SDL_GetWindowSize(&window, &m_WindowWidth, &m_WindowHeight);
 	m_WindowCentreX = m_WindowWidth / 2;
@@ -85,19 +68,14 @@ void ShopScene::Update(const float& deltaTime)
 
 	CalculateShopRects();
 	CalculateButtonRects();
-
 	CheckButtonClicks();
 }
 
 void ShopScene::CheckButtonClicks()
 {
-	float mouseX = 0;
-	float mouseY = 0;
-	SDL_GetMouseState(&mouseX, &mouseY);
-
-	if (m_CanClickButtons && m_IsLeftClickDown)
+	if (m_CanClickButtons && m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
 	{
-		if (Collision::PointInRect((int)mouseX, (int)mouseY, m_IncreaseNumbersHandButtonRect))
+		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_IncreaseNumbersHandButtonRect))
 		{
 			if (m_Player.GetGoldCount() - m_IncreaseHandCost > 0)
 			{
@@ -108,7 +86,7 @@ void ShopScene::CheckButtonClicks()
 
 			m_CanClickButtons = false;
 		}
-		else if (Collision::PointInRect((int)mouseX, (int)mouseY, m_IncreaseOperandsHandButtonRect))
+		else if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_IncreaseOperandsHandButtonRect))
 		{
 			if (m_Player.GetGoldCount() - m_IncreaseHandCost > 0)
 			{
@@ -119,7 +97,7 @@ void ShopScene::CheckButtonClicks()
 
 			m_CanClickButtons = false;
 		}
-		else if (Collision::PointInRect((int)mouseX, (int)mouseY, m_ExitBattleButtonRect))
+		else if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_ExitBattleButtonRect))
 		{
 			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE);
 		}

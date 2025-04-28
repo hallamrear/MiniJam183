@@ -1,10 +1,13 @@
 #pragma once
 
 class SceneManager;
+class Input;
 
 class Scene
 {
 protected:
+	const Input& m_InputManager;
+
 	SceneManager& m_SceneManager;
 	Scene(SceneManager& sceneManager);
 

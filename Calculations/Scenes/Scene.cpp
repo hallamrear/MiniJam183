@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "Scene.h"
-#include "System/SceneManager.h"
+#include <System/SceneManager.h>
+#include <System/Services.h>
+#include <System/Input.h>
 
-Scene::Scene(SceneManager& sceneManager) : m_SceneManager(sceneManager)
+Scene::Scene(SceneManager& sceneManager) : m_SceneManager(sceneManager), m_InputManager(Services::GetInputManager())
 {
 
 }

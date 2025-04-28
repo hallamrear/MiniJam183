@@ -201,6 +201,7 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Graphics\Animation.cpp" />
+    <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\Collision.cpp" />
     <ClCompile Include="Gameplay\Cards\Card.cpp" />
     <ClCompile Include="Gameplay\Cards\Deck.cpp" />
@@ -230,6 +231,7 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Graphics\Animation.h" />
+    <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Collision.h" />
     <ClInclude Include="Gameplay\Cards\Card.h" />
     <ClInclude Include="Gameplay\Cards\Deck.h" />

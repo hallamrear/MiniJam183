@@ -2,10 +2,12 @@
 #include "Application.h"
 #include <System/Services.h>
 #include <System/SceneManager.h>
+#include <System/Input.h>
 #include <Gameplay/Player/Player.h>
 
 Application::Application()
 {
+	m_InputManager = nullptr;
 	m_SceneManager = nullptr;
 	m_Player = nullptr;
 	m_Renderer = nullptr;
@@ -19,6 +21,8 @@ Application::~Application()
 {
 	if (m_IsRunning)
 	{
+		Shutdown();
+
 		assert(m_IsRunning);
 		SDL_LogError(SDL_LOG_PRIORITY_CRITICAL, "Failed to properly shutdown game instance.");
 	}
@@ -38,6 +42,9 @@ bool Application::Initialise()
 
 	m_Player = new Player();
 	Services::ProvidePlayer(m_Player);
+
+	m_InputManager = new Input();
+	Services::ProvideInputManager(m_InputManager);
 
 	m_SceneManager = new SceneManager();
 
@@ -93,15 +100,20 @@ bool Application::InitSDL()
 
 void Application::Shutdown()
 {
-	ShutdownSDL();
-
 	if (m_SceneManager != nullptr)
 	{
 		delete m_SceneManager;
 		m_SceneManager = nullptr;
 	}
 
+	if (m_InputManager != nullptr)
+	{
+		delete m_InputManager;
+		m_InputManager = nullptr;
+	}
+
 	Services::Shutdown();
+	ShutdownSDL();
 }
 
 void Application::ShutdownSDL()
@@ -135,15 +147,12 @@ void Application::ProcessEvents(const float& deltaTime)
 			}
 			break;
 
+			case SDL_EVENT_MOUSE_BUTTON_DOWN:
+			case SDL_EVENT_MOUSE_BUTTON_UP:
+			case SDL_EVENT_MOUSE_MOTION:
 			case SDL_EVENT_MOUSE_WHEEL:
 			{
-
-			}
-			break;
-
-			case SDL_EVENT_MOUSE_MOTION:
-			{
-
+				m_InputManager->HandleEvent(e);
 			}
 			break;
 

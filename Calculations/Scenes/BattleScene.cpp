@@ -2,6 +2,7 @@
 #include "BattleScene.h"
 #include <Graphics/Texture.h>
 #include <System/Services.h>
+#include <System/Input.h>
 #include <Gameplay/Enemies/ScalingEvilPlayer.h>
 #include <System/Collision.h>
 #include <System/SceneManager.h>
@@ -30,16 +31,15 @@ constexpr const float c_EnemyAttackAnimationLength = 1.0f;
 constexpr const float c_EnemyDyingAnimationLength = 1.0f;
 constexpr const float c_PlayerDyingAnimationLength = 1.0f;
 
-BattleScene::BattleScene(SceneManager& manager) : Scene(manager), m_Player(Services::GetPlayer())
+BattleScene::BattleScene(SceneManager& manager)
+	: Scene(manager),
+		m_Player(Services::GetPlayer())
 {
 	m_WindowSizeScalingX = 0.0f;
 	m_WindowSizeScalingY = 0.0f;
 	m_EnemyPseudoThinkingTime = 0.0f;
 
 	m_Enemy = nullptr;
-	m_LeftClickDown = false;
-	m_MouseX = -1;
-	m_MouseY = -1;
 
 	SDL_Window& window = Services::GetWindow();
 	m_WindowCenterX = 0;
@@ -51,6 +51,7 @@ BattleScene::BattleScene(SceneManager& manager) : Scene(manager), m_Player(Servi
 	m_BattleState = BATTLE_STATE::PLAYER_MOVE;
 	m_CanPickCard = true;
 
+	m_GoToShopButtonRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	m_CharacterDrawRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	m_EnemyDrawRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	m_SelectedCardDrawRects[0] = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
@@ -235,34 +236,8 @@ void BattleScene::SetupNewBattle()
 
 void BattleScene::HandleEvent(const SDL_Event& e)
 {
-	static int x = 5;
-	static int y = 5;
-
 	switch (e.type)
 	{
-	case SDL_EVENT_MOUSE_BUTTON_DOWN:
-	{
-		if (e.button.button == SDL_BUTTON_LEFT)
-		{
-			m_LeftClickDown = true;
-			m_MouseX = e.button.x;
-			m_MouseY = e.button.y;
-		}
-	}
-	break;
-
-	case SDL_EVENT_MOUSE_BUTTON_UP:
-	{
-		if (e.button.button == SDL_BUTTON_LEFT)
-		{
-			m_CanPickCard = true;
-			m_LeftClickDown = false;
-			m_MouseX = -1;
-			m_MouseY = -1;
-		}
-	}
-	break;
-
 	case SDL_EVENT_KEY_DOWN:
 	{
 		switch (e.key.key)
@@ -274,13 +249,6 @@ void BattleScene::HandleEvent(const SDL_Event& e)
 		case SDLK_KP_5: { m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION; m_Enemy->TakeDamage(10000); } break;
 		case SDLK_KP_6: { m_BattleState = BATTLE_STATE::PLAYER_DYING_ANIMATION;  m_Player.TakeDamage(10000);} break;
 		case SDLK_KP_7: { m_BattleState = BATTLE_STATE::BATTLE_END_SCREEN; } break;
-
-		case SDLK_G: { m_Player.IncreaseGold(1); } break;
-
-		case SDLK_O: { m_Enemy->Heal(1); } break;
-		case SDLK_P: { m_Enemy->TakeDamage(1); } break;
-		case SDLK_L: { m_Player.TakeDamage(1); } break;
-		case SDLK_K: { m_Player.Heal(1); } break;
 
 		default:
 			break;
@@ -312,6 +280,11 @@ void BattleScene::Update(const float& deltaTime)
 	m_WindowSizeScalingX = m_WindowWidth / TARGET_RESOLUTION_X;
 	m_WindowSizeScalingY = m_WindowHeight / TARGET_RESOLUTION_Y;
 
+	if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON) == false)
+	{
+		m_CanPickCard = true;
+	}
+
 	switch (m_BattleState)
 	{
 		case BattleScene::PLAYER_MOVE:
@@ -319,7 +292,7 @@ void BattleScene::Update(const float& deltaTime)
 			m_PlayerIdleAnimation->Update(deltaTime);
 			m_EnemyIdleAnimation->Update(deltaTime);
 
-			if (m_LeftClickDown && m_CanPickCard)
+			if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON) && m_CanPickCard)
 			{
 				CheckForClickCollisions();
 			}
@@ -444,13 +417,13 @@ void BattleScene::Update(const float& deltaTime)
 
 			if (m_Enemy->GetIsAlive() == false)
 			{
-				if (m_LeftClickDown)
+				if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
 				{
-					if (Collision::PointInRect(m_MouseX, m_MouseY, m_GoToShopButtonRect))
+					if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_GoToShopButtonRect))
 					{
 						m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_SHOP);
 					}
-					else if (Collision::PointInRect(m_MouseX, m_MouseY, m_ExitButtonRect))
+					else if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_ExitButtonRect))
 					{
 						m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAIN_MENU);
 					}
@@ -458,7 +431,7 @@ void BattleScene::Update(const float& deltaTime)
 			}
 			else
 			{
-				if (m_LeftClickDown)
+				if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
 				{
 					m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAIN_MENU);
 				}
@@ -475,13 +448,13 @@ void BattleScene::Update(const float& deltaTime)
 
 void BattleScene::CheckForClickCollisions()
 {
-	if (Collision::PointInRect(m_MouseX, m_MouseY, m_ClearEquationButtonRect))
+	if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_ClearEquationButtonRect))
 	{
 		ClearEquation();
 		return;
 	}
 
-	if (Collision::PointInRect(m_MouseX, m_MouseY, m_SubmitButtonRect))
+	if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_SubmitButtonRect))
 	{
 		if (CheckForValidEquation())
 		{
@@ -491,7 +464,7 @@ void BattleScene::CheckForClickCollisions()
 		return;
 	}
 
-	if (Collision::PointInRect(m_MouseX, m_MouseY, m_DiscardEquationButtonRect))
+	if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_DiscardEquationButtonRect))
 	{
 		if (CheckForValidEquation())
 		{
@@ -509,7 +482,7 @@ void BattleScene::CheckForClickCollisions()
 		if (foundClick)
 			break;
 
-		if (Collision::PointInRect(m_MouseX, m_MouseY, m_OperandHandDrawRects[i]))
+		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_OperandHandDrawRects[i]))
 		{
 			foundCard = m_Player.GetOperandHand()[i];
 			foundClick = true;
@@ -521,7 +494,7 @@ void BattleScene::CheckForClickCollisions()
 		if (foundClick)
 			break;
 
-		if (Collision::PointInRect(m_MouseX, m_MouseY, m_NumbersHandDrawRects[i]))
+		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_NumbersHandDrawRects[i]))
 		{
 			foundCard = m_Player.GetNumbersHand()[i];
 			foundClick = true;

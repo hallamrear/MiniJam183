@@ -5,6 +5,7 @@
 #include <Gameplay/Enemies/Enemy.h>
 
 class Animation;
+class Input;
 
 class BattleScene : public Scene
 {
@@ -59,10 +60,7 @@ private:
 	float m_WindowSizeScalingX;
 	float m_WindowSizeScalingY;
 
-	bool m_LeftClickDown;
 	bool m_CanPickCard;
-	int m_MouseX;
-	int m_MouseY;
 	float m_AnimationTimerElapsed;
 
 	void SetupNewBattle();

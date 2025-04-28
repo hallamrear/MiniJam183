@@ -18,6 +18,7 @@ Enemy::~Enemy()
 int Enemy::GetDamageRoll() const
 {
 	int minDamage = m_BaseDamage - m_RollRange;
+	minDamage = SDL_max(1, minDamage);
 	int maxDamage = m_BaseDamage + m_RollRange;
 	int range = maxDamage - minDamage + 1;
 	int roll = rand() % range + minDamage;

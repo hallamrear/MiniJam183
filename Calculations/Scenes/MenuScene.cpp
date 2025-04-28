@@ -2,6 +2,7 @@
 #include "MenuScene.h"
 #include <Graphics/Texture.h>
 #include <System/Services.h>
+#include <System/Input.h>
 #include <System/Collision.h>
 #include <Gameplay/Player/Player.h>
 #include <System/SceneManager.h>
@@ -42,29 +43,9 @@ void MenuScene::HandleEvent(const SDL_Event& e)
 {
 	switch (e.type)
 	{
-	case SDL_EVENT_MOUSE_BUTTON_DOWN:
-	{
-		if (e.button.button == SDL_BUTTON_LEFT)
-		{
-			int X = e.button.x;
-			int Y = e.button.y;
-			if (Collision::PointInRect(X, Y, m_PlayButtonRect))
-			{
-				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE);
-			}
-			else if (Collision::PointInRect(X, Y, m_ExitButtonRect))
-			{
-				SDL_Event event = { SDL_EVENT_QUIT };
-				SDL_PushEvent(&event);
-			}
-		}
-	}
-	break;
-
 	default:
 		break;
 	}
-
 }
 
 void MenuScene::OnExit()
@@ -92,6 +73,19 @@ void MenuScene::Update(const float& deltaTime)
 	m_PlayButtonRect.h = scaledHeight * 1.25;
 	m_PlayButtonRect.x = (width / 2) - (m_PlayButtonRect.w / 2);
 	m_PlayButtonRect.y = m_ExitButtonRect.y - m_PlayButtonRect.h - (c_ButtonSpacing / 2);
+
+	if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
+	{
+		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_PlayButtonRect))
+		{
+			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE);
+		}
+		else if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_ExitButtonRect))
+		{
+			SDL_Event event = { SDL_EVENT_QUIT };
+			SDL_PushEvent(&event);
+		}
+	}
 }
 
 void MenuScene::Render(SDL_Renderer& renderer) const
