@@ -215,11 +215,19 @@ void BattleScene::SetupNewBattle()
 {
 	m_BattleState = BATTLE_STATE::PLAYER_MOVE;
 
-	m_Enemy = new ScalingEvilPlayer();
 
 	ClearEquation();
 	m_Player.GetDeck().ResetDeck();
 	m_Player.EmptyHands();
+
+	if (m_Enemy != nullptr)
+	{
+		delete m_Enemy;
+		m_Enemy = nullptr;
+	}
+
+	m_Enemy = new ScalingEvilPlayer();
+	m_Enemy->DetermineAttributes(m_Player);
 
 	m_Player.DrawNumberCardsIntoHand(m_Player.GetNumbersHandSize());
 	m_Player.DrawOperandCardsIntoHand(m_Player.GetOperandHandSize());
@@ -562,7 +570,7 @@ void BattleScene::ApplyEquation()
 	}
 	else
 	{
-		m_Player.Heal(output);
+		m_Player.Heal(output * -1);
 	}
 
 	m_BattleState = BATTLE_STATE::PLAYER_ATTACK_ANIMATION;

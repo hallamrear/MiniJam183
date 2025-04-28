@@ -10,6 +10,9 @@ Enemy::Enemy()
 
 Enemy::~Enemy()
 {
+	m_BaseDamage = 0;
+	m_BonusDamage = 0;
+	m_RollRange = 0;
 }
 
 int Enemy::GetDamageRoll() const
@@ -23,6 +26,8 @@ int Enemy::GetDamageRoll() const
 
 void Enemy::DetermineAttributes(const Player& player)
 {
+	m_MaxHealth = INITIAL_ENTITY_HEALTH;
+	m_CurrentHealth = m_MaxHealth;
 	m_RollRange = INITIAL_ENEMY_ROLL_RANGE;
 	m_BaseDamage = INITIAL_ENEMY_BASE_DAMAGE;
 	m_BonusDamage = INITIAL_ENEMY_BONUS_DAMAGE;
