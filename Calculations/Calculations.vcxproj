@@ -200,13 +200,14 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Graphics\Animation.cpp" />
     <ClCompile Include="System\Collision.cpp" />
     <ClCompile Include="Gameplay\Cards\Card.cpp" />
     <ClCompile Include="Gameplay\Cards\Deck.cpp" />
     <ClCompile Include="Gameplay\Entity.cpp" />
     <ClCompile Include="Gameplay\Enemies\Enemy.cpp" />
     <ClCompile Include="Gameplay\Player\Player.cpp" />
-    <ClCompile Include="Gameplay\Enemies\Ghost.cpp" />
+    <ClCompile Include="Gameplay\Enemies\ScalingEvilPlayer.cpp" />
     <ClCompile Include="Gameplay\Cards\OperandCard.cpp" />
     <ClCompile Include="Gameplay\Cards\NumberCard.cpp" />
     <ClCompile Include="Scenes\MapScene.cpp" />
@@ -228,13 +229,14 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Graphics\Animation.h" />
     <ClInclude Include="System\Collision.h" />
     <ClInclude Include="Gameplay\Cards\Card.h" />
     <ClInclude Include="Gameplay\Cards\Deck.h" />
     <ClInclude Include="Gameplay\Entity.h" />
     <ClInclude Include="Gameplay\Enemies\Enemy.h" />
     <ClInclude Include="Gameplay\Player\Player.h" />
-    <ClInclude Include="Gameplay\Enemies\Ghost.h" />
+    <ClInclude Include="Gameplay\Enemies\ScalingEvilPlayer.h" />
     <ClInclude Include="Gameplay\Cards\OperandCard.h" />
     <ClInclude Include="Gameplay\Cards\NumberCard.h" />
     <ClInclude Include="Scenes\MapScene.h" />
@@ -312,7 +314,58 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\cat2.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Content\Enemy\Cross.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Enemy\Hurt.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Enemy\Idle.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Enemy\Jab.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Enemy\Katana_Sheathe.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Menu\Background.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Menu\ExitButton.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Menu\PlayButton.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\MissingCard.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Player\Cross.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Player\Hurt.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Player\Idle.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Player\Jab.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Player\Katana_Sheathe.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Screens\BattleScene_EnemyDied.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Screens\BattleScene_ExitToMenuButton.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Screens\BattleScene_GoToShopButton.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Screens\BattleScene_PlayerDied.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\TestNumberCard.png">

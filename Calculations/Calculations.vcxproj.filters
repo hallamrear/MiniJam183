@@ -57,7 +57,7 @@
     <ClCompile Include="Gameplay\Enemies\Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\Enemies\Ghost.cpp">
+    <ClCompile Include="Gameplay\Enemies\ScalingEvilPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Gameplay\Entity.cpp">
@@ -76,6 +76,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="System\Collision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -119,7 +122,7 @@
     <ClInclude Include="Gameplay\Enemies\Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\Enemies\Ghost.h">
+    <ClInclude Include="Gameplay\Enemies\ScalingEvilPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\Entity.h">
@@ -138,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="System\Collision.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -212,6 +218,57 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Cards\Numbers\50.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Menu\Background.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Menu\ExitButton.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Menu\PlayButton.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Player\Cross.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Player\Idle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Player\Jab.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Player\Katana_Sheathe.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Enemy\Cross.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Enemy\Hurt.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Enemy\Idle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Enemy\Jab.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Enemy\Katana_Sheathe.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Player\Hurt.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Screens\BattleScene_EnemyDied.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Screens\BattleScene_ExitToMenuButton.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Screens\BattleScene_GoToShopButton.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Screens\BattleScene_PlayerDied.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

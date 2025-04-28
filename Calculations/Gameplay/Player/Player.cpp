@@ -12,6 +12,7 @@ Player::Player()
     m_NumbersHandSize = 0;
     m_OperandHandSize = 0;
     m_GoldCount = 0;
+    m_WinCount = 0;
     m_Deck.ResetDeck();
 
     Texture::LoadPNG("Content/cat.png", m_Texture);
@@ -44,6 +45,7 @@ void Player::HardReset()
     m_GoldCount = INITIAL_PLAYER_GOLD;
     m_MaxHealth = INITIAL_PLAYER_HEALTH;
     m_CurrentHealth = m_MaxHealth;
+    m_WinCount = 0;
 }
 
 void Player::IncreaseNumbersHandSize(const int& count)

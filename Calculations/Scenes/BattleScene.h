@@ -4,6 +4,8 @@
 #include <Gameplay/Player/Player.h>
 #include <Gameplay/Enemies/Enemy.h>
 
+class Animation;
+
 class BattleScene : public Scene
 {
 private:
@@ -20,6 +22,16 @@ private:
 
 	NumberCard* m_SelectedNumbersForEquation[2];
 	OperandCard* m_SelectedOperandForEquation;
+	float m_EnemyPseudoThinkingTime;
+
+	Animation* m_PlayerIdleAnimation;
+	Animation* m_PlayerAttackAnimation[3];
+	Animation* m_ChosenAttackAnimation;
+	Animation* m_PlayerDeathAnimation;
+
+	Animation* m_EnemyIdleAnimation;
+	Animation* m_EnemyAttackAnimation;
+	Animation* m_EnemyDeathAnimation;
 
 	ProgressBar* m_PlayerHealthBar;
 	ProgressBar* m_EnemyHealthBar;
@@ -31,6 +43,9 @@ private:
 	SDL_Texture* m_MissingCardTexture;
 	SDL_Texture* m_PlayerDeathTextTexture;
 	SDL_Texture* m_EnemyDeathTextTexture;
+	SDL_Texture* m_DiscardButtonTexture;
+	SDL_Texture* m_SubmitButtonTexture;
+	SDL_Texture* m_ClearButtonTexture;
 
 	SDL_FRect m_SelectedCardDrawRects[3];
 	std::vector<SDL_FRect> m_OperandHandDrawRects;
@@ -51,7 +66,7 @@ private:
 	float m_AnimationTimerElapsed;
 
 	void SetupNewBattle();
-	void RenderCharacters(SDL_Renderer& renderer) const;
+	void RenderCharacterHealthBar(SDL_Renderer& renderer) const;
 	void RenderEquation(SDL_Renderer& renderer) const;
 	void RenderCardHands(SDL_Renderer& renderer) const;
 	void CalculateUpdatedDrawPositions(const float& deltaTime);
@@ -62,7 +77,7 @@ private:
 
 	void DiscardEquationCards();
 	void CheckForClickCollisions();
-	bool CheckForValidEquation();
+	bool CheckForValidEquation() const;
 	void AddCardToEquation(Card* card);
 	void ClearEquation();
 	void ApplyEquation();

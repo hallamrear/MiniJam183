@@ -16,6 +16,7 @@ private:
 	void RemoveNumbersCardFromHand(const NumberCard* card);
 
 	int m_GoldCount;
+	int m_WinCount;
 
 public:
 	Player();
@@ -28,6 +29,9 @@ public:
 
 	const int GetOperandHandSize() const;
 	const int GetNumbersHandSize() const;
+
+	void IncreaseWinCount(const int& count);
+	const int& GetWinCount() const;
 
 	void IncreaseNumbersHandSize(const int& count);
 	void IncreaseOperandsHandSize(const int& count);

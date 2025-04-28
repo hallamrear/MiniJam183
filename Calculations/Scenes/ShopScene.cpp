@@ -203,5 +203,6 @@ void ShopScene::Render(SDL_Renderer& renderer) const
 	SDL_RenderRect(&renderer, &m_ExitBattleButtonRect);
 	SDL_RenderDebugText(&renderer, m_ExitBattleButtonRect.x + 10, m_ExitBattleButtonRect.y + 10, "TO NEXT BATTLE");
 
-	SDL_RenderDebugText(&renderer, 64, 64, "SHOP SCENE");
+	SDL_RenderDebugTextFormat(&renderer, 10, 10, "Player Wins: %i", m_Player.GetWinCount());
+	SDL_RenderDebugTextFormat(&renderer, 10, 20, "Player Gold: %i", m_Player.GetGoldCount());
 }
