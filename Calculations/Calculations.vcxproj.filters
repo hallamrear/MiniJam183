@@ -271,5 +271,23 @@
     <Image Include="Content\Screens\BattleScene_PlayerDied.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Content\Buttons\ClearButton.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Buttons\DiscardButton.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Buttons\SubmitButton.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Enemy\Death.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Player\Death.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Promo\itch_cover_image.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

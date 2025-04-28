@@ -251,6 +251,15 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <ClInclude Include="Graphics\Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Content\Buttons\ClearButton.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Buttons\DiscardButton.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Buttons\SubmitButton.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\Cards\Numbers\1.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
@@ -317,6 +326,9 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\Enemy\Cross.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Content\Enemy\Death.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\Enemy\Hurt.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
@@ -344,6 +356,9 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\Player\Cross.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Content\Player\Death.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\Player\Hurt.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
@@ -354,6 +369,9 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\Player\Katana_Sheathe.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Promo\itch_cover_image.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\Screens\BattleScene_EnemyDied.png">
