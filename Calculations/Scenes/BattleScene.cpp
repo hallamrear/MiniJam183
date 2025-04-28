@@ -10,6 +10,8 @@
 
 constexpr const float c_AvatarDrawWidth = 256.0f;
 constexpr const float c_AvatarDrawHeight = 256.0f;
+constexpr const float c_TargetAnimationDrawWidth = 48.0f;
+constexpr const float c_TargetAnimationDrawHeight = 48.0f;
 constexpr const float c_NumbersCardDrawWidth = 128.0f;
 constexpr const float c_NumbersCardDrawHeight = 183.0f;
 constexpr const float c_OperandCardDrawWidth = c_NumbersCardDrawWidth / 2.0f;
@@ -243,7 +245,7 @@ void BattleScene::HandleEvent(const SDL_Event& e)
 		switch (e.key.key)
 		{
 		case SDLK_KP_1: { m_BattleState = BATTLE_STATE::PLAYER_MOVE;} break;
-		case SDLK_KP_2: { m_BattleState = BATTLE_STATE::PLAYER_ATTACK_ANIMATION;} break;
+		case SDLK_KP_2: { m_BattleState = BATTLE_STATE::PLAYER_ATTACK_ANIMATION; ChooseRandomPlayerAttackAnimation(); } break;
 		case SDLK_KP_3: { m_BattleState = BATTLE_STATE::ENEMY_MOVE;} break;
 		case SDLK_KP_4: { m_BattleState = BATTLE_STATE::ENEMY_ATTACK_ANIMATION; } break;
 		case SDLK_KP_5: { m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION; m_Enemy->TakeDamage(10000); } break;
@@ -548,12 +550,7 @@ void BattleScene::ApplyEquation()
 
 	m_BattleState = BATTLE_STATE::PLAYER_ATTACK_ANIMATION;
 
-	int index = rand() % 3;
-	if (m_PlayerAttackAnimation[index] != nullptr)
-	{
-		m_ChosenAttackAnimation = m_PlayerAttackAnimation[index];
-		m_ChosenAttackAnimation->Start();
-	}
+	ChooseRandomPlayerAttackAnimation();
 
 	m_Player.RemoveCardFromHand(m_SelectedNumbersForEquation[0]);
 	m_Player.RemoveCardFromHand(m_SelectedNumbersForEquation[1]);
@@ -567,6 +564,18 @@ void BattleScene::DiscardEquationCards()
 	m_Player.RemoveCardFromHand(m_SelectedOperandForEquation);
 
 	m_BattleState = BATTLE_STATE::ENEMY_MOVE;
+}
+
+void BattleScene::ChooseRandomPlayerAttackAnimation()
+{
+	m_ChosenAttackAnimation = nullptr;
+
+	int index = rand() % 3;
+	if (m_PlayerAttackAnimation[index] != nullptr)
+	{
+		m_ChosenAttackAnimation = m_PlayerAttackAnimation[index];
+		m_ChosenAttackAnimation->Start();
+	}
 }
 
 void BattleScene::ClearEquation()
@@ -688,23 +697,38 @@ void BattleScene::CalculateUpdatedAvatarDrawPositions(const float& deltaTime, co
 	const float scaledAvatarDrawWidth = c_AvatarDrawWidth * m_WindowSizeScalingX;
 	const float scaledAvatarDrawHeight = scaledAvatarDrawWidth * avatarDrawSizeRatio;
 
-	m_CharacterDrawRect.x = rootPositionX / 2 - (scaledAvatarDrawWidth / 2);
-	m_CharacterDrawRect.y = rootPositionY / 2 - (scaledAvatarDrawHeight / 2);
-	m_CharacterDrawRect.w = scaledAvatarDrawWidth;
-	m_CharacterDrawRect.h = scaledAvatarDrawHeight;
+	float drawCentreX = rootPositionX / 2;
+	float drawCentreY = rootPositionY / 2;
+	float animationScalingX = 1.0f;
+	float animationScalingY = 1.0f;
 
-	m_EnemyDrawRect.x = ((rootPositionX / 2) * 3) - (scaledAvatarDrawWidth / 2);
-	m_EnemyDrawRect.y = ((rootPositionY / 2)) - (scaledAvatarDrawHeight / 2);
-	m_EnemyDrawRect.w = scaledAvatarDrawWidth;
-	m_EnemyDrawRect.h = scaledAvatarDrawHeight;
+	if (m_BattleState == BATTLE_STATE::PLAYER_ATTACK_ANIMATION)
+	{
+		animationScalingX = m_ChosenAttackAnimation->GetFrameSizeX() / c_TargetAnimationDrawWidth;
+		animationScalingY = m_ChosenAttackAnimation->GetFrameSizeY() / c_TargetAnimationDrawHeight;
+	}
+
+	float targetDrawPositionX = drawCentreX - ((scaledAvatarDrawWidth * animationScalingX) / 2);
+	float targetDrawPositionY = drawCentreY - ((scaledAvatarDrawHeight * animationScalingY) / 2);
+
+	m_CharacterDrawRect.x = targetDrawPositionX;
+	m_CharacterDrawRect.y = targetDrawPositionY;
+	m_CharacterDrawRect.w = scaledAvatarDrawWidth * animationScalingX;
+	m_CharacterDrawRect.h = scaledAvatarDrawHeight * animationScalingY;
+
+	if (m_BattleState == BATTLE_STATE::ENEMY_ATTACK_ANIMATION)
+	{
+		animationScalingX = m_EnemyAttackAnimation->GetFrameSizeX() / c_TargetAnimationDrawWidth;
+		animationScalingY = m_EnemyAttackAnimation->GetFrameSizeY() / c_TargetAnimationDrawHeight;
+	}
 
 	if (m_PlayerHealthBar != nullptr)
 	{
 		SDL_FRect newRect = m_PlayerHealthBar->GetDimensions();
 		newRect.w = scaledAvatarDrawWidth;
-		newRect.h = scaledAvatarDrawWidth * 0.15f;
-		newRect.x = m_CharacterDrawRect.x + (scaledAvatarDrawWidth / 2) - (newRect.w / 2);
-		newRect.y = m_CharacterDrawRect.y + scaledAvatarDrawHeight + c_HealthBarGapFromAvatar;
+		newRect.h = newRect.w * 0.15f;
+		newRect.x = drawCentreX - ((scaledAvatarDrawWidth) / 2);
+		newRect.y = drawCentreY + ((scaledAvatarDrawHeight) / 2) + c_HealthBarGapFromAvatar;
 		m_PlayerHealthBar->SetDimensions(newRect);
 
 		float value = (float)m_Player.GetCurrentHealth() / (float)m_Player.GetMaxHealth();
@@ -712,13 +736,23 @@ void BattleScene::CalculateUpdatedAvatarDrawPositions(const float& deltaTime, co
 		m_PlayerHealthBar->Update(deltaTime);
 	}
 
+	drawCentreX = ((rootPositionX / 2) * 3);
+	drawCentreY = ((rootPositionY / 2) * 1);
+	targetDrawPositionX = drawCentreX - ((scaledAvatarDrawWidth * animationScalingX) / 2);
+	targetDrawPositionY = drawCentreY - ((scaledAvatarDrawHeight * animationScalingY) / 2);
+
+	m_EnemyDrawRect.x = targetDrawPositionX;
+	m_EnemyDrawRect.y = targetDrawPositionY;
+	m_EnemyDrawRect.w = scaledAvatarDrawWidth * animationScalingX;
+	m_EnemyDrawRect.h = scaledAvatarDrawHeight * animationScalingY;
+
 	if (m_EnemyHealthBar != nullptr && m_Enemy != nullptr)
 	{
 		SDL_FRect newRect = m_EnemyHealthBar->GetDimensions();
 		newRect.w = scaledAvatarDrawWidth;
-		newRect.h = scaledAvatarDrawWidth * 0.15f;
-		newRect.x = m_EnemyDrawRect.x + (scaledAvatarDrawWidth / 2) - (newRect.w / 2);
-		newRect.y = m_EnemyDrawRect.y + scaledAvatarDrawHeight + c_HealthBarGapFromAvatar;
+		newRect.h = newRect.w * 0.15f;
+		newRect.x = drawCentreX - ((scaledAvatarDrawWidth) / 2);
+		newRect.y = drawCentreY + ((scaledAvatarDrawHeight) / 2) + c_HealthBarGapFromAvatar;
 		m_EnemyHealthBar->SetDimensions(newRect);
 
 		float value = (float)m_Enemy->GetCurrentHealth() / (float)m_Enemy->GetMaxHealth();

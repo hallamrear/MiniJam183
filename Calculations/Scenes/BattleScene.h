@@ -72,6 +72,7 @@ private:
 	void CalculateCardHandDrawPositions(const float& deltaTime, const float& rootPositionX, const float& rootPositionY);
 	void CalculateSelectedCardRectPositions(const float& deltaTime, const float& rootPositionX, const float& rootPositionY);
 	void CalculateEquationButtonRectPositions(const float& deltaTime, const float& rootPositionX, const float& rootPositionY);
+	void ChooseRandomPlayerAttackAnimation();
 
 	void DiscardEquationCards();
 	void CheckForClickCollisions();
