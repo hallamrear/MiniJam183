@@ -40,11 +40,8 @@ constexpr const int		INITIAL_PLAYER_HEALTH = 30;
 constexpr const int		INITIAL_PLAYER_GOLD = 10;
 constexpr const int		INITIAL_PLAYER_NUMBER_HAND_SIZE = 6;
 constexpr const int		INITIAL_PLAYER_OPERAND_HAND_SIZE = 3;
-
-constexpr const int		INITIAL_PLAYER_NUMBER_HAND_SIZE = 5;
-constexpr const int		INITIAL_PLAYER_OPERAND_HAND_SIZE = 0;
-constexpr const int		INITIAL_ENEMY_ROLL_RANGE;
-constexpr const int		INITIAL_ENEMY_BASE_DAMAGE;
-constexpr const int		INITIAL_ENEMY_BONUS_DAMAGE;
+constexpr const int		INITIAL_ENEMY_ROLL_RANGE = 2;
+constexpr const int		INITIAL_ENEMY_BASE_DAMAGE = 5;
+constexpr const int		INITIAL_ENEMY_BONUS_DAMAGE = 1;
 
 #endif //PCH_H

@@ -91,7 +91,7 @@ void MenuScene::Update(const float& deltaTime)
 	m_PlayButtonRect.w = scaledWidth * 1.25;
 	m_PlayButtonRect.h = scaledHeight * 1.25;
 	m_PlayButtonRect.x = (width / 2) - (m_PlayButtonRect.w / 2);
-	m_PlayButtonRect.y = m_ExitButtonRect.y - m_PlayButtonRect.h - c_ButtonSpacing;
+	m_PlayButtonRect.y = m_ExitButtonRect.y - m_PlayButtonRect.h - (c_ButtonSpacing / 2);
 }
 
 void MenuScene::Render(SDL_Renderer& renderer) const

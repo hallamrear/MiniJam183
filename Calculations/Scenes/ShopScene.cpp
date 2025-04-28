@@ -182,13 +182,14 @@ void ShopScene::Render(SDL_Renderer& renderer) const
 
 	for (size_t i = 0; i < c_ShopSlotCountTotal; i++)
 	{
-		SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 0.0f, 0.0f, 1.0f);
+		SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 		SDL_RenderRect(&renderer, &m_ShopSlotRects[i]);
 	}
 
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_RenderRect(&renderer, &m_IncreaseOperandsHandButtonRect);
 	str = "Increase Operand Hand - Cost: " + std::to_string(m_IncreaseHandCost);
+	int y_pos = m_IncreaseOperandsHandButtonRect.y - m_IncreaseOperandsHandButtonRect.h / 2 + 4;
 	SDL_RenderDebugText(&renderer, m_IncreaseOperandsHandButtonRect.x + 10, m_IncreaseOperandsHandButtonRect.y + 10, str.c_str());
 
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);

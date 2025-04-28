@@ -333,6 +333,8 @@ void BattleScene::Update(const float& deltaTime)
 			{
 				if (m_Enemy->GetIsAlive() == false)
 				{
+					m_Player.IncreaseGold(m_Player.GetWinCount() + m_Enemy->GetDamageRoll());
+					m_Player.IncreaseWinCount(1);
 					m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION;
 					m_EnemyDeathAnimation->Start();
 				}
@@ -1013,7 +1015,7 @@ void BattleScene::RenderCardHands(SDL_Renderer& renderer) const
 		std::string str = std::to_string(numbersHand[i]->GetIntValue());
 
 		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetNumberCardTexture(numbersHand[i]->GetValue()), nullptr, &m_NumbersHandDrawRects[i]);
-		SDL_RenderDebugText(&renderer, m_NumbersHandDrawRects[i].x + m_NumbersHandDrawRects[i].w / 2 - 4, m_NumbersHandDrawRects[i].y + m_NumbersHandDrawRects[i].h / 2 - 4, str.c_str());
+		//SDL_RenderDebugText(&renderer, m_NumbersHandDrawRects[i].x + m_NumbersHandDrawRects[i].w / 2 - 4, m_NumbersHandDrawRects[i].y + m_NumbersHandDrawRects[i].h / 2 - 4, str.c_str());
 	}
 
 	const std::vector<OperandCard*>& operandHand = m_Player.GetOperandHand();
@@ -1037,6 +1039,6 @@ void BattleScene::RenderCardHands(SDL_Renderer& renderer) const
 		}
 
 		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetOperandCardTexture(type), nullptr, &m_OperandHandDrawRects[i]);
-		SDL_RenderDebugText(&renderer, m_OperandHandDrawRects[i].x + m_OperandHandDrawRects[i].w / 2 - 4, m_OperandHandDrawRects[i].y + m_OperandHandDrawRects[i].h / 2 - 4, str.c_str());
+		//SDL_RenderDebugText(&renderer, m_OperandHandDrawRects[i].x + m_OperandHandDrawRects[i].w / 2 - 4, m_OperandHandDrawRects[i].y + m_OperandHandDrawRects[i].h / 2 - 4, str.c_str());
 	}
 }

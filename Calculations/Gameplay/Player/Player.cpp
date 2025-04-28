@@ -75,6 +75,16 @@ const int& Player::GetGoldCount() const
     return m_GoldCount;
 }
 
+void Player::IncreaseWinCount(const int& count)
+{
+    m_WinCount += count;
+}
+
+const int& Player::GetWinCount() const
+{
+    return m_WinCount;
+}
+
 const void Player::IncreaseGold(const int& count)
 {
     m_GoldCount += count;
