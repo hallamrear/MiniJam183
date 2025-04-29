@@ -713,11 +713,13 @@ void BattleScene::CalculateUpdatedAvatarDrawPositions(const float& deltaTime, co
 
 	float targetDrawPositionX = drawCentreX - ((scaledAvatarDrawWidth * animationScalingX) / 2);
 	float targetDrawPositionY = drawCentreY - ((scaledAvatarDrawHeight * animationScalingY) / 2);
-
 	m_CharacterDrawRect.x = targetDrawPositionX;
 	m_CharacterDrawRect.y = targetDrawPositionY;
 	m_CharacterDrawRect.w = scaledAvatarDrawWidth * animationScalingX;
 	m_CharacterDrawRect.h = scaledAvatarDrawHeight * animationScalingY;
+
+	animationScalingX = 1.0f;
+	animationScalingY = 1.0f;
 
 	if (m_BattleState == BATTLE_STATE::ENEMY_ATTACK_ANIMATION)
 	{

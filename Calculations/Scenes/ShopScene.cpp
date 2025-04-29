@@ -45,7 +45,6 @@ ShopScene::~ShopScene()
 
 void ShopScene::OnEnter()
 {
-	m_IncreaseHandCost = 3;
 	RegenerateShop();
 }
 
@@ -65,6 +64,8 @@ void ShopScene::OnExit()
 
 void ShopScene::RegenerateShop()
 {
+	m_IncreaseHandCost = 3;
+
 	for (size_t i = 0; i < c_ShopSlotCountTotal; i++)
 	{
 		m_ShopItems[i].Reset();
@@ -93,6 +94,35 @@ void ShopScene::CheckButtonClicks()
 {
 	if (m_CanClickButtons && m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
 	{
+		for (size_t i = 0; i < c_ShopSlotCountTotal; i++)
+		{
+			if (m_ShopItems[i].HasBeenPurchased() == false)
+			{
+				if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_ShopSlotRects[i]))
+				{
+					int cost = 5;
+					if (m_ShopItems[i].IsNumberCard())
+					{
+						cost = m_ShopItems[i].GetGeneratedNumberCard().GetIntValue();
+					}
+
+					if (m_Player.GetGoldCount() - cost >= 0)
+					{
+						m_ShopItems[i].SetPurchased(true);
+						m_Player.DecreaseGold(cost);
+						if (m_ShopItems[i].IsNumberCard())
+						{
+							m_Player.GetDeck().AddCard(m_ShopItems[i].GetGeneratedNumberCard());
+						}
+						else
+						{
+							m_Player.GetDeck().AddCard(m_ShopItems[i].GetGeneratedOperandCard());
+						}
+					}
+				}
+			}	
+		}
+
 		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_IncreaseNumbersHandButtonRect))
 		{
 			if (m_Player.GetGoldCount() - m_IncreaseHandCost > 0)
@@ -226,6 +256,7 @@ void ShopScene::Render(SDL_Renderer& renderer) const
 
 	SDL_RenderDebugTextFormat(&renderer, 10, 10, "Player Wins: %i", m_Player.GetWinCount());
 	SDL_RenderDebugTextFormat(&renderer, 10, 20, "Player Gold: %i", m_Player.GetGoldCount());
+	SDL_RenderDebugTextFormat(&renderer, 10, 30, "Operands cost 10 gold each and Numbers cost their respective value.");
 }
 
 ShopItem::ShopItem()
