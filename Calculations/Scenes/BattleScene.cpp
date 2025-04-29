@@ -30,8 +30,8 @@ constexpr const float c_ButtonWidth = 256.0f;
 constexpr const float c_ButtonHeight = 64.0f;
 constexpr const float c_PlayerAttackAnimationLength = 1.0f;
 constexpr const float c_EnemyAttackAnimationLength = 1.0f;
-constexpr const float c_EnemyDyingAnimationLength = 1.0f;
-constexpr const float c_PlayerDyingAnimationLength = 1.0f;
+constexpr const float c_EnemyDyingAnimationLength = 2.5f;
+constexpr const float c_PlayerDyingAnimationLength = 2.5f;
 
 BattleScene::BattleScene(SceneManager& manager)
 	: Scene(manager),
@@ -220,7 +220,7 @@ void BattleScene::SetupNewBattle()
 
 
 	ClearEquation();
-	m_Player.GetDeck().ResetDeck();
+	m_Player.GetDeck().RestoreDiscardedCards();
 	m_Player.EmptyHands();
 
 	if (m_Enemy != nullptr)
@@ -771,7 +771,8 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 
 	SDL_RenderDebugTextFormat(&renderer, 10, 30, "Numbers: %i Operands: %i", (int)m_Player.GetNumbersHand().size(), (int)m_Player.GetOperandHand().size());
-	
+	SDL_RenderDebugTextFormat(&renderer, 10, 40, "Enemy Health : %i / %i", m_Enemy->GetCurrentHealth(), m_Enemy->GetMaxHealth());
+
 	/*int splitCount = 4;
 	int splitX = m_WindowWidth / splitCount;
 	int splitY = m_WindowHeight / splitCount;
@@ -1004,10 +1005,7 @@ void BattleScene::AddCardToEquation(Card* card)
 
 	default:
 		break;
-	}
-	
-
-	
+	}	
 }
 
 void BattleScene::RenderCharacterHealthBar(SDL_Renderer& renderer) const

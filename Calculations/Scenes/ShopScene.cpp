@@ -28,7 +28,7 @@ ShopScene::ShopScene(SceneManager& manager) : Scene(manager), m_Player(Services:
 	m_WindowCentreX = 0;
 	m_WindowCentreY = 0;
 	m_IncreaseHandCost = 0;
-	m_CanClickButtons = true;
+	m_CanClickButtons = false;
 
 	m_CardBoughtTexture = nullptr;
 	Texture::LoadPNG("Content/Shop/PurchasedCardOverlay.png", m_CardBoughtTexture);
@@ -64,6 +64,7 @@ void ShopScene::OnExit()
 
 void ShopScene::RegenerateShop()
 {
+	m_CanClickButtons = false;
 	m_IncreaseHandCost = 3;
 
 	for (size_t i = 0; i < c_ShopSlotCountTotal; i++)
@@ -75,7 +76,7 @@ void ShopScene::RegenerateShop()
 
 void ShopScene::Update(const float& deltaTime)
 {
-	if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
+	if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON) == false)
 	{
 		m_CanClickButtons = true;
 	}
@@ -125,7 +126,7 @@ void ShopScene::CheckButtonClicks()
 
 		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_IncreaseNumbersHandButtonRect))
 		{
-			if (m_Player.GetGoldCount() - m_IncreaseHandCost > 0)
+			if (m_Player.GetGoldCount() - m_IncreaseHandCost >= 0)
 			{
 				m_Player.DecreaseGold(m_IncreaseHandCost);
 				m_Player.IncreaseNumbersHandSize(1);
@@ -136,7 +137,7 @@ void ShopScene::CheckButtonClicks()
 		}
 		else if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_IncreaseOperandsHandButtonRect))
 		{
-			if (m_Player.GetGoldCount() - m_IncreaseHandCost > 0)
+			if (m_Player.GetGoldCount() - m_IncreaseHandCost >= 0)
 			{
 				m_Player.DecreaseGold(m_IncreaseHandCost);
 				m_Player.IncreaseOperandsHandSize(1);

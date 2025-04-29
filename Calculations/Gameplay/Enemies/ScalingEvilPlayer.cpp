@@ -15,7 +15,7 @@ ScalingEvilPlayer::~ScalingEvilPlayer()
 
 void ScalingEvilPlayer::DetermineAttributes(const Player& player)
 {
-	m_MaxHealth =  (player.GetWinCount() + 1) * INITIAL_ENTITY_HEALTH;
+	m_MaxHealth =  ((player.GetWinCount()) * 5) + INITIAL_ENTITY_HEALTH;
 	m_CurrentHealth = m_MaxHealth;
 	m_BaseDamage = 3 * (player.GetWinCount() + 1);
 	m_RollRange = SDL_max(10 - player.GetWinCount() + player.GetGoldCount(), 1);
