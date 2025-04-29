@@ -104,14 +104,14 @@ BattleScene::BattleScene(SceneManager& manager)
 	m_PlayerAttackAnimation[2] = nullptr;
 	m_PlayerAttackAnimation[2] = new Animation("Content/Player/Katana_Sheathe.png", 1, 10, c_PlayerAttackAnimationLength, false);
 	m_PlayerDeathAnimation = nullptr;
-	m_PlayerDeathAnimation = new Animation("Content/Player/Death.png", 1, 12, c_PlayerDyingAnimationLength, false);
+	m_PlayerDeathAnimation = new Animation("Content/Player/Death.png", 1, 17, c_PlayerDyingAnimationLength, false);
 
 	m_EnemyIdleAnimation = nullptr;
 	m_EnemyIdleAnimation = new Animation("Content/Enemy/Idle.png", 1, 10, 1.0f, true);
 	m_EnemyAttackAnimation = nullptr;
 	m_EnemyAttackAnimation = new Animation("Content/Enemy/Cross.png", 1, 7, c_EnemyAttackAnimationLength, false);
 	m_EnemyDeathAnimation = nullptr;
-	m_EnemyDeathAnimation = new Animation("Content/Enemy/Death.png", 1, 12, c_EnemyDyingAnimationLength, false);
+	m_EnemyDeathAnimation = new Animation("Content/Enemy/Death.png", 1, 17, c_EnemyDyingAnimationLength, false);
 }
 
 BattleScene::~BattleScene()
