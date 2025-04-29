@@ -245,12 +245,15 @@ void BattleScene::HandleEvent(const SDL_Event& e)
 		switch (e.key.key)
 		{
 		case SDLK_KP_1: { m_BattleState = BATTLE_STATE::PLAYER_MOVE;} break;
-		case SDLK_KP_2: { m_BattleState = BATTLE_STATE::PLAYER_ATTACK_ANIMATION; ChooseRandomPlayerAttackAnimation(); } break;
-		case SDLK_KP_3: { m_BattleState = BATTLE_STATE::ENEMY_MOVE;} break;
-		case SDLK_KP_4: { m_BattleState = BATTLE_STATE::ENEMY_ATTACK_ANIMATION; } break;
-		case SDLK_KP_5: { m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION; m_Enemy->TakeDamage(10000); } break;
-		case SDLK_KP_6: { m_BattleState = BATTLE_STATE::PLAYER_DYING_ANIMATION;  m_Player.TakeDamage(10000);} break;
-		case SDLK_KP_7: { m_BattleState = BATTLE_STATE::BATTLE_END_SCREEN; } break;
+		case SDLK_KP_2: { m_BattleState = BATTLE_STATE::ENEMY_MOVE; } break;
+
+		case SDLK_KP_4: { m_BattleState = BATTLE_STATE::PLAYER_ATTACK_ANIMATION; ChooseRandomPlayerAttackAnimation(); } break;
+		case SDLK_KP_5: { m_BattleState = BATTLE_STATE::PLAYER_DYING_ANIMATION; } break;
+		case SDLK_KP_6: { m_BattleState = BATTLE_STATE::BATTLE_END_SCREEN;  m_Player.TakeDamage(10000); } break;
+
+		case SDLK_KP_7: { m_BattleState = BATTLE_STATE::ENEMY_ATTACK_ANIMATION; } break;
+		case SDLK_KP_8: { m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION; } break;
+		case SDLK_KP_9: { m_BattleState = BATTLE_STATE::BATTLE_END_SCREEN; m_Enemy->TakeDamage(10000); } break;
 
 		default:
 			break;
