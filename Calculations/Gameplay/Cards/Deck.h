@@ -30,6 +30,9 @@ public:
 	void ShuffleNumbersCards();
 	void ShuffleOperandCards();
 
+	void AddCard(const NumberCard& card);
+	void AddCard(const OperandCard& card);
+
 	void ClearDeck();
 	void ResetDeck();
 	void RestoreDiscardedOperands();

@@ -6,6 +6,10 @@ enum CARD_TYPE
 	NUMBER_CARD
 };
 
+constexpr const float c_CardWidth = 128.0f;
+constexpr const float c_CardHeight = 183.0f;
+constexpr const float c_CardDrawSizeRatio = c_CardHeight / c_CardWidth;
+
 class Card
 {
 protected:

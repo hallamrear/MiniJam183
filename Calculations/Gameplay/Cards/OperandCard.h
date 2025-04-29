@@ -15,6 +15,7 @@ private:
 	OPERAND_TYPE m_OperandType;
 
 public:
+	OperandCard();
 	OperandCard(const OPERAND_TYPE& type);
 	~OperandCard();
 

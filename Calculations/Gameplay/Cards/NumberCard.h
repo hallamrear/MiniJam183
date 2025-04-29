@@ -20,12 +20,18 @@ enum NUMBER_CARD_VALUE
 	FIFTY = 50,
 };
 
+/// <summary>
+/// A large number card is any card value > 10
+/// </summary>
+constexpr const int c_LargeNumberCardCount = 5;
+
 class NumberCard : public Card
 {
 private:
 	NUMBER_CARD_VALUE m_Value;
 
 public:
+	NumberCard();
 	NumberCard(const NUMBER_CARD_VALUE& value);
 	~NumberCard();
 

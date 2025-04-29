@@ -5,6 +5,10 @@
 #include <Gameplay/Player/Player.h>
 #include <System/SceneManager.h>
 #include <System/Input.h>
+#include <Graphics/Texture.h>
+
+constexpr const int c_LargeCardRollChance = 25;
+constexpr const int c_NumberCardRollChance = 70;
 
 ShopScene::ShopScene(SceneManager& manager) : Scene(manager), m_Player(Services::GetPlayer())
 {
@@ -16,6 +20,7 @@ ShopScene::ShopScene(SceneManager& manager) : Scene(manager), m_Player(Services:
 	for (size_t i = 0; i < c_ShopSlotCountTotal; i++)
 	{
 		m_ShopSlotRects[i] = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
+		m_ShopItems[i] = ShopItem();
 	}
 
 	m_WindowWidth = 0;
@@ -24,14 +29,23 @@ ShopScene::ShopScene(SceneManager& manager) : Scene(manager), m_Player(Services:
 	m_WindowCentreY = 0;
 	m_IncreaseHandCost = 0;
 	m_CanClickButtons = true;
+
+	m_CardBoughtTexture = nullptr;
+	Texture::LoadPNG("Content/Shop/PurchasedCardOverlay.png", m_CardBoughtTexture);
 }
 
 ShopScene::~ShopScene()
 {
+	if (m_CardBoughtTexture != nullptr)
+	{
+		SDL_DestroyTexture(m_CardBoughtTexture);
+		m_CardBoughtTexture = nullptr;
+	}
 }
 
 void ShopScene::OnEnter()
 {
+	m_IncreaseHandCost = 3;
 	RegenerateShop();
 }
 
@@ -51,7 +65,11 @@ void ShopScene::OnExit()
 
 void ShopScene::RegenerateShop()
 {
-	m_IncreaseHandCost = 3;
+	for (size_t i = 0; i < c_ShopSlotCountTotal; i++)
+	{
+		m_ShopItems[i].Reset();
+		m_ShopItems[i].GenerateRandomItem();
+	}
 }
 
 void ShopScene::Update(const float& deltaTime)
@@ -106,22 +124,32 @@ void ShopScene::CheckButtonClicks()
 
 void ShopScene::CalculateShopRects()
 {
+	const float windowScaling = m_WindowWidth / TARGET_RESOLUTION_X;
+	const float c_ShopSlotSpacingX = 16.0f;
+	const float c_ShopSlotSpacingY = 16.0f;
+
 	m_ShopCentreRect.w = (m_WindowWidth / 3) * 2;
 	m_ShopCentreRect.h = (m_WindowHeight / 3) * 2;
 	m_ShopCentreRect.x = m_WindowCentreX - (m_ShopCentreRect.w / 2);
 	m_ShopCentreRect.y = m_WindowCentreY - (m_ShopCentreRect.h / 2);
 
-	const float slotWidth = m_ShopCentreRect.w / c_ShopSlotCountX;
-	const float slotHeight = m_ShopCentreRect.h / c_ShopSlotCountY;
+	const float fullSlotWidth =  (m_ShopCentreRect.w - (2 * c_ShopSlotSpacingX)) / c_ShopSlotCountX;
+	const float fullSlotHeight = (m_ShopCentreRect.h - (2 * c_ShopSlotSpacingY)) / c_ShopSlotCountY;
+	const float fullSlotRatio = fullSlotHeight / fullSlotWidth;
 
 	for (size_t i = 0; i < c_ShopSlotCountX; i++)
 	{
 		for (size_t j = 0; j < c_ShopSlotCountY; j++)
 		{
-			m_ShopSlotRects[(j * c_ShopSlotCountX) + i].w = slotWidth;
-			m_ShopSlotRects[(j * c_ShopSlotCountX) + i].h = slotHeight;
-			m_ShopSlotRects[(j * c_ShopSlotCountX) + i].x = m_ShopCentreRect.x + (i * slotWidth);
-			m_ShopSlotRects[(j * c_ShopSlotCountX) + i].y = m_ShopCentreRect.y + (j * slotHeight);
+			const float fullSlotPosX = m_ShopCentreRect.x + (i * fullSlotWidth) + (i * c_ShopSlotSpacingX);
+			const float fullSlotPosY = m_ShopCentreRect.y + (j * fullSlotHeight) + (j * c_ShopSlotSpacingY);
+			const float scaledCardWidth = ((fullSlotWidth / 3) * 2) * fullSlotRatio;
+			const float scaledCardHeight = scaledCardWidth * c_CardDrawSizeRatio;
+
+			m_ShopSlotRects[(j * c_ShopSlotCountX) + i].w = scaledCardWidth;
+			m_ShopSlotRects[(j * c_ShopSlotCountX) + i].h = scaledCardHeight;
+			m_ShopSlotRects[(j * c_ShopSlotCountX) + i].x = fullSlotPosX + (scaledCardWidth) - c_ShopSlotSpacingX;
+			m_ShopSlotRects[(j * c_ShopSlotCountX) + i].y = fullSlotPosY;
 		}
 	}
 }
@@ -162,6 +190,20 @@ void ShopScene::Render(SDL_Renderer& renderer) const
 	{
 		SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 		SDL_RenderRect(&renderer, &m_ShopSlotRects[i]);
+
+		if (m_ShopItems[i].IsNumberCard())
+		{
+			SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetNumberCardTexture(m_ShopItems[i].GetGeneratedNumberCard().GetValue()), nullptr, &m_ShopSlotRects[i]);
+		}
+		else
+		{
+			SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetOperandCardTexture(m_ShopItems[i].GetGeneratedOperandCard().GetOperand()), nullptr, &m_ShopSlotRects[i]);
+		}
+
+		if (m_ShopItems[i].HasBeenPurchased())
+		{
+			SDL_RenderTexture(&renderer, m_CardBoughtTexture, nullptr, &m_ShopSlotRects[i]);
+		}
 	}
 
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -184,4 +226,89 @@ void ShopScene::Render(SDL_Renderer& renderer) const
 
 	SDL_RenderDebugTextFormat(&renderer, 10, 10, "Player Wins: %i", m_Player.GetWinCount());
 	SDL_RenderDebugTextFormat(&renderer, 10, 20, "Player Gold: %i", m_Player.GetGoldCount());
+}
+
+ShopItem::ShopItem()
+{
+	m_HasBeenPurchased = false;
+	m_UseNumberCard = true;
+	m_OperandCard = OperandCard(OPERAND_TYPE::ADDITION);
+	m_NumberCard = NumberCard(NUMBER_CARD_VALUE::ONE);
+}
+
+ShopItem::~ShopItem()
+{
+
+}
+
+void ShopItem::SetIsNumberCard(const bool& state)
+{
+	m_UseNumberCard = state;
+}
+
+const bool& ShopItem::IsNumberCard() const
+{
+	return m_UseNumberCard;
+}
+
+const bool& ShopItem::HasBeenPurchased() const
+{
+	return m_HasBeenPurchased;
+}
+
+void ShopItem::SetPurchased(const bool& state)
+{
+	m_HasBeenPurchased = state;
+}
+
+void ShopItem::GenerateRandomItem()
+{
+	OPERAND_TYPE opType = (OPERAND_TYPE)(rand() % 4);
+	m_OperandCard = OperandCard(opType);
+
+	bool isLargeNumberCard = (rand() % 100) > (100 - c_LargeCardRollChance);
+
+	NUMBER_CARD_VALUE numValue = NUMBER_CARD_VALUE::ONE;
+
+	if (isLargeNumberCard)
+	{
+		int index = rand() % c_LargeNumberCardCount;
+
+		switch (index)
+		{
+		case 0: { numValue = NUMBER_CARD_VALUE::TWELVE; } break;
+		case 1: { numValue = NUMBER_CARD_VALUE::FIFTEEN; } break;
+		case 2: { numValue = NUMBER_CARD_VALUE::EIGHTEEN; } break;
+		case 3: { numValue = NUMBER_CARD_VALUE::TWENTY; } break;
+		case 4: { numValue = NUMBER_CARD_VALUE::FIFTY; } break;
+
+		default:
+			break;
+		}
+	}
+	else
+	{
+		numValue = NUMBER_CARD_VALUE(rand() % 10 + 1);
+	}
+
+	m_NumberCard = NumberCard(numValue);
+
+	bool isNumberCard = (rand() % 100) < c_NumberCardRollChance;
+	SetIsNumberCard(isNumberCard);
+}
+
+void ShopItem::Reset()
+{
+	SetPurchased(false);
+	SetIsNumberCard(true);
+}
+
+const OperandCard& ShopItem::GetGeneratedOperandCard() const
+{
+	return m_OperandCard;
+}
+
+const NumberCard& ShopItem::GetGeneratedNumberCard() const
+{
+	return m_NumberCard;
 }

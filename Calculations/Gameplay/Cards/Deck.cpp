@@ -98,7 +98,6 @@ Deck::Deck()
 Deck::~Deck()
 {
 	ClearDeck();
-
 	DestroyTextures();
 }
 
@@ -148,6 +147,16 @@ void Deck::ShuffleOperandCards()
 	std::shuffle(m_HeldOperands.begin(), m_HeldOperands.end(), std::default_random_engine(now));
 }
 
+void Deck::AddCard(const NumberCard& card)
+{
+	m_HeldNumbers.push_front(card);
+}
+
+void Deck::AddCard(const OperandCard& card)
+{
+	m_HeldOperands.push_front(card);
+}
+
 void Deck::ShuffleNumbersCards()
 {
 	unsigned long now = time(nullptr);
@@ -156,9 +165,10 @@ void Deck::ShuffleNumbersCards()
 
 void Deck::ClearDeck()
 {
-	//Clear existing cards.
+	//Put all discard cards into use.
 	RestoreDiscardedCards();
 	
+	//Clear everything.
 	while (!m_HeldOperands.empty())
 	{
 		m_HeldOperands.pop_front();
@@ -232,7 +242,6 @@ void Deck::RestoreDiscardedCards()
 	RestoreDiscardedNumbers();
 	RestoreDiscardedOperands();	
 }
-
 
 SDL_Texture& Deck::GetNumberCardTexture(const NUMBER_CARD_VALUE& value) const
 {
