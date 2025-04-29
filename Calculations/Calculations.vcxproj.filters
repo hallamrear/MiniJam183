@@ -295,5 +295,8 @@
     <Image Include="Content\Promo\itch_cover_image.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Content\Shop\PurchasedCardOverlay.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -388,6 +388,9 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\Screens\BattleScene_PlayerDied.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Content\Shop\PurchasedCardOverlay.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\TestNumberCard.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
