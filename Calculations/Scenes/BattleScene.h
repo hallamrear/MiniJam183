@@ -26,11 +26,13 @@ private:
 	float m_EnemyPseudoThinkingTime;
 
 	Animation* m_PlayerIdleAnimation;
+	Animation* m_PlayerHurtAnimation;
 	Animation* m_PlayerAttackAnimation[3];
 	Animation* m_ChosenAttackAnimation;
 	Animation* m_PlayerDeathAnimation;
 
 	Animation* m_EnemyIdleAnimation;
+	Animation* m_EnemyHurtAnimation;
 	Animation* m_EnemyAttackAnimation;
 	Animation* m_EnemyDeathAnimation;
 
@@ -57,6 +59,7 @@ private:
 	int m_WindowCenterY = 0;
 	int m_WindowHeight = 0;
 	int m_WindowWidth = 0;
+	int m_LastDamageRoll = 0;
 	float m_WindowSizeScalingX;
 	float m_WindowSizeScalingY;
 

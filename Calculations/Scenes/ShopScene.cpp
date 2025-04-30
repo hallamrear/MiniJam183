@@ -27,7 +27,8 @@ ShopScene::ShopScene(SceneManager& manager) : Scene(manager), m_Player(Services:
 	m_WindowHeight = 0;
 	m_WindowCentreX = 0;
 	m_WindowCentreY = 0;
-	m_IncreaseHandCost = 0;
+	m_IncreaseNumbersHandCost = 0;
+	m_IncreaseOperandHandCost = 0;
 	m_CanClickButtons = false;
 
 	m_CardBoughtTexture = nullptr;
@@ -65,7 +66,8 @@ void ShopScene::OnExit()
 void ShopScene::RegenerateShop()
 {
 	m_CanClickButtons = false;
-	m_IncreaseHandCost = 3;
+	m_IncreaseNumbersHandCost = m_Player.GetNumbersHandSize();
+	m_IncreaseOperandHandCost = m_Player.GetOperandHandSize();
 
 	for (size_t i = 0; i < c_ShopSlotCountTotal; i++)
 	{
@@ -126,22 +128,22 @@ void ShopScene::CheckButtonClicks()
 
 		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_IncreaseNumbersHandButtonRect))
 		{
-			if (m_Player.GetGoldCount() - m_IncreaseHandCost >= 0)
+			if (m_Player.GetGoldCount() - m_IncreaseNumbersHandCost >= 0)
 			{
-				m_Player.DecreaseGold(m_IncreaseHandCost);
+				m_Player.DecreaseGold(m_IncreaseNumbersHandCost);
 				m_Player.IncreaseNumbersHandSize(1);
-				m_IncreaseHandCost += 3;
+				m_IncreaseNumbersHandCost = m_Player.GetNumbersHandSize();
 			}
 
 			m_CanClickButtons = false;
 		}
 		else if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_IncreaseOperandsHandButtonRect))
 		{
-			if (m_Player.GetGoldCount() - m_IncreaseHandCost >= 0)
+			if (m_Player.GetGoldCount() - m_IncreaseOperandHandCost >= 0)
 			{
-				m_Player.DecreaseGold(m_IncreaseHandCost);
+				m_Player.DecreaseGold(m_IncreaseOperandHandCost);
 				m_Player.IncreaseOperandsHandSize(1);
-				m_IncreaseHandCost += 3;
+				m_IncreaseOperandHandCost = m_Player.GetOperandHandSize();
 			}
 
 			m_CanClickButtons = false;
@@ -216,6 +218,9 @@ void ShopScene::Render(SDL_Renderer& renderer) const
 	std::string str = "";
 
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
+	#ifdef _DEBUG
+		SDL_RenderDebugText(&renderer, 10, 10, "SCENE_IDENTIFIER::SHOP_SCENE");
+	#endif
 
 	for (size_t i = 0; i < c_ShopSlotCountTotal; i++)
 	{
@@ -239,13 +244,13 @@ void ShopScene::Render(SDL_Renderer& renderer) const
 
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_RenderRect(&renderer, &m_IncreaseOperandsHandButtonRect);
-	str = "Increase Operand Hand - Cost: " + std::to_string(m_IncreaseHandCost);
+	str = "Increase Operand Hand - Cost: " + std::to_string(m_IncreaseOperandHandCost);
 	int y_pos = m_IncreaseOperandsHandButtonRect.y - m_IncreaseOperandsHandButtonRect.h / 2 + 4;
 	SDL_RenderDebugText(&renderer, m_IncreaseOperandsHandButtonRect.x + 10, m_IncreaseOperandsHandButtonRect.y + 10, str.c_str());
 
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_RenderRect(&renderer, &m_IncreaseNumbersHandButtonRect);
-	str = "Increase Numbers Hand - Cost: " + std::to_string(m_IncreaseHandCost);
+	str = "Increase Numbers Hand - Cost: " + std::to_string(m_IncreaseNumbersHandCost);
 	SDL_RenderDebugText(&renderer, m_IncreaseNumbersHandButtonRect.x + 10, m_IncreaseNumbersHandButtonRect.y + 10, str.c_str());
 
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -255,9 +260,10 @@ void ShopScene::Render(SDL_Renderer& renderer) const
 	SDL_RenderRect(&renderer, &m_ExitBattleButtonRect);
 	SDL_RenderDebugText(&renderer, m_ExitBattleButtonRect.x + 10, m_ExitBattleButtonRect.y + 10, "TO NEXT BATTLE");
 
-	SDL_RenderDebugTextFormat(&renderer, 10, 10, "Player Wins: %i", m_Player.GetWinCount());
-	SDL_RenderDebugTextFormat(&renderer, 10, 20, "Player Gold: %i", m_Player.GetGoldCount());
-	SDL_RenderDebugTextFormat(&renderer, 10, 30, "Operands cost 10 gold each and Numbers cost their respective value.");
+
+	SDL_RenderDebugTextFormat(&renderer, 10, 20, "Player Wins: %i", m_Player.GetWinCount());
+	SDL_RenderDebugTextFormat(&renderer, 10, 30, "Player Gold: %i", m_Player.GetGoldCount());
+	SDL_RenderDebugTextFormat(&renderer, 10, 40, "Operands cost 5 gold each and Numbers cost their respective value.");
 }
 
 ShopItem::ShopItem()

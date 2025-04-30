@@ -32,6 +32,7 @@ constexpr const float c_PlayerAttackAnimationLength = 1.0f;
 constexpr const float c_EnemyAttackAnimationLength = 1.0f;
 constexpr const float c_EnemyDyingAnimationLength = 2.5f;
 constexpr const float c_PlayerDyingAnimationLength = 2.5f;
+constexpr const float c_MaxEnemyPseudoThinkingTime = 3.0f;
 
 BattleScene::BattleScene(SceneManager& manager)
 	: Scene(manager),
@@ -48,6 +49,7 @@ BattleScene::BattleScene(SceneManager& manager)
 	m_WindowCenterY = 0;
 	m_WindowWidth = 0;
 	m_WindowHeight = 0;
+	m_LastDamageRoll = 0;
 
 	m_AnimationTimerElapsed = 0.0f;
 	m_BattleState = BATTLE_STATE::PLAYER_MOVE;
@@ -105,13 +107,18 @@ BattleScene::BattleScene(SceneManager& manager)
 	m_PlayerAttackAnimation[2] = new Animation("Content/Player/Katana_Sheathe.png", 1, 10, c_PlayerAttackAnimationLength, false);
 	m_PlayerDeathAnimation = nullptr;
 	m_PlayerDeathAnimation = new Animation("Content/Player/Death.png", 1, 17, c_PlayerDyingAnimationLength, false);
+	m_PlayerHurtAnimation = nullptr;
+	m_PlayerHurtAnimation = new Animation("Content/Player/Hurt.png", 1, 8, c_EnemyAttackAnimationLength, false);
+
 
 	m_EnemyIdleAnimation = nullptr;
 	m_EnemyIdleAnimation = new Animation("Content/Enemy/Idle.png", 1, 10, 1.0f, true);
 	m_EnemyAttackAnimation = nullptr;
 	m_EnemyAttackAnimation = new Animation("Content/Enemy/Cross.png", 1, 7, c_EnemyAttackAnimationLength, false);
+	m_EnemyHurtAnimation = nullptr;
+	m_EnemyHurtAnimation = new Animation("Content/Enemy/Hurt.png", 1, 8, c_EnemyAttackAnimationLength, false);
 	m_EnemyDeathAnimation = nullptr;
-	m_EnemyDeathAnimation = new Animation("Content/Enemy/Death.png", 1, 17, c_EnemyDyingAnimationLength, false);
+	m_EnemyDeathAnimation = new Animation("Content/Enemy/Death.png", 1, 17, c_PlayerAttackAnimationLength, false);
 }
 
 BattleScene::~BattleScene()
@@ -172,6 +179,19 @@ BattleScene::~BattleScene()
 		}
 	}
 
+
+	if (m_PlayerHurtAnimation != nullptr)
+	{
+		delete m_PlayerHurtAnimation;
+		m_PlayerHurtAnimation = nullptr;
+	}
+
+	if (m_EnemyIdleAnimation != nullptr)
+	{
+		delete m_EnemyIdleAnimation;
+		m_EnemyIdleAnimation = nullptr;
+	}
+
 	if (m_PlayerDeathAnimation != nullptr)
 	{
 		delete m_PlayerDeathAnimation;
@@ -217,7 +237,6 @@ void BattleScene::OnEnter()
 void BattleScene::SetupNewBattle()
 {
 	m_BattleState = BATTLE_STATE::PLAYER_MOVE;
-
 
 	ClearEquation();
 	m_Player.GetDeck().RestoreDiscardedCards();
@@ -311,7 +330,7 @@ void BattleScene::Update(const float& deltaTime)
 				m_ChosenAttackAnimation->Update(deltaTime);
 			}
 
-			m_EnemyIdleAnimation->Update(deltaTime);
+			m_EnemyHurtAnimation->Update(deltaTime);
 
 			m_AnimationTimerElapsed += deltaTime;
 
@@ -319,14 +338,14 @@ void BattleScene::Update(const float& deltaTime)
 			{
 				if (m_Enemy->GetIsAlive() == false)
 				{
-					m_Player.IncreaseGold(m_Player.GetWinCount() + m_Enemy->GetDamageRoll());
 					m_Player.IncreaseWinCount(1);
+					m_Player.IncreaseGold(5 * m_Player.GetWinCount());
 					m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION;
 					m_EnemyDeathAnimation->Start();
 				}
 				else
 				{
-					m_EnemyPseudoThinkingTime = (float)(rand() % 5) + 1.0f;
+					m_EnemyPseudoThinkingTime = (float)(rand() % (int)c_MaxEnemyPseudoThinkingTime) + 1.0f;
 					m_BattleState = BattleScene::ENEMY_MOVE;
 				}
 
@@ -346,16 +365,18 @@ void BattleScene::Update(const float& deltaTime)
 			if (m_AnimationTimerElapsed >= m_EnemyPseudoThinkingTime)
 			{
 				m_AnimationTimerElapsed = 0.0f;
-				m_Player.TakeDamage(m_Enemy->GetDamageRoll());
+				m_LastDamageRoll = m_Enemy->GetDamageRoll();
+				m_Player.TakeDamage(m_LastDamageRoll);
 				m_BattleState = BattleScene::ENEMY_ATTACK_ANIMATION;
 				m_EnemyAttackAnimation->Start();
+				m_PlayerHurtAnimation->Start();
 			}
 		}
 			break;
 
 		case BattleScene::ENEMY_ATTACK_ANIMATION:
 		{
-			m_PlayerIdleAnimation->Update(deltaTime);
+			m_PlayerHurtAnimation->Update(deltaTime);
 			m_EnemyAttackAnimation->Update(deltaTime);
 
 			m_AnimationTimerElapsed += deltaTime;
@@ -578,6 +599,7 @@ void BattleScene::ChooseRandomPlayerAttackAnimation()
 	{
 		m_ChosenAttackAnimation = m_PlayerAttackAnimation[index];
 		m_ChosenAttackAnimation->Start();
+		m_EnemyHurtAnimation->Start();
 	}
 }
 
@@ -769,9 +791,13 @@ void BattleScene::CalculateUpdatedAvatarDrawPositions(const float& deltaTime, co
 void BattleScene::Render(SDL_Renderer& renderer) const
 {
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
+	#ifdef _DEBUG
+		SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
+		SDL_RenderDebugText(&renderer, 10, 10, "SCENE_IDENTIFIER::SCENE_BATTLE");
+	#endif
 
-	SDL_RenderDebugTextFormat(&renderer, 10, 30, "Numbers: %i Operands: %i", (int)m_Player.GetNumbersHand().size(), (int)m_Player.GetOperandHand().size());
-	SDL_RenderDebugTextFormat(&renderer, 10, 40, "Enemy Health : %i / %i", m_Enemy->GetCurrentHealth(), m_Enemy->GetMaxHealth());
+	SDL_RenderDebugTextFormat(&renderer, 10, 40, "Numbers: %i Operands: %i", (int)m_Player.GetNumbersHand().size(), (int)m_Player.GetOperandHand().size());
+	SDL_RenderDebugTextFormat(&renderer, 10, 50, "Enemy Health : %i / %i", m_Enemy->GetCurrentHealth(), m_Enemy->GetMaxHealth());
 
 	/*int splitCount = 4;
 	int splitX = m_WindowWidth / splitCount;
@@ -796,7 +822,7 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 	{
 		case BattleScene::PLAYER_MOVE:
 		{
-			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::PLAYER_MOVE");
+			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::PLAYER_MOVE");
 
 			RenderEquation(renderer);
 
@@ -817,9 +843,9 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 
 		case BattleScene::PLAYER_ATTACK_ANIMATION:
 		{
-			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::PLAYER_ATTACK_ANIMATION");
+			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::PLAYER_ATTACK_ANIMATION");
 			m_ChosenAttackAnimation->Render(renderer, m_CharacterDrawRect, false);
-			m_EnemyIdleAnimation->Render(renderer, m_EnemyDrawRect, true);
+			m_EnemyHurtAnimation->Render(renderer, m_EnemyDrawRect, true);
 		}
 			break;
 
@@ -827,15 +853,16 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 		{
 			m_PlayerIdleAnimation->Render(renderer, m_CharacterDrawRect, false);
 			m_EnemyIdleAnimation->Render(renderer, m_EnemyDrawRect, true);
-			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::ENEMY_MOVE");
+			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::ENEMY_MOVE");
 		}
 			break;
 
 		case BattleScene::ENEMY_ATTACK_ANIMATION:
 		{
-			m_PlayerIdleAnimation->Render(renderer, m_CharacterDrawRect, false);
+			m_PlayerHurtAnimation->Render(renderer, m_CharacterDrawRect, false);
 			m_EnemyAttackAnimation->Render(renderer, m_EnemyDrawRect, true);
-			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::ENEMY_ATTACK_ANIMATION");
+			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::ENEMY_ATTACK_ANIMATION");
+			SDL_RenderDebugTextFormat(&renderer, 10, 30, "Enemy attacking for %i damage.", m_LastDamageRoll);
 		}
 			break;
 
@@ -843,7 +870,7 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 		{
 			m_PlayerIdleAnimation->Render(renderer, m_CharacterDrawRect, false);
 			m_EnemyDeathAnimation->Render(renderer, m_EnemyDrawRect, true);
-			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::ENEMY_DYING_ANIMATION");
+			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::ENEMY_DYING_ANIMATION");
 		}
 		break;
 
@@ -851,26 +878,26 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 		{
 			m_PlayerDeathAnimation->Render(renderer, m_CharacterDrawRect, false);
 			m_EnemyIdleAnimation->Render(renderer, m_EnemyDrawRect, true);
-			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::PLAYER_DYING_ANIMATION");
+			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::PLAYER_DYING_ANIMATION");
 		}
 		break;
 
 		case BATTLE_STATE::BATTLE_END_SCREEN:
 		{
 			SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
-			SDL_RenderDebugText(&renderer, 10, 10, "BATTLE_STATE::BATTLE_END_SCREEN");
+			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::BATTLE_END_SCREEN");
 
 			SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 			//Player died
 			if (m_Player.GetIsAlive() == false)
 			{
 				SDL_RenderTexture(&renderer, m_PlayerDeathTextTexture, nullptr, &m_EndScreenMessageRect);
-				SDL_RenderDebugText(&renderer, 10, 20, "PLAYER DIED");
+				SDL_RenderDebugText(&renderer, 10, 30, "PLAYER DIED");
 			}
 			else if (m_Enemy->GetIsAlive() == false) //Enemy died
 			{
 				SDL_RenderTexture(&renderer, m_EnemyDeathTextTexture, nullptr, &m_EndScreenMessageRect);
-				SDL_RenderDebugText(&renderer, 10, 20, "ENEMY DIED");
+				SDL_RenderDebugText(&renderer, 10, 30, "ENEMY DIED");
 
 				SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 				SDL_RenderTexture(&renderer, m_ExitButtonTexture, nullptr, &m_ExitButtonRect);

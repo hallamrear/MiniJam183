@@ -50,7 +50,8 @@ private:
 	SDL_FRect m_ShopSlotRects[c_ShopSlotCountTotal];
 	ShopItem m_ShopItems[c_ShopSlotCountTotal];
 
-	int m_IncreaseHandCost;
+	int m_IncreaseNumbersHandCost = 0;
+	int m_IncreaseOperandHandCost = 0;
 	int m_WindowWidth;
 	int m_WindowHeight;
 	int m_WindowCentreX;

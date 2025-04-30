@@ -105,6 +105,8 @@ void MenuScene::Render(SDL_Renderer& renderer) const
 		SDL_RenderTexture(&renderer, m_ExitButtonTexture, nullptr, &m_ExitButtonRect);
 	}
 
+#ifdef _DEBUG
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
-	SDL_RenderDebugText(&renderer, 64, 64, "MENU SCENE");
+	SDL_RenderDebugText(&renderer, 10, 10, "SCENE_IDENTIFIER::SCENE_MAIN_MENU");
+#endif
 }
