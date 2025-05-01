@@ -71,32 +71,32 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)Builds\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)Intermediate\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Builds\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(Configuration)\$(Platform)\</IntDir>
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)Builds\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)Intermediate\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Builds\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(Configuration)\$(Platform)\</IntDir>
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)Builds\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)Intermediate\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Builds\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(Configuration)\$(Platform)\</IntDir>
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)Builds\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)Intermediate\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Builds\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(Configuration)\$(Platform)\</IntDir>
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
