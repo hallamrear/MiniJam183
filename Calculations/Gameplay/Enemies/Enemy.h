@@ -7,7 +7,6 @@ class Enemy : public Entity
 {
 protected:
 	int m_BaseDamage;
-	int m_BonusDamage;
 	int m_RollRange;
 
 public:
