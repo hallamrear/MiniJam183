@@ -2,10 +2,26 @@
 #include "ScalingEvilPlayer.h"
 #include <Graphics/Texture.h>
 #include <Gameplay/Player/Player.h>
+#include <Graphics/Animation.h>
+
+constexpr const float c_EnemyAttackAnimationLength = 1.0f;
+constexpr const float c_EnemyDyingAnimationLength = 2.5f;
 
 ScalingEvilPlayer::ScalingEvilPlayer()
 {
-	Texture::LoadPNG("Content/cat2.png", m_Texture);
+    std::vector<AnimationDetails> details;
+    details =
+    {
+        /* idle   */ AnimationDetails(10, c_EnemyAttackAnimationLength, true),
+        /* hurt   */ AnimationDetails(8,  c_EnemyAttackAnimationLength, false),
+        /* death  */ AnimationDetails(17, c_EnemyAttackAnimationLength, false),
+        /* cross  */ AnimationDetails(7,  c_EnemyAttackAnimationLength, false),
+        /* jab    */ AnimationDetails(10, c_EnemyAttackAnimationLength, false),
+        /* katana */ AnimationDetails(10, c_EnemyAttackAnimationLength, false)
+    };
+
+    LoadAnimation("Content/Spritesheets/Player.png", ;
+
 }
 
 ScalingEvilPlayer::~ScalingEvilPlayer()

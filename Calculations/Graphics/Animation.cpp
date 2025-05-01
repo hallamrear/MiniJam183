@@ -1,25 +1,46 @@
 #include "pch.h"
 #include "Animation.h"
 
-Animation::Animation(const std::string& sheetPath, const unsigned int& numberOfAnimations, const unsigned int& frameCount, const float& duration, const bool& looping)
+AnimationDetails::AnimationDetails()
+{
+	FrameCount = 0;
+	IsLooping = false;
+	HasFinished = false;
+	Duration = 0.0f;
+}
+
+AnimationDetails::AnimationDetails(const unsigned int& frameCount, const float& duration, const bool& isLooping, const bool& hasFinished)
+{
+	FrameCount = frameCount;
+	IsLooping = isLooping;
+	HasFinished = hasFinished;
+	Duration = duration;
+}
+
+AnimationDetails::~AnimationDetails()
+{
+	FrameCount = 0;
+	IsLooping = false;
+	HasFinished = false;
+	Duration = 0.0f;
+}
+
+AnimationController::AnimationController(const std::string& sheetPath, const std::vector<AnimationDetails>& animationDetails)
 {
 	m_AnimationSheet = nullptr;
 	Texture::LoadPNG(sheetPath.c_str(), m_AnimationSheet);
+	m_AnimationDetails = animationDetails;
+	m_AnimationCount = m_AnimationDetails.size();
+	Texture::QueryTexture(m_AnimationSheet, m_TextureWidth, m_TextureHeight);
+	m_CurrentAnimationIndex = 0;
+	m_CurrentFrame = 0;
 	m_TimeElapsed = 0.0f;
-	m_IsLooping = looping;
-	m_Duration = duration;
-	m_TotalFrames = frameCount;
-	m_TimeBetweenFrames = m_Duration / (float)(m_TotalFrames);
-
-	float textureWidth  = 0.0f;
-	float textureHeight = 0.0f;
-	Texture::QueryTexture(m_AnimationSheet, textureWidth, textureHeight);
-	m_FrameSizeX = textureWidth / (float)m_TotalFrames;
-	m_FrameSizeY = textureHeight / (float)numberOfAnimations;
-	m_HasFinished = false;
+	m_FrameSizeX = 0;
+	m_FrameSizeY = 0;
+	m_TimeBetweenFrames = m_AnimationDetails[m_CurrentAnimationIndex].Duration / m_AnimationDetails[m_CurrentAnimationIndex].FrameCount;
 }
 
-Animation::~Animation()
+AnimationController::~AnimationController()
 {
 	m_AnimationSheet = nullptr;
 
@@ -30,49 +51,66 @@ Animation::~Animation()
 	}
 }
 
-bool Animation::HasFinished()
+SDL_Texture* AnimationController::GetSpriteSheet() const
 {
-	return m_HasFinished;
+	return m_AnimationSheet;
 }
 
-void Animation::Start()
+bool AnimationController::HasFinished()
 {
-	m_HasFinished = false;
+	m_AnimationDetails[m_CurrentAnimationIndex].HasFinished = false;
+}
+
+void AnimationController::Start()
+{
+	m_AnimationDetails[m_CurrentAnimationIndex].HasFinished = false;
 	m_CurrentFrame = 0;
 	m_TimeElapsed = 0.0f;
 }
 
-void Animation::SetAnimation(unsigned int animation)
+void AnimationController::SetAnimationId(const unsigned int& animation)
 {
-	m_CurrentAnimation = animation;
+	m_CurrentAnimationIndex = animation;
+	m_CurrentFrame = 0;
+	m_TimeElapsed = 0.0f;
+	m_TimeBetweenFrames = m_AnimationDetails[m_CurrentAnimationIndex].Duration / m_AnimationDetails[m_CurrentAnimationIndex].FrameCount;
 }
 
-const unsigned int Animation::GetCurrentAnimationId()
+const unsigned int& AnimationController::GetCurrentAnimationId() const
 {
-	return m_CurrentAnimation;
+	return m_CurrentAnimationIndex;
 }
 
-const int& Animation::GetFrameSizeX() const
+const AnimationDetails& AnimationController::GetCurrentAnimationDetails() const
+{
+	return m_AnimationDetails[m_CurrentAnimationIndex];
+}
+
+const int& AnimationController::GetFrameSizeX() const
 {
 	return m_FrameSizeX;
 }
 
-const int& Animation::GetFrameSizeY() const
+const int& AnimationController::GetFrameSizeY() const
 {
 	return m_FrameSizeY;
 }
 
-void Animation::Update(float DeltaTime)
+void AnimationController::Update(float DeltaTime)
 {
-	if (m_AnimationSheet)
+	if (m_AnimationSheet != nullptr)
 	{
-		if (m_HasFinished == false)
+		AnimationDetails& currentAnimation = m_AnimationDetails[m_CurrentAnimationIndex];
+		m_FrameSizeX = m_TextureWidth / (float)(currentAnimation.FrameCount);
+		m_FrameSizeY = m_TextureHeight / (float)(m_AnimationCount);
+
+		if (currentAnimation.HasFinished == false)
 		{
 			m_TimeElapsed += DeltaTime;
 
-			if (m_TimeElapsed > m_Duration)
+			if (m_TimeElapsed > currentAnimation.Duration)
 			{
-				if (m_IsLooping)
+				if (currentAnimation.IsLooping)
 				{
 					m_TimeElapsed = 0.0f;
 					m_CurrentFrame = 0;
@@ -81,7 +119,7 @@ void Animation::Update(float DeltaTime)
 				{
 					m_TimeElapsed = 0.0f;
 					m_CurrentFrame = 0;
-					m_HasFinished = true;
+					currentAnimation.HasFinished = true;
 				}
 			}
 			else
@@ -92,13 +130,13 @@ void Animation::Update(float DeltaTime)
 	}
 }
 
-void Animation::Render(SDL_Renderer& renderer, const SDL_FRect& dstRect, const bool& flipped)
+void AnimationController::Render(SDL_Renderer& renderer, const SDL_FRect& dstRect, const bool& flipped)
 {
 	if (m_AnimationSheet != nullptr)
 	{
 		SDL_FRect srcRect;
 		srcRect.x = ((int)m_FrameSizeX * m_CurrentFrame);
-		srcRect.y = ((int)m_FrameSizeY * m_CurrentAnimation);
+		srcRect.y = ((int)m_FrameSizeY * m_CurrentAnimationIndex);
 		srcRect.w = (int)m_FrameSizeX;
 		srcRect.h = (int)m_FrameSizeY;
 

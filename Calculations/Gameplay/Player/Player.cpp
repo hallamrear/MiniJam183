@@ -2,7 +2,10 @@
 #include "Player.h"
 #include <Graphics/Texture.h>
 #include <Gameplay/Cards/Deck.h>
+#include <Graphics/Animation.h>
 
+constexpr const float c_PlayerAttackAnimationLength = 1.0f;
+constexpr const float c_PlayerDyingAnimationLength = 2.5f;
 
 Player::Player()
 {
@@ -15,7 +18,18 @@ Player::Player()
     m_WinCount = 0;
     m_Deck.ResetDeck();
 
-    Texture::LoadPNG("Content/cat.png", m_Texture);
+    std::vector<AnimationDetails> details;
+    details =
+    {
+        m_PlayerIdleAnimation = new AnimationController("Content/Player/Idle.png", 1, 10, 1.0f, true),
+        m_PlayerAttackAnimation[0] = new AnimationController("Content/Player/Cross.png", 1, 7, c_PlayerAttackAnimationLength, false),
+        m_PlayerAttackAnimation[1] = new AnimationController("Content/Player/Jab.png", 1, 10, c_PlayerAttackAnimationLength, false),
+        m_PlayerAttackAnimation[2] = new AnimationController("Content/Player/Katana_Sheathe.png", 1, 10, c_PlayerAttackAnimationLength, false),
+        m_PlayerDeathAnimation = new AnimationController("Content/Player/Death.png", 1, 17, c_PlayerDyingAnimationLength, false),
+        m_PlayerHurtAnimation = new AnimationController("Content/Player/Hurt.png", 1, 8, c_EnemyAttackAnimationLength, false),
+    };
+
+    LoadAnimation("Content/Spritesheets/Player.png", details);
 
     m_OperandHand = std::vector<OperandCard*>();
     m_NumbersHand = std::vector<NumberCard*>();

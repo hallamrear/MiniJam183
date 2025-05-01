@@ -1,26 +1,44 @@
 #include "pch.h"
 #include "Entity.h"
+#include <Graphics/Animation.h>
 
 Entity::Entity()
 {
 	m_MaxHealth = INITIAL_ENTITY_HEALTH;
 	m_CurrentHealth = m_MaxHealth;
 	m_IsAlive = true;
-    m_Texture = nullptr;
+    m_Animation = nullptr;
+}
+
+bool Entity::LoadAnimation(const std::string& sheetPath, const unsigned int& numberOfAnimations, const unsigned int& frameCount, const float& duration, const bool& looping)
+{
+    if (m_Animation != nullptr)
+    {
+        DestroyAnimation();
+    }
+
+    m_Animation = new AnimationController(sheetPath, numberOfAnimations, frameCount, duration, looping);
+
+    return (m_Animation->GetSpriteSheet() != nullptr);
 }
 
 Entity::~Entity()
 {
-    if (m_Texture)
+    DestroyAnimation();
+}
+
+void Entity::DestroyAnimation()
+{
+    if (m_Animation != nullptr)
     {
-        SDL_DestroyTexture(m_Texture);
-        m_Texture = nullptr;
+        delete m_Animation;
+        m_Animation = nullptr;
     }
 }
 
-SDL_Texture* Entity::GetTexture() const
+AnimationController* Entity::GetAnimation() const
 {
-    return m_Texture;
+    return m_Animation;
 }
 
 const void Entity::SetIsAlive(const bool& state)

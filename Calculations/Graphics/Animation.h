@@ -1,32 +1,44 @@
 #pragma once
-
 #include "Texture.h"
 
-class Animation
+struct AnimationDetails
 {
+	unsigned int FrameCount;
+	bool IsLooping;
+	bool HasFinished;
+	float Duration;
+
+	AnimationDetails();
+	AnimationDetails(const unsigned int& frameCount, const float& duration, const bool& isLooping, const bool& hasFinished = false);
+	~AnimationDetails();
+};
+
+class AnimationController
+{
+	std::vector<AnimationDetails> m_AnimationDetails;
 	float m_TimeBetweenFrames;
 	float m_TimeElapsed;
-	float m_Duration;
 	unsigned int m_CurrentFrame;
 	SDL_Texture* m_AnimationSheet;
-	bool m_IsLooping;
-	unsigned int m_CurrentAnimation;
-	unsigned int m_TotalFrames;
-
-	//If the animation does not loop, this will set to true when it has finished playing.
-	bool m_HasFinished;
+	unsigned int m_CurrentAnimationIndex;
+	unsigned int m_AnimationCount;
 	int m_FrameSizeX;
 	int m_FrameSizeY;
+	float m_TextureWidth = 0.0f;
+	float m_TextureHeight = 0.0f;
 
 public:
 
-	Animation(const std::string& sheetPath, const unsigned int& numberOfAnimations, const unsigned int& frameCount, const float& duration, const bool& looping);
-	~Animation();
+	AnimationController(const std::string& sheetPath, const std::vector<AnimationDetails>& animationDetails);
+	~AnimationController();
+
+	SDL_Texture* GetSpriteSheet() const;
 
 	bool HasFinished();
 	void Start();
-	void SetAnimation(unsigned int animation);
-	const unsigned int GetCurrentAnimationId();
+	void SetAnimationId(const unsigned int& animation);
+	const unsigned int& GetCurrentAnimationId() const;
+	const AnimationDetails& GetCurrentAnimationDetails() const;
 	const int& GetFrameSizeX() const;
 	const int& GetFrameSizeY() const;
 	void Update(float DeltaTime);

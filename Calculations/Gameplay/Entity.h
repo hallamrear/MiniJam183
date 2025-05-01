@@ -1,21 +1,25 @@
 #pragma once
 
+class AnimationController;
+
 class Entity
 {
 private:
 
 protected:
-	SDL_Texture* m_Texture;
+	AnimationController* m_Animation;
 	int m_CurrentHealth;
 	int m_MaxHealth;
 	bool m_IsAlive;
 
 	Entity();
+	bool LoadAnimation(const std::string& sheetPath, const unsigned int& numberOfAnimations, const unsigned int& frameCount, const float& duration, const bool& looping);
+	void DestroyAnimation();
 
 public:
 	virtual	~Entity() = 0;
 
-	SDL_Texture* GetTexture() const;
+	AnimationController* GetAnimation() const;
 
 	const void SetIsAlive(const bool& state);
 	const bool GetIsAlive() const;

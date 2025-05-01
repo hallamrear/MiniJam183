@@ -28,10 +28,6 @@ constexpr const float c_GapBetweenCardsAndButton = 32.0f;
 constexpr const float c_GapBetweenEquationButtons = 32.0f;
 constexpr const float c_ButtonWidth = 256.0f;
 constexpr const float c_ButtonHeight = 64.0f;
-constexpr const float c_PlayerAttackAnimationLength = 1.0f;
-constexpr const float c_EnemyAttackAnimationLength = 1.0f;
-constexpr const float c_EnemyDyingAnimationLength = 2.5f;
-constexpr const float c_PlayerDyingAnimationLength = 2.5f;
 constexpr const float c_MaxEnemyPseudoThinkingTime = 3.0f;
 
 BattleScene::BattleScene(SceneManager& manager)
@@ -96,29 +92,9 @@ BattleScene::BattleScene(SceneManager& manager)
 	m_ClearButtonTexture = nullptr;
 	Texture::LoadPNG("Content/Buttons/ClearButton.png", m_ClearButtonTexture);
 
-	m_ChosenAttackAnimation = nullptr;
-	m_PlayerIdleAnimation = nullptr;
-	m_PlayerIdleAnimation = new Animation("Content/Player/Idle.png", 1, 10, 1.0f, true);
-	m_PlayerAttackAnimation[0] = nullptr;
-	m_PlayerAttackAnimation[0] = new Animation("Content/Player/Cross.png", 1, 7, c_PlayerAttackAnimationLength, false);
-	m_PlayerAttackAnimation[1] = nullptr;
-	m_PlayerAttackAnimation[1] = new Animation("Content/Player/Jab.png", 1, 10, c_PlayerAttackAnimationLength, false);
-	m_PlayerAttackAnimation[2] = nullptr;
-	m_PlayerAttackAnimation[2] = new Animation("Content/Player/Katana_Sheathe.png", 1, 10, c_PlayerAttackAnimationLength, false);
-	m_PlayerDeathAnimation = nullptr;
-	m_PlayerDeathAnimation = new Animation("Content/Player/Death.png", 1, 17, c_PlayerDyingAnimationLength, false);
-	m_PlayerHurtAnimation = nullptr;
-	m_PlayerHurtAnimation = new Animation("Content/Player/Hurt.png", 1, 8, c_EnemyAttackAnimationLength, false);
-
+	
 
 	m_EnemyIdleAnimation = nullptr;
-	m_EnemyIdleAnimation = new Animation("Content/Enemy/Idle.png", 1, 10, 1.0f, true);
-	m_EnemyAttackAnimation = nullptr;
-	m_EnemyAttackAnimation = new Animation("Content/Enemy/Cross.png", 1, 7, c_EnemyAttackAnimationLength, false);
-	m_EnemyHurtAnimation = nullptr;
-	m_EnemyHurtAnimation = new Animation("Content/Enemy/Hurt.png", 1, 8, c_EnemyAttackAnimationLength, false);
-	m_EnemyDeathAnimation = nullptr;
-	m_EnemyDeathAnimation = new Animation("Content/Enemy/Death.png", 1, 17, c_PlayerAttackAnimationLength, false);
 }
 
 BattleScene::~BattleScene()
