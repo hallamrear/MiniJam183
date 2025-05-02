@@ -3,7 +3,7 @@
 #include <Graphics/Texture.h>
 #include <Gameplay/Cards/Deck.h>
 #include <Graphics/Animation.h>
-
+    
 constexpr const float c_PlayerAttackAnimationLength = 1.0f;
 constexpr const float c_PlayerDyingAnimationLength = 2.5f;
 
@@ -18,15 +18,15 @@ Player::Player()
     m_WinCount = 0;
     m_Deck.ResetDeck();
 
-    std::vector<AnimationDetails> details;
+    std::vector<AnimationDetails> details = std::vector<AnimationDetails>();
     details =
     {
-        m_PlayerIdleAnimation = new AnimationController("Content/Player/Idle.png", 1, 10, 1.0f, true),
-        m_PlayerAttackAnimation[0] = new AnimationController("Content/Player/Cross.png", 1, 7, c_PlayerAttackAnimationLength, false),
-        m_PlayerAttackAnimation[1] = new AnimationController("Content/Player/Jab.png", 1, 10, c_PlayerAttackAnimationLength, false),
-        m_PlayerAttackAnimation[2] = new AnimationController("Content/Player/Katana_Sheathe.png", 1, 10, c_PlayerAttackAnimationLength, false),
-        m_PlayerDeathAnimation = new AnimationController("Content/Player/Death.png", 1, 17, c_PlayerDyingAnimationLength, false),
-        m_PlayerHurtAnimation = new AnimationController("Content/Player/Hurt.png", 1, 8, c_EnemyAttackAnimationLength, false),
+        /* idle   */ AnimationDetails(10, c_PlayerAttackAnimationLength, true),
+        /* hurt   */ AnimationDetails(8,  c_PlayerAttackAnimationLength, false),
+        /* death  */ AnimationDetails(17, c_PlayerDyingAnimationLength, false),
+        /* cross  */ AnimationDetails(7,  c_PlayerAttackAnimationLength, false),
+        /* jab    */ AnimationDetails(10, c_PlayerAttackAnimationLength, false),
+        /* katana */ AnimationDetails(10, c_PlayerAttackAnimationLength, false)
     };
 
     LoadAnimation("Content/Spritesheets/Player.png", details);

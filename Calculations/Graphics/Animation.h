@@ -22,21 +22,21 @@ class AnimationController
 	SDL_Texture* m_AnimationSheet;
 	unsigned int m_CurrentAnimationIndex;
 	unsigned int m_AnimationCount;
+	unsigned int m_MaxFrameCount;
 	int m_FrameSizeX;
 	int m_FrameSizeY;
 	float m_TextureWidth = 0.0f;
 	float m_TextureHeight = 0.0f;
 
 public:
-
-	AnimationController(const std::string& sheetPath, const std::vector<AnimationDetails>& animationDetails);
+	AnimationController(const std::string& sheetPath, const int& maxFrameCount, const std::vector<AnimationDetails>& animationDetails);
 	~AnimationController();
 
 	SDL_Texture* GetSpriteSheet() const;
 
 	bool HasFinished();
 	void Start();
-	void SetAnimationId(const unsigned int& animation);
+	void SetAnimationId(const unsigned int& animation, const bool& start = true);
 	const unsigned int& GetCurrentAnimationId() const;
 	const AnimationDetails& GetCurrentAnimationDetails() const;
 	const int& GetFrameSizeX() const;

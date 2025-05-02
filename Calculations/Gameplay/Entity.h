@@ -1,6 +1,7 @@
 #pragma once
 
 class AnimationController;
+struct AnimationDetails;
 
 class Entity
 {
@@ -13,7 +14,7 @@ protected:
 	bool m_IsAlive;
 
 	Entity();
-	bool LoadAnimation(const std::string& sheetPath, const unsigned int& numberOfAnimations, const unsigned int& frameCount, const float& duration, const bool& looping);
+	bool LoadAnimation(const std::string& sheetPath, const std::vector<AnimationDetails>& details);
 	void DestroyAnimation();
 
 public:

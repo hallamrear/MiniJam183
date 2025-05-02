@@ -7,6 +7,7 @@
 - Enemy scaling
 - Gold
 - Make avatars bigger and move the health bar.
+- Remove so many point checks in BattleScene::Update
 
 ## Assets
 - Kenney Pack

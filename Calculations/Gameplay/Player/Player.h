@@ -19,11 +19,11 @@ private:
 	int m_WinCount;
 
 public:
-	enum PLAYER_ANIMATION_STATES
+	enum ANIMATION_STATES : unsigned int
 	{
 		IDLE = 0,
-		DEATH = 1,
-		HURT = 2,
+		HURT = 1,
+		DEATH = 2,
 		ATTACK_1 = 3,
 		ATTACK_2 = 4,
 		ATTACK_3 = 5

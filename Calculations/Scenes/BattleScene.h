@@ -25,21 +25,11 @@ private:
 	OperandCard* m_SelectedOperandForEquation;
 	float m_EnemyPseudoThinkingTime;
 
-	Animation* m_PlayerIdleAnimation;
-	Animation* m_PlayerHurtAnimation;
-	Animation* m_PlayerAttackAnimation[3];
-	Animation* m_ChosenAttackAnimation;
-	Animation* m_PlayerDeathAnimation;
-
-	Animation* m_EnemyIdleAnimation;
-	Animation* m_EnemyHurtAnimation;
-	Animation* m_EnemyAttackAnimation;
-	Animation* m_EnemyDeathAnimation;
-
 	ProgressBar* m_PlayerHealthBar;
 	ProgressBar* m_EnemyHealthBar;
 	Player& m_Player;
 	Enemy* m_Enemy;
+	float m_EnemyPseudoThinkingTimeElapsed;
 
 	SDL_Texture* m_GoToShopButtonTexture;
 	SDL_Texture* m_ExitButtonTexture;
@@ -64,7 +54,6 @@ private:
 	float m_WindowSizeScalingY;
 
 	bool m_CanPickCard;
-	float m_AnimationTimerElapsed;
 
 	void SetupNewBattle();
 	void RenderCharacterHealthBar(SDL_Renderer& renderer) const;

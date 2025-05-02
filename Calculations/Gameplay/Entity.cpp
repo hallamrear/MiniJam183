@@ -10,14 +10,14 @@ Entity::Entity()
     m_Animation = nullptr;
 }
 
-bool Entity::LoadAnimation(const std::string& sheetPath, const unsigned int& numberOfAnimations, const unsigned int& frameCount, const float& duration, const bool& looping)
+bool Entity::LoadAnimation(const std::string& sheetPath, const std::vector<AnimationDetails>& details)
 {
     if (m_Animation != nullptr)
     {
         DestroyAnimation();
     }
 
-    m_Animation = new AnimationController(sheetPath, numberOfAnimations, frameCount, duration, looping);
+    m_Animation = new AnimationController(sheetPath, 16, details);
 
     return (m_Animation->GetSpriteSheet() != nullptr);
 }

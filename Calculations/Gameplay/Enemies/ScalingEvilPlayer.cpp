@@ -14,13 +14,13 @@ ScalingEvilPlayer::ScalingEvilPlayer()
     {
         /* idle   */ AnimationDetails(10, c_EnemyAttackAnimationLength, true),
         /* hurt   */ AnimationDetails(8,  c_EnemyAttackAnimationLength, false),
-        /* death  */ AnimationDetails(17, c_EnemyAttackAnimationLength, false),
+        /* death  */ AnimationDetails(17, c_EnemyDyingAnimationLength, false),
         /* cross  */ AnimationDetails(7,  c_EnemyAttackAnimationLength, false),
         /* jab    */ AnimationDetails(10, c_EnemyAttackAnimationLength, false),
         /* katana */ AnimationDetails(10, c_EnemyAttackAnimationLength, false)
     };
 
-    LoadAnimation("Content/Spritesheets/Player.png", ;
+    LoadAnimation("Content/Spritesheets/Enemy.png", details);
 
 }
 

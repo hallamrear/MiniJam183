@@ -8,10 +8,8 @@
 #include <System/SceneManager.h>
 #include <Graphics/Animation.h>
 
-constexpr const float c_AvatarDrawWidth = 256.0f;
-constexpr const float c_AvatarDrawHeight = 256.0f;
-constexpr const float c_TargetAnimationDrawWidth = 48.0f;
-constexpr const float c_TargetAnimationDrawHeight = 48.0f;
+constexpr const float c_AvatarDrawWidth = 512.0f;
+constexpr const float c_AvatarDrawHeight = 512.0f;
 constexpr const float c_NumbersCardDrawWidth = c_CardWidth;
 constexpr const float c_NumbersCardDrawHeight = c_CardHeight;
 constexpr const float c_OperandCardDrawWidth = c_NumbersCardDrawWidth / 2.0f;
@@ -23,7 +21,7 @@ constexpr const float c_SelectedNumberCardHeight = (c_NumbersCardDrawHeight / 5)
 constexpr const float c_GapBetweenSelectedCardElements = 16.0f;
 constexpr const float c_GapBetweenNumbersCards = 32.0f;
 constexpr const float c_GapBetweenOperandsCards = c_GapBetweenNumbersCards / 2.0f;
-constexpr const float c_HealthBarGapFromAvatar = 16.0f;
+constexpr const float c_HealthBarGapFromAvatar = -16.0f;
 constexpr const float c_GapBetweenCardsAndButton = 32.0f;
 constexpr const float c_GapBetweenEquationButtons = 32.0f;
 constexpr const float c_ButtonWidth = 256.0f;
@@ -47,7 +45,7 @@ BattleScene::BattleScene(SceneManager& manager)
 	m_WindowHeight = 0;
 	m_LastDamageRoll = 0;
 
-	m_AnimationTimerElapsed = 0.0f;
+	m_EnemyPseudoThinkingTimeElapsed = 0.0f;
 	m_BattleState = BATTLE_STATE::PLAYER_MOVE;
 	m_CanPickCard = true;
 
@@ -91,10 +89,6 @@ BattleScene::BattleScene(SceneManager& manager)
 	Texture::LoadPNG("Content/Buttons/SubmitButton.png", m_SubmitButtonTexture);
 	m_ClearButtonTexture = nullptr;
 	Texture::LoadPNG("Content/Buttons/ClearButton.png", m_ClearButtonTexture);
-
-	
-
-	m_EnemyIdleAnimation = nullptr;
 }
 
 BattleScene::~BattleScene()
@@ -102,7 +96,6 @@ BattleScene::~BattleScene()
 	m_SelectedNumbersForEquation[0] = nullptr;
 	m_SelectedNumbersForEquation[1] = nullptr;
 	m_SelectedOperandForEquation = nullptr;
-	m_ChosenAttackAnimation = nullptr;
 
 	if (m_DiscardButtonTexture != nullptr)
 	{
@@ -138,58 +131,6 @@ BattleScene::~BattleScene()
 	{
 		SDL_DestroyTexture(m_MissingCardTexture);
 		m_MissingCardTexture = nullptr;
-	}
-
-	if (m_PlayerIdleAnimation != nullptr)
-	{
-		delete m_PlayerIdleAnimation;
-		m_PlayerIdleAnimation = nullptr;
-	}
-
-	for (size_t i = 0; i < 3; i++)
-	{
-		if (m_PlayerAttackAnimation[i] != nullptr)
-		{
-			delete m_PlayerAttackAnimation[i];
-			m_PlayerAttackAnimation[i] = nullptr;
-		}
-	}
-
-
-	if (m_PlayerHurtAnimation != nullptr)
-	{
-		delete m_PlayerHurtAnimation;
-		m_PlayerHurtAnimation = nullptr;
-	}
-
-	if (m_EnemyIdleAnimation != nullptr)
-	{
-		delete m_EnemyIdleAnimation;
-		m_EnemyIdleAnimation = nullptr;
-	}
-
-	if (m_PlayerDeathAnimation != nullptr)
-	{
-		delete m_PlayerDeathAnimation;
-		m_PlayerDeathAnimation = nullptr;
-	}
-
-	if (m_EnemyIdleAnimation != nullptr)
-	{
-		delete m_EnemyIdleAnimation;
-		m_EnemyIdleAnimation = nullptr;
-	}
-
-	if (m_EnemyAttackAnimation != nullptr)
-	{
-		delete m_EnemyAttackAnimation;
-		m_EnemyAttackAnimation = nullptr;
-	}
-
-	if (m_EnemyDeathAnimation != nullptr)
-	{
-		delete m_EnemyDeathAnimation;
-		m_EnemyDeathAnimation = nullptr;
 	}
 }
 
@@ -285,93 +226,136 @@ void BattleScene::Update(const float& deltaTime)
 		m_CanPickCard = true;
 	}
 
+	if (m_Player.GetAnimation() != nullptr)
+	{
+		m_Player.GetAnimation()->Update(deltaTime);
+	}
+
+	if (m_Enemy != nullptr)
+	{
+		if (m_Enemy->GetAnimation() != nullptr)
+		{
+			m_Enemy->GetAnimation()->Update(deltaTime);
+		}
+	}
+
 	switch (m_BattleState)
 	{
 		case BattleScene::PLAYER_MOVE:
 		{
-			m_PlayerIdleAnimation->Update(deltaTime);
-			m_EnemyIdleAnimation->Update(deltaTime);
-
 			if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON) && m_CanPickCard)
 			{
 				CheckForClickCollisions();
 			}
 		}
-			break;
+		break;
 
 		case BattleScene::PLAYER_ATTACK_ANIMATION:
 		{
-			if (m_ChosenAttackAnimation != nullptr)
+			if (m_Player.GetAnimation() != nullptr)
 			{
-				m_ChosenAttackAnimation->Update(deltaTime);
-			}
-
-			m_EnemyHurtAnimation->Update(deltaTime);
-
-			m_AnimationTimerElapsed += deltaTime;
-
-			if (m_ChosenAttackAnimation->HasFinished())
-			{
-				if (m_Enemy->GetIsAlive() == false)
+				if (m_Player.GetAnimation()->HasFinished())
 				{
-					m_Player.IncreaseWinCount(1);
-					m_Player.IncreaseGold(5 * m_Player.GetWinCount());
-					m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION;
-					m_EnemyDeathAnimation->Start();
-				}
-				else
-				{
-					m_EnemyPseudoThinkingTime = (float)(rand() % (int)c_MaxEnemyPseudoThinkingTime) + 1.0f;
-					m_BattleState = BattleScene::ENEMY_MOVE;
-				}
+					if (m_Enemy != nullptr)
+					{
+						if (m_Enemy->GetIsAlive() == false)
+						{
+							m_Player.IncreaseWinCount(1);
+							m_Player.IncreaseGold(5 * m_Player.GetWinCount());
+							m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION;
+							if (m_Enemy->GetAnimation() != nullptr)
+							{
+								m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::DEATH);
+								m_Enemy->GetAnimation()->Start();
+							}
+						}
+						else
+						{
+							m_EnemyPseudoThinkingTime = (float)(rand() % (int)c_MaxEnemyPseudoThinkingTime) + 1.0f;
+							m_BattleState = BattleScene::ENEMY_MOVE;
 
-				m_AnimationTimerElapsed = 0.0f;
-				m_ChosenAttackAnimation = nullptr;
-			}
+							if (m_Enemy->GetAnimation() != nullptr)
+							{
+								m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::IDLE);
+								m_Enemy->GetAnimation()->Start();
+							}
+						}
+					}
+
+					if (m_Player.GetAnimation() != nullptr)
+					{
+						m_Player.GetAnimation()->SetAnimationId(Player::ANIMATION_STATES::IDLE);
+						m_Player.GetAnimation()->Start();
+					}
+				}
+			}			
 		}
 			break;
 
 		case BattleScene::ENEMY_MOVE:
 		{
-			m_PlayerIdleAnimation->Update(deltaTime);
-			m_EnemyIdleAnimation->Update(deltaTime);
+			m_EnemyPseudoThinkingTimeElapsed += deltaTime;
 
-			m_AnimationTimerElapsed += deltaTime;
-
-			if (m_AnimationTimerElapsed >= m_EnemyPseudoThinkingTime)
+			if (m_EnemyPseudoThinkingTimeElapsed >= m_EnemyPseudoThinkingTime)
 			{
-				m_AnimationTimerElapsed = 0.0f;
+				m_EnemyPseudoThinkingTimeElapsed = 0.0f;
 				m_LastDamageRoll = m_Enemy->GetDamageRoll();
 				m_Player.TakeDamage(m_LastDamageRoll);
 				m_BattleState = BattleScene::ENEMY_ATTACK_ANIMATION;
-				m_EnemyAttackAnimation->Start();
-				m_PlayerHurtAnimation->Start();
+
+				if(m_Player.GetAnimation() != nullptr)
+				{
+					m_Player.GetAnimation()->SetAnimationId(Player::ANIMATION_STATES::HURT);
+					m_Player.GetAnimation()->Start();
+				}
+
+				if (m_Enemy != nullptr)
+				{
+					if (m_Enemy->GetAnimation() != nullptr)
+					{
+						m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::ATTACK_1);
+						m_Enemy->GetAnimation()->Start();
+					}
+				}
 			}
 		}
 			break;
 
 		case BattleScene::ENEMY_ATTACK_ANIMATION:
 		{
-			m_PlayerHurtAnimation->Update(deltaTime);
-			m_EnemyAttackAnimation->Update(deltaTime);
-
-			m_AnimationTimerElapsed += deltaTime;
-
-			if (m_EnemyAttackAnimation->HasFinished())
+			if (m_Enemy != nullptr)
 			{
-				m_AnimationTimerElapsed = 0.0f;
-
-				m_BattleState = BattleScene::PLAYER_MOVE;
-
-				if (m_Player.GetIsAlive() == false)
+				if (m_Enemy->GetAnimation() != nullptr && m_Player.GetAnimation() != nullptr)
 				{
-					m_BattleState = BattleScene::PLAYER_DYING_ANIMATION;
-					m_PlayerDeathAnimation->Start();
-				}
-				else
-				{
-					m_Player.DrawNumberCardsIntoHand(2);
-					m_Player.DrawOperandCardsIntoHand(1);
+					if (m_Enemy->GetAnimation()->HasFinished() && m_Player.GetAnimation()->HasFinished())
+					{
+						m_BattleState = BattleScene::PLAYER_MOVE;
+
+						m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::IDLE);
+						m_Enemy->GetAnimation()->Start();
+
+						if (m_Player.GetIsAlive() == false)
+						{
+							m_BattleState = BattleScene::PLAYER_DYING_ANIMATION;
+
+							if (m_Player.GetAnimation() != nullptr)
+							{
+								m_Player.GetAnimation()->SetAnimationId(Player::ANIMATION_STATES::DEATH);
+								m_Player.GetAnimation()->Start();
+							}
+						}
+						else
+						{
+							m_Player.DrawNumberCardsIntoHand(2);
+							m_Player.DrawOperandCardsIntoHand(1);
+
+							if (m_Player.GetAnimation() != nullptr)
+							{
+								m_Player.GetAnimation()->SetAnimationId(Player::ANIMATION_STATES::IDLE);
+								m_Player.GetAnimation()->Start();
+							}
+						}
+					}
 				}
 			}
 		}
@@ -380,29 +364,27 @@ void BattleScene::Update(const float& deltaTime)
 
 		case BATTLE_STATE::ENEMY_DYING_ANIMATION:
 		{
-			m_PlayerIdleAnimation->Update(deltaTime);
-			m_EnemyDeathAnimation->Update(deltaTime);
-			m_AnimationTimerElapsed += deltaTime;
-
-			if (m_EnemyDeathAnimation->HasFinished())
+			if (m_Enemy != nullptr)
 			{
-				m_AnimationTimerElapsed = 0.0f;
-				m_BattleState = BATTLE_STATE::BATTLE_END_SCREEN;
+				if (m_Enemy->GetAnimation() != nullptr)
+				{
+					if (m_Enemy->GetAnimation()->HasFinished())
+					{
+						m_BattleState = BATTLE_STATE::BATTLE_END_SCREEN;
+					}
+				}
 			}
 		}
 		break;
 
 		case BATTLE_STATE::PLAYER_DYING_ANIMATION:
 		{
-			m_PlayerDeathAnimation->Update(deltaTime);
-			m_EnemyIdleAnimation->Update(deltaTime);
-
-			m_AnimationTimerElapsed += deltaTime;
-
-			if (m_PlayerDeathAnimation->HasFinished())
+			if (m_Player.GetAnimation() != nullptr)
 			{
-				m_AnimationTimerElapsed = 0.0f;
-				m_BattleState = BATTLE_STATE::BATTLE_END_SCREEN;
+				if (m_Player.GetAnimation()->HasFinished())
+				{
+					m_BattleState = BATTLE_STATE::BATTLE_END_SCREEN;
+				}
 			}
 		}
 		break;
@@ -568,14 +550,20 @@ void BattleScene::DiscardEquationCards()
 
 void BattleScene::ChooseRandomPlayerAttackAnimation()
 {
-	m_ChosenAttackAnimation = nullptr;
-
 	int index = rand() % 3;
-	if (m_PlayerAttackAnimation[index] != nullptr)
+	if (m_Player.GetAnimation() != nullptr)
 	{
-		m_ChosenAttackAnimation = m_PlayerAttackAnimation[index];
-		m_ChosenAttackAnimation->Start();
-		m_EnemyHurtAnimation->Start();
+		m_Player.GetAnimation()->SetAnimationId(Player::ATTACK_1 + index);
+		m_Player.GetAnimation()->Start();
+	}
+
+	if (m_Enemy != nullptr)
+	{
+		if (m_Enemy->GetAnimation() != nullptr)
+		{
+			m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::HURT);
+			m_Enemy->GetAnimation()->Start();
+		}
 	}
 }
 
@@ -700,30 +688,12 @@ void BattleScene::CalculateUpdatedAvatarDrawPositions(const float& deltaTime, co
 
 	float drawCentreX = rootPositionX / 2;
 	float drawCentreY = rootPositionY / 2;
-	float animationScalingX = 1.0f;
-	float animationScalingY = 1.0f;
-
-	if (m_BattleState == BATTLE_STATE::PLAYER_ATTACK_ANIMATION)
-	{
-		animationScalingX = m_ChosenAttackAnimation->GetFrameSizeX() / c_TargetAnimationDrawWidth;
-		animationScalingY = m_ChosenAttackAnimation->GetFrameSizeY() / c_TargetAnimationDrawHeight;
-	}
-
-	float targetDrawPositionX = drawCentreX - ((scaledAvatarDrawWidth * animationScalingX) / 2);
-	float targetDrawPositionY = drawCentreY - ((scaledAvatarDrawHeight * animationScalingY) / 2);
+	float targetDrawPositionX = drawCentreX - (scaledAvatarDrawWidth / 2);
+	float targetDrawPositionY = drawCentreY - (scaledAvatarDrawHeight / 2);
 	m_CharacterDrawRect.x = targetDrawPositionX;
 	m_CharacterDrawRect.y = targetDrawPositionY;
-	m_CharacterDrawRect.w = scaledAvatarDrawWidth * animationScalingX;
-	m_CharacterDrawRect.h = scaledAvatarDrawHeight * animationScalingY;
-
-	animationScalingX = 1.0f;
-	animationScalingY = 1.0f;
-
-	if (m_BattleState == BATTLE_STATE::ENEMY_ATTACK_ANIMATION)
-	{
-		animationScalingX = m_EnemyAttackAnimation->GetFrameSizeX() / c_TargetAnimationDrawWidth;
-		animationScalingY = m_EnemyAttackAnimation->GetFrameSizeY() / c_TargetAnimationDrawHeight;
-	}
+	m_CharacterDrawRect.w = scaledAvatarDrawWidth;
+	m_CharacterDrawRect.h = scaledAvatarDrawHeight;
 
 	if (m_PlayerHealthBar != nullptr)
 	{
@@ -741,13 +711,13 @@ void BattleScene::CalculateUpdatedAvatarDrawPositions(const float& deltaTime, co
 
 	drawCentreX = ((rootPositionX / 2) * 3);
 	drawCentreY = ((rootPositionY / 2) * 1);
-	targetDrawPositionX = drawCentreX - ((scaledAvatarDrawWidth * animationScalingX) / 2);
-	targetDrawPositionY = drawCentreY - ((scaledAvatarDrawHeight * animationScalingY) / 2);
+	targetDrawPositionX = drawCentreX - (scaledAvatarDrawWidth / 2);
+	targetDrawPositionY = drawCentreY - (scaledAvatarDrawHeight / 2);
 
 	m_EnemyDrawRect.x = targetDrawPositionX;
 	m_EnemyDrawRect.y = targetDrawPositionY;
-	m_EnemyDrawRect.w = scaledAvatarDrawWidth * animationScalingX;
-	m_EnemyDrawRect.h = scaledAvatarDrawHeight * animationScalingY;
+	m_EnemyDrawRect.w = scaledAvatarDrawWidth;
+	m_EnemyDrawRect.h = scaledAvatarDrawHeight;
 
 	if (m_EnemyHealthBar != nullptr && m_Enemy != nullptr)
 	{
@@ -775,24 +745,20 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 	SDL_RenderDebugTextFormat(&renderer, 10, 40, "Numbers: %i Operands: %i", (int)m_Player.GetNumbersHand().size(), (int)m_Player.GetOperandHand().size());
 	SDL_RenderDebugTextFormat(&renderer, 10, 50, "Enemy Health : %i / %i", m_Enemy->GetCurrentHealth(), m_Enemy->GetMaxHealth());
 
-	/*int splitCount = 4;
-	int splitX = m_WindowWidth / splitCount;
-	int splitY = m_WindowHeight / splitCount;
-	for (size_t i = 0; i < splitCount; i++)
-	{
-		for (size_t j = 0; j < splitCount; j++)
-		{
-			SDL_FRect rect;
-			rect.w = splitX;
-			rect.h = splitY;
-			rect.x = i * splitX;
-			rect.y = j * splitY;
-
-			SDL_RenderRect(&renderer, &rect);
-		}
-	}*/
-
 	RenderCharacterHealthBar(renderer);
+
+	if (m_Player.GetAnimation() != nullptr)
+	{
+		m_Player.GetAnimation()->Render(renderer, m_CharacterDrawRect, false);
+	}
+
+	if (m_Enemy != nullptr)
+	{
+		if (m_Enemy->GetAnimation() != nullptr)
+		{
+			m_Enemy->GetAnimation()->Render(renderer, m_EnemyDrawRect, true);
+		}
+	}
 
 	switch (m_BattleState)
 	{
@@ -811,32 +777,23 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 			{
 				SDL_RenderTexture(&renderer, m_SubmitButtonTexture, nullptr, &m_SubmitButtonRect);
 			}
-
-			m_PlayerIdleAnimation->Render(renderer, m_CharacterDrawRect, false);
-			m_EnemyIdleAnimation->Render(renderer, m_EnemyDrawRect, true);
 		}
 			break;
 
 		case BattleScene::PLAYER_ATTACK_ANIMATION:
 		{
 			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::PLAYER_ATTACK_ANIMATION");
-			m_ChosenAttackAnimation->Render(renderer, m_CharacterDrawRect, false);
-			m_EnemyHurtAnimation->Render(renderer, m_EnemyDrawRect, true);
 		}
 			break;
 
 		case BattleScene::ENEMY_MOVE:
 		{
-			m_PlayerIdleAnimation->Render(renderer, m_CharacterDrawRect, false);
-			m_EnemyIdleAnimation->Render(renderer, m_EnemyDrawRect, true);
 			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::ENEMY_MOVE");
 		}
 			break;
 
 		case BattleScene::ENEMY_ATTACK_ANIMATION:
 		{
-			m_PlayerHurtAnimation->Render(renderer, m_CharacterDrawRect, false);
-			m_EnemyAttackAnimation->Render(renderer, m_EnemyDrawRect, true);
 			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::ENEMY_ATTACK_ANIMATION");
 			SDL_RenderDebugTextFormat(&renderer, 10, 30, "Enemy attacking for %i damage.", m_LastDamageRoll);
 		}
@@ -844,16 +801,12 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 
 		case BATTLE_STATE::ENEMY_DYING_ANIMATION:
 		{
-			m_PlayerIdleAnimation->Render(renderer, m_CharacterDrawRect, false);
-			m_EnemyDeathAnimation->Render(renderer, m_EnemyDrawRect, true);
 			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::ENEMY_DYING_ANIMATION");
 		}
 		break;
 
 		case BATTLE_STATE::PLAYER_DYING_ANIMATION:
 		{
-			m_PlayerDeathAnimation->Render(renderer, m_CharacterDrawRect, false);
-			m_EnemyIdleAnimation->Render(renderer, m_EnemyDrawRect, true);
 			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::PLAYER_DYING_ANIMATION");
 		}
 		break;

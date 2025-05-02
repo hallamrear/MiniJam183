@@ -73,6 +73,12 @@ bool Application::InitSDL()
 
 	SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE;
 
+//#ifndef _DEBUG
+	flags |= SDL_WINDOW_RESIZABLE;
+	flags |= SDL_WINDOW_MAXIMIZED;
+//#endif // _DEBUG
+
+
 	m_Window = SDL_CreateWindow(WINDOW_TITLE, INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, flags);
 
 	if (m_Window == nullptr)

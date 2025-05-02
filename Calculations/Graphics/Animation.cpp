@@ -25,7 +25,7 @@ AnimationDetails::~AnimationDetails()
 	Duration = 0.0f;
 }
 
-AnimationController::AnimationController(const std::string& sheetPath, const std::vector<AnimationDetails>& animationDetails)
+AnimationController::AnimationController(const std::string& sheetPath, const int& maxFrameCount, const std::vector<AnimationDetails>& animationDetails)
 {
 	m_AnimationSheet = nullptr;
 	Texture::LoadPNG(sheetPath.c_str(), m_AnimationSheet);
@@ -37,13 +37,12 @@ AnimationController::AnimationController(const std::string& sheetPath, const std
 	m_TimeElapsed = 0.0f;
 	m_FrameSizeX = 0;
 	m_FrameSizeY = 0;
+	m_MaxFrameCount = maxFrameCount;
 	m_TimeBetweenFrames = m_AnimationDetails[m_CurrentAnimationIndex].Duration / m_AnimationDetails[m_CurrentAnimationIndex].FrameCount;
 }
 
 AnimationController::~AnimationController()
 {
-	m_AnimationSheet = nullptr;
-
 	if (m_AnimationSheet)
 	{
 		SDL_DestroyTexture(m_AnimationSheet);
@@ -58,7 +57,7 @@ SDL_Texture* AnimationController::GetSpriteSheet() const
 
 bool AnimationController::HasFinished()
 {
-	m_AnimationDetails[m_CurrentAnimationIndex].HasFinished = false;
+	return m_AnimationDetails[m_CurrentAnimationIndex].HasFinished;
 }
 
 void AnimationController::Start()
@@ -68,12 +67,17 @@ void AnimationController::Start()
 	m_TimeElapsed = 0.0f;
 }
 
-void AnimationController::SetAnimationId(const unsigned int& animation)
+void AnimationController::SetAnimationId(const unsigned int& animation, const bool& start)
 {
 	m_CurrentAnimationIndex = animation;
 	m_CurrentFrame = 0;
 	m_TimeElapsed = 0.0f;
 	m_TimeBetweenFrames = m_AnimationDetails[m_CurrentAnimationIndex].Duration / m_AnimationDetails[m_CurrentAnimationIndex].FrameCount;
+
+	if (start == true)
+	{
+		Start();
+	}
 }
 
 const unsigned int& AnimationController::GetCurrentAnimationId() const
@@ -101,8 +105,8 @@ void AnimationController::Update(float DeltaTime)
 	if (m_AnimationSheet != nullptr)
 	{
 		AnimationDetails& currentAnimation = m_AnimationDetails[m_CurrentAnimationIndex];
-		m_FrameSizeX = m_TextureWidth / (float)(currentAnimation.FrameCount);
-		m_FrameSizeY = m_TextureHeight / (float)(m_AnimationCount);
+		m_FrameSizeX = m_TextureWidth / m_MaxFrameCount;
+		m_FrameSizeY = m_TextureHeight / m_MaxFrameCount;
 
 		if (currentAnimation.HasFinished == false)
 		{

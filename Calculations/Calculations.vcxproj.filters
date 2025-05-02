@@ -235,36 +235,6 @@
     <Image Include="Content\Menu\PlayButton.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Content\Player\Cross.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Content\Player\Idle.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Content\Player\Jab.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Content\Player\Katana_Sheathe.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Content\Enemy\Cross.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Content\Enemy\Hurt.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Content\Enemy\Idle.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Content\Enemy\Jab.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Content\Enemy\Katana_Sheathe.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Content\Player\Hurt.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="Content\Screens\BattleScene_EnemyDied.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -286,16 +256,19 @@
     <Image Include="Content\Buttons\SubmitButton.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Content\Enemy\Death.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Content\Player\Death.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="Content\Promo\itch_cover_image.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Shop\PurchasedCardOverlay.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Spritesheets\Enemy.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Spritesheets\Layout.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Spritesheets\Player.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
