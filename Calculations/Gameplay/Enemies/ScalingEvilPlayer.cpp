@@ -20,7 +20,15 @@ ScalingEvilPlayer::ScalingEvilPlayer()
         /* katana */ AnimationDetails(10, c_EnemyAttackAnimationLength, false)
     };
 
-    LoadAnimation("Content/Spritesheets/Enemy.png", details);
+    details =
+    {
+        /* idle   */ AnimationDetails(4, 0.5f, true),
+        /* hurt   */ AnimationDetails(4,  0.5f, false),
+        /* death  */ AnimationDetails(4, 1.5f, false),
+        /* attack  */ AnimationDetails(12, 0.5f, false),
+    };
+
+    LoadAnimation("Content/Spritesheets/Goblin.png", details);
 
 }
 
