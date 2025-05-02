@@ -266,7 +266,6 @@ void BattleScene::Update(const float& deltaTime)
 							if (m_Enemy->GetAnimation() != nullptr)
 							{
 								m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::DEATH);
-								m_Enemy->GetAnimation()->Start();
 							}
 						}
 						else
@@ -277,7 +276,6 @@ void BattleScene::Update(const float& deltaTime)
 							if (m_Enemy->GetAnimation() != nullptr)
 							{
 								m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::IDLE);
-								m_Enemy->GetAnimation()->Start();
 							}
 						}
 					}
@@ -285,7 +283,6 @@ void BattleScene::Update(const float& deltaTime)
 					if (m_Player.GetAnimation() != nullptr)
 					{
 						m_Player.GetAnimation()->SetAnimationId(Player::ANIMATION_STATES::IDLE);
-						m_Player.GetAnimation()->Start();
 					}
 				}
 			}			
@@ -306,7 +303,6 @@ void BattleScene::Update(const float& deltaTime)
 				if(m_Player.GetAnimation() != nullptr)
 				{
 					m_Player.GetAnimation()->SetAnimationId(Player::ANIMATION_STATES::HURT);
-					m_Player.GetAnimation()->Start();
 				}
 
 				if (m_Enemy != nullptr)
@@ -314,7 +310,6 @@ void BattleScene::Update(const float& deltaTime)
 					if (m_Enemy->GetAnimation() != nullptr)
 					{
 						m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::ATTACK_1);
-						m_Enemy->GetAnimation()->Start();
 					}
 				}
 			}
@@ -330,9 +325,7 @@ void BattleScene::Update(const float& deltaTime)
 					if (m_Enemy->GetAnimation()->HasFinished() && m_Player.GetAnimation()->HasFinished())
 					{
 						m_BattleState = BattleScene::PLAYER_MOVE;
-
 						m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::IDLE);
-						m_Enemy->GetAnimation()->Start();
 
 						if (m_Player.GetIsAlive() == false)
 						{
@@ -341,7 +334,6 @@ void BattleScene::Update(const float& deltaTime)
 							if (m_Player.GetAnimation() != nullptr)
 							{
 								m_Player.GetAnimation()->SetAnimationId(Player::ANIMATION_STATES::DEATH);
-								m_Player.GetAnimation()->Start();
 							}
 						}
 						else
@@ -352,7 +344,6 @@ void BattleScene::Update(const float& deltaTime)
 							if (m_Player.GetAnimation() != nullptr)
 							{
 								m_Player.GetAnimation()->SetAnimationId(Player::ANIMATION_STATES::IDLE);
-								m_Player.GetAnimation()->Start();
 							}
 						}
 					}
@@ -523,16 +514,20 @@ void BattleScene::ApplyEquation()
 
 	if (output > 0)
 	{
+		ChooseRandomPlayerAttackAnimation();
 		m_Enemy->TakeDamage(output);
 	}
 	else
 	{
 		m_Player.Heal(output * -1);
+		
+		if (m_Player.GetAnimation() != nullptr)
+		{
+			m_Player.GetAnimation()->SetAnimationId(Player::ANIMATION_STATES::HEAL);
+		}
 	}
 
 	m_BattleState = BATTLE_STATE::PLAYER_ATTACK_ANIMATION;
-
-	ChooseRandomPlayerAttackAnimation();
 
 	m_Player.RemoveCardFromHand(m_SelectedNumbersForEquation[0]);
 	m_Player.RemoveCardFromHand(m_SelectedNumbersForEquation[1]);
@@ -554,7 +549,6 @@ void BattleScene::ChooseRandomPlayerAttackAnimation()
 	if (m_Player.GetAnimation() != nullptr)
 	{
 		m_Player.GetAnimation()->SetAnimationId(Player::ATTACK_1 + index);
-		m_Player.GetAnimation()->Start();
 	}
 
 	if (m_Enemy != nullptr)
@@ -562,7 +556,6 @@ void BattleScene::ChooseRandomPlayerAttackAnimation()
 		if (m_Enemy->GetAnimation() != nullptr)
 		{
 			m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::HURT);
-			m_Enemy->GetAnimation()->Start();
 		}
 	}
 }

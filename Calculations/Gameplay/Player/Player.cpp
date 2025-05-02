@@ -26,7 +26,8 @@ Player::Player()
         /* death  */ AnimationDetails(17, c_PlayerDyingAnimationLength, false),
         /* cross  */ AnimationDetails(7,  c_PlayerAttackAnimationLength, false),
         /* jab    */ AnimationDetails(10, c_PlayerAttackAnimationLength, false),
-        /* katana */ AnimationDetails(10, c_PlayerAttackAnimationLength, false)
+        /* katana */ AnimationDetails(10, c_PlayerAttackAnimationLength, false),
+        /* heal */ AnimationDetails(10, c_PlayerAttackAnimationLength, false)
     };
 
     LoadAnimation("Content/Spritesheets/Player.png", details);
