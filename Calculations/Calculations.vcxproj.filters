@@ -262,13 +262,16 @@
     <Image Include="Content\Shop\PurchasedCardOverlay.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Content\Spritesheets\Enemy.png">
+    <Image Include="Content\Spritesheets\Blue_Player.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Spritesheets\Layout.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Content\Spritesheets\Player.png">
+    <Image Include="Content\Spritesheets\White_Player.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Spritesheets\Goblin.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

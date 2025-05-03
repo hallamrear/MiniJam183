@@ -355,13 +355,16 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\Shop\PurchasedCardOverlay.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Content\Spritesheets\Enemy.png">
+    <Image Include="Content\Spritesheets\Blue_Player.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Spritesheets\Goblin.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\Spritesheets\Layout.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Content\Spritesheets\Player.png">
+    <Image Include="Content\Spritesheets\White_Player.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\TestNumberCard.png">
