@@ -200,6 +200,9 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Gameplay\Enemies\GreenPlayer.cpp">
+      <DeploymentContent>true</DeploymentContent>
+    </ClCompile>
     <ClCompile Include="Graphics\Animation.cpp" />
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\Collision.cpp" />
@@ -230,6 +233,9 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Gameplay\Enemies\GreenPlayer.h">
+      <DeploymentContent>true</DeploymentContent>
+    </ClInclude>
     <ClInclude Include="Graphics\Animation.h" />
     <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Collision.h" />

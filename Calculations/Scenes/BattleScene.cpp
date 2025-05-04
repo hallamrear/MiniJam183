@@ -4,6 +4,7 @@
 #include <System/Services.h>
 #include <System/Input.h>
 #include <Gameplay/Enemies/ScalingEvilPlayer.h>
+#include <Gameplay/Enemies/GreenPlayer.h>
 #include <System/Collision.h>
 #include <System/SceneManager.h>
 #include <Graphics/Animation.h>
@@ -165,7 +166,17 @@ void BattleScene::SetupNewBattle()
 		m_Enemy = nullptr;
 	}
 
-	m_Enemy = new ScalingEvilPlayer();
+	int roll = rand() % 100 + 1;
+
+	if (roll > 50)
+	{
+		m_Enemy = new ScalingEvilPlayer();
+	}
+	else
+	{
+		m_Enemy = new GreenPlayer();
+	}
+
 	m_Enemy->DetermineAttributes(m_Player);
 
 	m_Player.DrawNumberCardsIntoHand(m_Player.GetNumbersHandSize());
