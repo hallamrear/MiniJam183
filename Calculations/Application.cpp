@@ -4,11 +4,13 @@
 #include <System/SceneManager.h>
 #include <System/Input.h>
 #include <Gameplay/Player/Player.h>
+#include <Gameplay/World/WorldMap.h>
 
 Application::Application()
 {
 	m_InputManager = nullptr;
 	m_SceneManager = nullptr;
+	m_WorldMap = nullptr;
 	m_Player = nullptr;
 	m_Renderer = nullptr;
 	m_Window = nullptr;
@@ -46,7 +48,15 @@ bool Application::Initialise()
 	m_InputManager = new Input();
 	Services::ProvideInputManager(m_InputManager);
 
+	m_WorldMap = new WorldMap();
+	m_WorldMap->GenerateNewMap(time(NULL), 0);
+	Services::ProvideWorldMap(m_WorldMap);
+
 	m_SceneManager = new SceneManager();
+
+#ifdef _DEBUG
+	m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
+#endif
 
 	m_IsRunning = true;
 	return true;

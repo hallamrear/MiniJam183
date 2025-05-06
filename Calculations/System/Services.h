@@ -1,5 +1,6 @@
 #pragma once
 
+class WorldMap;
 class Player;
 class Input;
 
@@ -10,6 +11,7 @@ private:
 	static SDL_Window* m_Window;
 	static Player* m_Player;
 	static Input* m_InputManager;
+	static WorldMap* m_WorldMap;
 
 public:
 	static bool Initialise(SDL_Renderer* renderer, SDL_Window* window);
@@ -17,10 +19,12 @@ public:
 
 	static void ProvidePlayer(Player* player);
 	static void ProvideInputManager(Input* inputManager);
+	static void ProvideWorldMap(WorldMap* worldMap);
 
 	static Input& GetInputManager();
 	static SDL_Renderer& GetRenderer();
 	static SDL_Window& GetWindow();
 	static Player& GetPlayer();
+	static WorldMap& GetWorldMap();
 };
 

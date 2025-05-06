@@ -1,6 +1,7 @@
 #pragma once
 
 class SceneManager;
+class WorldMap;
 class Player;
 class Input;
 
@@ -9,6 +10,7 @@ class Application
 private:
 	Input* m_InputManager;
 	Player* m_Player;
+	WorldMap* m_WorldMap;
 	SDL_Renderer* m_Renderer;
 	SDL_Window* m_Window; 
 	SDL_WindowFlags m_WindowFlags;

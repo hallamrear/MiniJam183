@@ -34,6 +34,8 @@ Player::Player()
 
     m_OperandHand = std::vector<OperandCard*>();
     m_NumbersHand = std::vector<NumberCard*>();
+
+    HardReset();
 }
 
 Player::~Player()

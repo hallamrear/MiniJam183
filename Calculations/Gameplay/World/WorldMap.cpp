@@ -1,0 +1,196 @@
+#include "pch.h"
+#include "WorldMap.h"
+#include <Gameplay/World/MapNode.h>
+
+#include <Windows.h>
+#include <ConsoleApi2.h>
+
+WorldMap::WorldMap() : m_CurrentNode(m_Start)
+{
+	ResetMap();
+}
+
+WorldMap::~WorldMap()
+{
+	ResetMap();
+}
+
+void WorldMap::Print(const Path& path)
+{
+	std::cout << "______ b ______" << std::endl;
+
+	for (size_t y = 0; y < c_MapLength; y++)
+	{
+		for (size_t x = 0; x < c_MapWidth; x++)
+		{
+			MapNode::ENCOUNTER_TYPE type = m_Map[x][y].GetType();
+
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),  FOREGROUND_BLUE);
+
+			for (size_t i = 0; i < path.size(); i++)
+			{
+				const Position& pathPos = path[i].GetPosition();
+				int p_x = pathPos.first;
+				int p_y = pathPos.second;
+
+				if ((x == p_x) && (y == p_y))
+				{
+					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+					break;
+				}
+			}
+
+			switch (type)
+			{
+			case MapNode::ENCOUNTER_START:  std::cout << " b "; break;
+			case MapNode::ENCOUNTER_ENEMY:	std::cout << " E "; break;
+			case MapNode::ENCOUNTER_SHOP:	std::cout << " S "; break;
+			case MapNode::ENCOUNTER_REST:	std::cout << " R "; break;
+			case MapNode::ENCOUNTER_EVENT:	std::cout << " V "; break;
+			case MapNode::ENCOUNTER_ELITE:	std::cout << " L "; break;
+			case MapNode::ENCOUNTER_BOSS:   std::cout << " e "; break;
+
+			case MapNode::ENCOUNTER_UNKNOWN:   std::cout << " + "; break;
+
+			default:
+				assert("Should not have hit here.", false);
+				break;
+			}
+
+		}
+		std::cout << std::endl;
+	}
+
+	std::cout << "______ e ______" << std::endl;
+}
+
+void WorldMap::ResetMap()
+{
+	for (size_t y = 0; y < c_MapLength; y++)
+	{
+		for (size_t x = 0; x < c_MapWidth; x++)
+		{
+			m_Map[x][y].Reset();
+		}
+	}
+}
+
+void WorldMap::GenerateNewMap(const unsigned int& seed, const unsigned int& strength)
+{
+	srand(seed);
+
+	ResetMap();
+
+	int roomSelectionRange = (int)MapNode::ENCOUNTER_TYPE::ENCOUNTER_BOSS - (int)MapNode::ENCOUNTER_TYPE::ENCOUNTER_START;
+
+	for (size_t y = 0; y < c_MapLength; y++)
+	{
+		for (size_t x = 0; x < c_MapWidth; x++)
+		{
+			int r = rand() % (roomSelectionRange - 1) + 2;
+			m_Map[x][y] = MapNode(MapNode::ENCOUNTER_TYPE(r), {x, y});
+		}
+	}
+
+	std::vector<Path> paths = std::vector<Path>();
+	Path positions = Path();
+	Position currentStep = { 0, 0 };
+	int possiblePaths = 3;
+	for (size_t i = 0; i < possiblePaths; i++)
+	{
+		positions.clear();
+		currentStep.first = (c_MapWidth / 2) + 1;
+		currentStep.second = 0;
+
+		while (currentStep.second < c_MapLength)
+		{
+			MapNode& lastNode = m_Map[currentStep.first][currentStep.second];
+
+			int dir = rand() % 3;
+			switch (dir)
+			{
+				//Left
+				case 0:
+				{ 
+					currentStep.first - 1 < 0 ? currentStep.first++ : currentStep.first--;
+					lastNode.AddForwardNode(m_Map[currentStep.first][currentStep.second]);
+				}; 
+				break;
+
+				//Straight
+				case 1: { }; break;
+
+				//Right
+				case 2: 
+				{
+					(currentStep.first + 1 > (c_MapWidth - 1)) ? currentStep.first-- : currentStep.first++;
+					lastNode.AddForwardNode(m_Map[currentStep.first][currentStep.second]);
+				};
+				break;
+
+				default: break;	
+			}
+			
+			positions.push_back(m_Map[currentStep.first][currentStep.second]);
+			currentStep.second++;
+		}
+
+		Print(positions);
+		paths.push_back(positions);
+	}
+
+	for (size_t y = 0; y < c_MapLength; y++)
+	{
+		for (size_t x = 0; x < c_MapWidth; x++)
+		{
+			m_Map[x][y].Reset();
+		}
+	}
+
+	Path mergedPaths = Path();
+	for (auto& itr : paths)
+	{
+		for (size_t i = 0; i < itr.size(); i++)
+		{
+			auto found = std::find(mergedPaths.begin(), mergedPaths.end(), itr[i]);
+			if (found == mergedPaths.end())
+			{
+				mergedPaths.push_back(itr[i]);
+				const Position& pos = itr[i].GetPosition();
+				m_Map[pos.first][pos.second] = itr[i];
+			}
+			else
+			{
+				const std::vector<const MapNode*>& nodes = itr[i].GetNodes();
+				for (size_t n = 0; n < nodes.size(); n++)
+				{
+					found->AddForwardNode(*nodes[n]);
+				}
+			}
+		}
+	}
+
+	std::cout << "\nMERGED\n" << std::endl;
+
+	Print(mergedPaths);
+
+
+
+
+
+
+
+
+
+
+}
+
+const MapNode& WorldMap::GetMapNode(const Position& position) const
+{
+	return m_Map[position.first][position.second];
+}
+
+const MapNode& WorldMap::GetCurrentNode() const
+{
+	return m_CurrentNode;
+}

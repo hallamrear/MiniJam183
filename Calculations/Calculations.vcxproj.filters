@@ -87,6 +87,12 @@
     <ClCompile Include="Gameplay\Enemies\GreenPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\World\WorldMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\World\MapNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -156,6 +162,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\Enemies\GreenPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\World\WorldMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\World\MapNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -278,6 +290,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Spritesheets\Goblin.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Map\Temporary.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

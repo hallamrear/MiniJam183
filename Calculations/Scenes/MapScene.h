@@ -1,8 +1,14 @@
 #pragma once
 #include <Scenes/Scene.h>
 
+class WorldMap;
+
 class MapScene : public Scene
 {
+private:
+	WorldMap& m_WorldMap;
+	SDL_Texture* texture;
+
 public:
 	MapScene(SceneManager& manager);
 	~MapScene();
