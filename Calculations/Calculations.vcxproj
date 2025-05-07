@@ -335,6 +335,9 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\cat2.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Content\Map\Cross.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\Map\Temporary.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>

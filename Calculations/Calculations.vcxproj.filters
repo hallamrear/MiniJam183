@@ -295,5 +295,8 @@
     <Image Include="Content\Map\Temporary.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Content\Map\Cross.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
