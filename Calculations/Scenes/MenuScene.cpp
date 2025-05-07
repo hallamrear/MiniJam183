@@ -78,7 +78,7 @@ void MenuScene::Update(const float& deltaTime)
 	{
 		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_PlayButtonRect))
 		{
-			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE);
+			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
 		}
 		else if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_ExitButtonRect))
 		{

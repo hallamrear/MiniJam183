@@ -54,7 +54,7 @@ bool Application::Initialise()
 	m_SceneManager = new SceneManager();
 
 #ifdef _DEBUG
-	m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
+	//m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
 #endif
 
 	m_IsRunning = true;

@@ -32,8 +32,6 @@ public:
 	const std::vector<const MapNode*>& GetNodes() const;
 	const ENCOUNTER_TYPE& GetType() const;
 	const Position& GetPosition() const;
-	void Render(SDL_Renderer& renderer) const;
-
 	bool operator==(const MapNode& rhs) const;
 };
 

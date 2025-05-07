@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MapScene.h"
 #include <System/Services.h>
+#include <System/SceneManager.h>
 #include <Graphics/Texture.h>
 #include <System/Collision.h>
 #include <System/Input.h>
@@ -8,6 +9,8 @@
 MapScene::MapScene(SceneManager& manager) : Scene(manager), m_WorldMap(Services::GetWorldMap())
 {
 	m_SelectedNodeIndex = -1;
+	m_CanSelectButton = true;
+	m_ButtonPressCooldown = -1.0f;
 
 	for (size_t i = 0; i < 50; i++)
 	{
@@ -102,10 +105,13 @@ void MapScene::RecalculateButtonRects()
 
 	if (m_SelectedNodeIndex != -1)
 	{
-		const int x = m_SelectedNodeIndex % c_MapWidth;
-		const int y = floor(m_SelectedNodeIndex / c_MapWidth);
-		float change = ((y * m_TextureHeight) + (y * padding));
-		offset_y -= change;
+		int x = m_SelectedNodeIndex % c_MapWidth;
+		int y = floor(m_SelectedNodeIndex / c_MapWidth);
+
+		x = m_WorldMap.GetCurrentNode().GetPosition().first;
+		y = m_WorldMap.GetCurrentNode().GetPosition().second;
+
+		offset_y -= ((y * m_TextureHeight) + (y * padding));
 	}
 
 	int index = 0;
@@ -146,8 +152,6 @@ void MapScene::Update(const float& deltaTime)
 		{
 			m_CanSelectButton = true;
 		}
-
-		SDL_Log("%f", m_ButtonPressCooldown);
 	}
 
 	for (size_t i = 0; i < mapSize; i++)
@@ -159,6 +163,7 @@ void MapScene::Update(const float& deltaTime)
 			m_SelectedNodeIndex = i;
 			m_CanSelectButton = false;
 			m_ButtonPressCooldown = 0.5f;
+			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE);
 			break;
 		}
 	}
@@ -176,7 +181,7 @@ void MapScene::Update(const float& deltaTime)
 void MapScene::Render(SDL_Renderer& renderer) const
 {
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
-	SDL_RenderDebugText(&renderer, 10, 10, "MAP SCENE");
+	SDL_RenderDebugText(&renderer, 10, 10, "SCENE_IDENTIFIER::MAP_SCENE");
 
 	const int& currentYPosition = m_WorldMap.GetCurrentNode().GetPosition().second;
 
@@ -198,13 +203,11 @@ void MapScene::Render(SDL_Renderer& renderer) const
 				continue;
 			}
 
+			SDL_SetRenderDrawColor(&renderer, 255, 0, 0, 255);
+
 			if (index == m_SelectedNodeIndex)
 			{
 				SDL_SetRenderDrawColor(&renderer, 0, 255, 0, 255);
-			}
-			else
-			{
-				SDL_SetRenderDrawColor(&renderer, 255, 0, 0, 255);
 			}
 
 			SDL_RenderFillRect(&renderer, &drawRect);
@@ -219,17 +222,15 @@ void MapScene::Render(SDL_Renderer& renderer) const
 
 			switch (node.GetType())
 			{
-			case MapNode::ENCOUNTER_START:	 str = "b"; break;
-			case MapNode::ENCOUNTER_ENEMY:	 str = "E"; break;
-			case MapNode::ENCOUNTER_SHOP:	 str = "S"; break;
-			case MapNode::ENCOUNTER_REST:	 str = "R"; break;
-			case MapNode::ENCOUNTER_EVENT:	 str = "V"; break;
-			case MapNode::ENCOUNTER_ELITE:	 str = "L"; break;
-			case MapNode::ENCOUNTER_BOSS:	 str = "e"; break;
-			case MapNode::ENCOUNTER_UNKNOWN: str = "+"; break;
-
-			default:
-				break;
+				case MapNode::ENCOUNTER_START:	 str = "b"; break;
+				case MapNode::ENCOUNTER_ENEMY:	 str = "E"; break;
+				case MapNode::ENCOUNTER_SHOP:	 str = "S"; break;
+				case MapNode::ENCOUNTER_REST:	 str = "R"; break;
+				case MapNode::ENCOUNTER_EVENT:	 str = "V"; break;
+				case MapNode::ENCOUNTER_ELITE:	 str = "L"; break;
+				case MapNode::ENCOUNTER_BOSS:	 str = "e"; break;
+				case MapNode::ENCOUNTER_UNKNOWN: str = "+"; break;
+				default: break;
 			}
 
 			SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);

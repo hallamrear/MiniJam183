@@ -150,7 +150,7 @@ void ShopScene::CheckButtonClicks()
 		}
 		else if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_ExitBattleButtonRect))
 		{
-			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE);
+			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
 		}
 	}
 }
