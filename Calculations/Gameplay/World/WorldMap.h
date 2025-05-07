@@ -10,6 +10,7 @@ class WorldMap
 private:
 	MapNode m_Map[c_MapWidth][c_MapLength];
 	MapNode m_Start;
+	MapNode m_End;
 	MapNode& m_CurrentNode;
 
 public:
@@ -20,6 +21,7 @@ public:
 	void Print(const Path& path);
 	void GenerateNewMap(const unsigned int& seed, const unsigned int& strength);
 	const MapNode& GetMapNode(const Position& position) const;
+	void SetCurrentNode(const MapNode& node);
 	const MapNode& GetCurrentNode() const;
 };
 

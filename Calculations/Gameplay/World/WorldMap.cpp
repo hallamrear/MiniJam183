@@ -7,6 +7,8 @@
 
 WorldMap::WorldMap() : m_CurrentNode(m_Start)
 {
+	m_Start = MapNode(MapNode::ENCOUNTER_START, Position((c_MapWidth / 2) + 1, -1));
+	m_End = MapNode(MapNode::ENCOUNTER_BOSS, Position((c_MapWidth / 2) + 1, c_MapLength));
 	ResetMap();
 }
 
@@ -66,6 +68,12 @@ void WorldMap::Print(const Path& path)
 
 void WorldMap::ResetMap()
 {
+	m_Start.Reset();
+	m_End.Reset();
+
+	m_Start = MapNode(MapNode::ENCOUNTER_START, Position((c_MapWidth / 2) + 1, -1));
+	m_End = MapNode(MapNode::ENCOUNTER_BOSS, Position((c_MapWidth / 2) + 1, c_MapLength));
+
 	for (size_t y = 0; y < c_MapLength; y++)
 	{
 		for (size_t x = 0; x < c_MapWidth; x++)
@@ -80,6 +88,8 @@ void WorldMap::GenerateNewMap(const unsigned int& seed, const unsigned int& stre
 	srand(seed);
 
 	ResetMap();
+
+	SDL_Log("New Map Generation %ui", seed);
 
 	int roomSelectionRange = (int)MapNode::ENCOUNTER_TYPE::ENCOUNTER_BOSS - (int)MapNode::ENCOUNTER_TYPE::ENCOUNTER_START;
 
@@ -113,7 +123,6 @@ void WorldMap::GenerateNewMap(const unsigned int& seed, const unsigned int& stre
 				case 0:
 				{ 
 					currentStep.first - 1 < 0 ? currentStep.first++ : currentStep.first--;
-					lastNode.AddForwardNode(m_Map[currentStep.first][currentStep.second]);
 				}; 
 				break;
 
@@ -124,7 +133,6 @@ void WorldMap::GenerateNewMap(const unsigned int& seed, const unsigned int& stre
 				case 2: 
 				{
 					(currentStep.first + 1 > (c_MapWidth - 1)) ? currentStep.first-- : currentStep.first++;
-					lastNode.AddForwardNode(m_Map[currentStep.first][currentStep.second]);
 				};
 				break;
 
@@ -159,30 +167,10 @@ void WorldMap::GenerateNewMap(const unsigned int& seed, const unsigned int& stre
 				const Position& pos = itr[i].GetPosition();
 				m_Map[pos.first][pos.second] = itr[i];
 			}
-			else
-			{
-				const std::vector<const MapNode*>& nodes = itr[i].GetNodes();
-				for (size_t n = 0; n < nodes.size(); n++)
-				{
-					found->AddForwardNode(*nodes[n]);
-				}
-			}
 		}
 	}
 
-	std::cout << "\nMERGED\n" << std::endl;
-
 	Print(mergedPaths);
-
-
-
-
-
-
-
-
-
-
 }
 
 const MapNode& WorldMap::GetMapNode(const Position& position) const
@@ -193,4 +181,9 @@ const MapNode& WorldMap::GetMapNode(const Position& position) const
 const MapNode& WorldMap::GetCurrentNode() const
 {
 	return m_CurrentNode;
+}
+
+void WorldMap::SetCurrentNode(const MapNode& node)
+{
+	m_CurrentNode = node;
 }

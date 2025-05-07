@@ -2,35 +2,65 @@
 #include "MapScene.h"
 #include <System/Services.h>
 #include <Graphics/Texture.h>
-#include <Gameplay/World/WorldMap.h>
-
-float t_w = 0.0f;
-float t_h = 0.0f;
+#include <System/Collision.h>
+#include <System/Input.h>
 
 MapScene::MapScene(SceneManager& manager) : Scene(manager), m_WorldMap(Services::GetWorldMap())
 {
-	texture = nullptr;
-	Texture::LoadPNG("Content/Map/Temporary.png", texture);
-	Texture::QueryTexture(texture, t_w, t_h);
+	m_SelectedNodeIndex = -1;
+
+	for (size_t i = 0; i < 50; i++)
+	{
+		m_NodeButtons[i] = SDL_FRect{-1.0f, -1.0f, 0.0f, 0.0f};
+	}
+
+	m_CellIconTexture = nullptr;
+	Texture::LoadPNG("Content/Map/Temporary.png", m_CellIconTexture);
+	m_CrossTexture = nullptr;
+	Texture::LoadPNG("Content/Map/Cross.png", m_CrossTexture);
+
+	m_TextureWidth = 0.0f;
+	m_TextureHeight = 0.0f;
+	Texture::QueryTexture(m_CellIconTexture, m_TextureWidth, m_TextureHeight);
 }
 
 MapScene::~MapScene()
 {
-	if(texture != nullptr)
+	m_SelectedNodeIndex = -1;
+	for (size_t i = 0; i < 50; i++)
 	{
-		SDL_DestroyTexture(texture);
-		texture = nullptr;
-	}	
+		m_NodeButtons[i] = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
+	}
+
+	if (m_CellIconTexture != nullptr)
+	{
+		SDL_DestroyTexture(m_CellIconTexture);
+		m_CellIconTexture = nullptr;
+	}
+
+	if (m_CrossTexture != nullptr)
+	{
+		SDL_DestroyTexture(m_CrossTexture);
+		m_CrossTexture = nullptr;
+	}
 }
 
 void MapScene::OnEnter()
 {
+	m_WorldMap.GenerateNewMap(time(NULL), 0);
+	RecalculateButtonRects();
 }
 
 void MapScene::HandleEvent(const SDL_Event& e)
 {
 	switch (e.type)
 	{
+	case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+	{
+		RecalculateButtonRects();
+	}
+	break;
+
 	case SDL_EVENT_KEY_UP:
 	{
 		switch (e.key.key)
@@ -38,6 +68,7 @@ void MapScene::HandleEvent(const SDL_Event& e)
 		case SDLK_P:
 		{
 			m_WorldMap.GenerateNewMap(time(NULL), 0);
+			RecalculateButtonRects();
 		}
 		break;
 
@@ -54,12 +85,92 @@ void MapScene::HandleEvent(const SDL_Event& e)
 
 void MapScene::OnExit()
 {
+	m_SelectedNodeIndex = -1;
+}
 
+void MapScene::RecalculateButtonRects()
+{
+	int window_w = 0;
+	int window_h = 0;
+	SDL_GetWindowSize(&Services::GetWindow(), &window_w, &window_h);
+
+	const float padding = 8.0f;
+	const float totalWidth = c_MapWidth * m_TextureWidth + (c_MapWidth * padding);
+	const float totalHeight = c_MapLength * m_TextureHeight + (c_MapLength * padding);
+	float offset_x = (window_w / 2) - (totalWidth / 2) - (m_TextureWidth / 2);
+	float offset_y = (window_h / 2) - (m_TextureHeight / 2);
+
+	if (m_SelectedNodeIndex != -1)
+	{
+		const int x = m_SelectedNodeIndex % c_MapWidth;
+		const int y = floor(m_SelectedNodeIndex / c_MapWidth);
+		float change = ((y * m_TextureHeight) + (y * padding));
+		offset_y -= change;
+	}
+
+	int index = 0;
+	for (size_t y = 0; y < c_MapLength; y++)
+	{
+		for (size_t x = 0; x < c_MapWidth; x++)
+		{
+			const MapNode& node = m_WorldMap.GetMapNode({ x, y });
+			index = (y * c_MapWidth) + x;
+
+			if (node.GetType() == MapNode::ENCOUNTER_TYPE::ENCOUNTER_UNKNOWN)
+			{
+				m_NodeButtons[index].x = -1.0f;
+				m_NodeButtons[index].y = -1.0f;
+				m_NodeButtons[index].w = -1.0f;
+				m_NodeButtons[index].h = -1.0f;
+				continue;
+			}
+
+			m_NodeButtons[index].x = offset_x + (x * m_TextureWidth) + (x * padding);
+			m_NodeButtons[index].y = offset_y + (y * m_TextureHeight) + (y * padding);
+			m_NodeButtons[index].w = m_TextureWidth;
+			m_NodeButtons[index].h = m_TextureHeight;
+		}
+	}
 }
 
 void MapScene::Update(const float& deltaTime)
 {
+	constexpr const size_t mapSize = c_MapLength * c_MapWidth;
+	m_SelectedNodeIndex = -1;
 
+	if (m_CanSelectButton == false)
+	{
+		m_ButtonPressCooldown -= deltaTime;
+
+		if (m_ButtonPressCooldown <= 0.0f)
+		{
+			m_CanSelectButton = true;
+		}
+
+		SDL_Log("%f", m_ButtonPressCooldown);
+	}
+
+	for (size_t i = 0; i < mapSize; i++)
+	{
+		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_NodeButtons[i])
+			&& m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON)
+			&& m_CanSelectButton)
+		{
+			m_SelectedNodeIndex = i;
+			m_CanSelectButton = false;
+			m_ButtonPressCooldown = 0.5f;
+			break;
+		}
+	}
+
+	//If a node has been selected,
+	if (m_SelectedNodeIndex != -1)
+	{
+		const int x = m_SelectedNodeIndex % c_MapWidth;
+		const int y = m_SelectedNodeIndex / c_MapWidth;
+		m_WorldMap.SetCurrentNode(m_WorldMap.GetMapNode({ x, y }));
+		RecalculateButtonRects();
+	}
 }
 
 void MapScene::Render(SDL_Renderer& renderer) const
@@ -67,19 +178,27 @@ void MapScene::Render(SDL_Renderer& renderer) const
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_RenderDebugText(&renderer, 10, 10, "MAP SCENE");
 
-	SDL_FRect r;
-	r.w = t_w;
-	r.h = t_h;
+	const int& currentYPosition = m_WorldMap.GetCurrentNode().GetPosition().second;
 
-	for (size_t y = 0; y < c_MapLength; y++)
+	for (int y = 0; y < c_MapLength; y++)
 	{
-		for (size_t x = 0; x < c_MapWidth; x++)
+		for (int x = 0; x < c_MapWidth; x++)
 		{
-			r.x = 300.0f + (r.w * x);
-			r.y = 300.0f + (r.h * y);
+			const MapNode& node = m_WorldMap.GetMapNode({ x, y }); 
+			if (node.GetType() == MapNode::ENCOUNTER_TYPE::ENCOUNTER_UNKNOWN)
+			{
+				continue;
+			}
 
-			const MapNode& node = m_WorldMap.GetMapNode({ x, y });
-			if (node.GetType() != MapNode::ENCOUNTER_UNKNOWN)
+			const size_t index = (y * c_MapWidth) + x;
+			const SDL_FRect& drawRect = m_NodeButtons[index];
+
+			if (drawRect.x == -1.0f || drawRect.y == -1.0f)
+			{
+				continue;
+			}
+
+			if (index == m_SelectedNodeIndex)
 			{
 				SDL_SetRenderDrawColor(&renderer, 0, 255, 0, 255);
 			}
@@ -88,41 +207,34 @@ void MapScene::Render(SDL_Renderer& renderer) const
 				SDL_SetRenderDrawColor(&renderer, 255, 0, 0, 255);
 			}
 
-			SDL_RenderFillRect(&renderer, &r);
+			SDL_RenderFillRect(&renderer, &drawRect);
+			SDL_RenderTexture(&renderer, m_CellIconTexture, nullptr, &drawRect);
+
+			if (y < currentYPosition)
+			{
+				SDL_RenderTexture(&renderer, m_CrossTexture, nullptr, &drawRect);
+			}
 
 			std::string str = "\0";
 
 			switch (node.GetType())
 			{
-				case MapNode::ENCOUNTER_START:	 str = "b"; break;
-				case MapNode::ENCOUNTER_ENEMY:	 str = "E"; break;
-				case MapNode::ENCOUNTER_SHOP:	 str = "S"; break;
-				case MapNode::ENCOUNTER_REST:	 str = "R"; break;
-				case MapNode::ENCOUNTER_EVENT:	 str = "V"; break;
-				case MapNode::ENCOUNTER_ELITE:	 str = "L"; break;
-				case MapNode::ENCOUNTER_BOSS:	 str = "e"; break;
-				case MapNode::ENCOUNTER_UNKNOWN: str = "+"; break;
+			case MapNode::ENCOUNTER_START:	 str = "b"; break;
+			case MapNode::ENCOUNTER_ENEMY:	 str = "E"; break;
+			case MapNode::ENCOUNTER_SHOP:	 str = "S"; break;
+			case MapNode::ENCOUNTER_REST:	 str = "R"; break;
+			case MapNode::ENCOUNTER_EVENT:	 str = "V"; break;
+			case MapNode::ENCOUNTER_ELITE:	 str = "L"; break;
+			case MapNode::ENCOUNTER_BOSS:	 str = "e"; break;
+			case MapNode::ENCOUNTER_UNKNOWN: str = "+"; break;
 
-				default:
-					break;
+			default:
+				break;
 			}
 
 			SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
-			SDL_RenderDebugText(&renderer, r.x + ((r.w / 2) - 4), r.y + ((r.h / 2) - 4), str.c_str());
+			SDL_SetRenderDrawColor(&renderer, 0, 0, 255, 255);
+			SDL_RenderDebugText(&renderer, drawRect.x + ((drawRect.w / 2) - 4), drawRect.y + ((drawRect.h / 2) - 4), str.c_str());
 		}
 	}
-
-	r.w *= c_MapWidth;
-	r.x = 300.0f;
-	r.y = 300.0f - (2.0f * r.h);
-	SDL_SetRenderDrawColor(&renderer, 255, 0, 0, 255);
-	SDL_RenderFillRect(&renderer, &r);
-	SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
-	SDL_RenderDebugText(&renderer, r.x + ((r.w / 2) - 4), r.y + ((r.h / 2) - 4), "Boss");
-
-	r.y = 300.0f + (r.h * c_MapLength) + (r.h);
-	SDL_SetRenderDrawColor(&renderer, 0, 255, 0, 255);
-	SDL_RenderFillRect(&renderer, &r);
-	SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
-	SDL_RenderDebugText(&renderer, r.x + ((r.w / 2) - 4), r.y + ((r.h / 2) - 4), "Start");
 }

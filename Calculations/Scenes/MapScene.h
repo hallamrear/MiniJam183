@@ -1,13 +1,21 @@
 #pragma once
 #include <Scenes/Scene.h>
-
-class WorldMap;
+#include <Gameplay/World/WorldMap.h>
 
 class MapScene : public Scene
 {
 private:
 	WorldMap& m_WorldMap;
-	SDL_Texture* texture;
+	SDL_Texture* m_CellIconTexture;
+	SDL_Texture* m_CrossTexture;
+	float m_TextureWidth = 0.0f;
+	float m_TextureHeight = 0.0f;
+
+	int m_SelectedNodeIndex;
+	float m_ButtonPressCooldown;
+	bool m_CanSelectButton;
+	SDL_FRect m_NodeButtons[c_MapLength * c_MapWidth];
+	void RecalculateButtonRects();
 
 public:
 	MapScene(SceneManager& manager);

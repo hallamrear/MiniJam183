@@ -21,7 +21,6 @@ private:
 protected:
 	ENCOUNTER_TYPE m_Type;
 	Position m_Position;
-	std::vector<const MapNode*> m_Nodes;
 
 public:
 	MapNode();

@@ -49,7 +49,6 @@ bool Application::Initialise()
 	Services::ProvideInputManager(m_InputManager);
 
 	m_WorldMap = new WorldMap();
-	m_WorldMap->GenerateNewMap(time(NULL), 0);
 	Services::ProvideWorldMap(m_WorldMap);
 
 	m_SceneManager = new SceneManager();
