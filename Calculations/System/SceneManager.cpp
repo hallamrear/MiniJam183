@@ -4,6 +4,8 @@
 #include <Scenes/BattleScene.h>
 #include <Scenes/ShopScene.h>
 #include <Scenes/MapScene.h>
+#include <Scenes/RandomEventScene.h>
+#include <Scenes/RestScene.h>
 
 SceneManager::SceneManager()
 {
@@ -14,6 +16,8 @@ SceneManager::SceneManager()
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_BATTLE, new BattleScene(*this) });
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_SHOP, new ShopScene(*this) });
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_MAP, new MapScene(*this) });
+	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_RANDOM_EVENT, new RandomEventScene(*this) });
+	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_REST, new RestScene(*this) });
 
 	ChangeScene(SCENE_IDENTIFIER::SCENE_MAIN_MENU);
 }

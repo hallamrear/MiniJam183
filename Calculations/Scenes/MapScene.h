@@ -6,10 +6,10 @@ class MapScene : public Scene
 {
 private:
 	WorldMap& m_WorldMap;
-	SDL_Texture* m_CellIconTexture;
+	SDL_Texture* m_EncounterAtlas;
 	SDL_Texture* m_CrossTexture;
-	float m_TextureWidth = 0.0f;
-	float m_TextureHeight = 0.0f;
+	const float c_EncounterImageWidth;
+	const float c_EncounterImageHeight;
 
 	int m_SelectedNodeIndex;
 	float m_ButtonPressCooldown;

@@ -93,6 +93,12 @@
     <ClCompile Include="Gameplay\World\MapNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\RestScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\RandomEventScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -168,6 +174,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\World\MapNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\RestScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\RandomEventScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -259,7 +271,7 @@
     <Image Include="Content\Screens\BattleScene_ExitToMenuButton.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Content\Screens\BattleScene_GoToShopButton.png">
+    <Image Include="Content\Screens\BattleScene_GoToMapButton.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Screens\BattleScene_PlayerDied.png">
@@ -296,6 +308,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Map\Cross.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Spritesheets\Green_Player.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Map\EncounterAtlas.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

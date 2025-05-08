@@ -50,7 +50,7 @@ BattleScene::BattleScene(SceneManager& manager)
 	m_BattleState = BATTLE_STATE::PLAYER_MOVE;
 	m_CanPickCard = true;
 
-	m_GoToShopButtonRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
+	m_GoToMapButtonRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	m_CharacterDrawRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	m_EnemyDrawRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	m_SelectedCardDrawRects[0] = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
@@ -77,8 +77,8 @@ BattleScene::BattleScene(SceneManager& manager)
 	Texture::LoadPNG("Content/MissingCard.png", m_MissingCardTexture);
 	m_PlayerDeathTextTexture = nullptr;
 	Texture::LoadPNG("Content/Screens/BattleScene_PlayerDied.png", m_PlayerDeathTextTexture);
-	m_GoToShopButtonTexture = nullptr;
-	Texture::LoadPNG("Content/Screens/BattleScene_GoToShopButton.png", m_GoToShopButtonTexture);
+	m_GoToMapButtonTexture = nullptr;
+	Texture::LoadPNG("Content/Screens/BattleScene_GoToMapButton.png", m_GoToMapButtonTexture);
 	m_ExitButtonTexture = nullptr;
 	Texture::LoadPNG("Content/Screens/BattleScene_ExitToMenuButton.png", m_ExitButtonTexture);
 	m_EnemyDeathTextTexture = nullptr;
@@ -399,15 +399,15 @@ void BattleScene::Update(const float& deltaTime)
 
 			m_EndScreenMessageRect = SDL_FRect{ 0.0f, 0.0f, (float)m_WindowWidth,(float)m_WindowHeight };
 			m_ExitButtonRect =		SDL_FRect{ m_WindowCenterX - ((buttonScaledWidth * 3) / 2), m_WindowHeight - (2 * buttonScaledHeight), buttonScaledWidth, buttonScaledHeight };
-			m_GoToShopButtonRect =  SDL_FRect{ m_WindowCenterX + ((buttonScaledWidth * 3) / 2), m_WindowHeight - (2 * buttonScaledHeight), buttonScaledWidth, buttonScaledHeight };
+			m_GoToMapButtonRect =  SDL_FRect{ m_WindowCenterX + ((buttonScaledWidth * 3) / 2), m_WindowHeight - (2 * buttonScaledHeight), buttonScaledWidth, buttonScaledHeight };
 
 			if (m_Enemy->GetIsAlive() == false)
 			{
 				if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
 				{
-					if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_GoToShopButtonRect))
+					if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_GoToMapButtonRect))
 					{
-						m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_SHOP);
+						m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
 					}
 					else if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_ExitButtonRect))
 					{
@@ -835,8 +835,8 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 				SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 				SDL_RenderTexture(&renderer, m_ExitButtonTexture, nullptr, &m_ExitButtonRect);
 				SDL_RenderRect(&renderer, &m_ExitButtonRect);
-				SDL_RenderTexture(&renderer, m_GoToShopButtonTexture, nullptr, &m_GoToShopButtonRect);
-				SDL_RenderRect(&renderer, &m_GoToShopButtonRect);
+				SDL_RenderTexture(&renderer, m_GoToMapButtonTexture, nullptr, &m_GoToMapButtonRect);
+				SDL_RenderRect(&renderer, &m_GoToMapButtonRect);
 			}
 			else
 			{

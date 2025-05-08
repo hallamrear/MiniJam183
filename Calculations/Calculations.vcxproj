@@ -205,6 +205,8 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     </ClCompile>
     <ClCompile Include="Graphics\Animation.cpp" />
     <ClCompile Include="Gameplay\World\MapNode.cpp" />
+    <ClCompile Include="Scenes\RandomEventScene.cpp" />
+    <ClCompile Include="Scenes\RestScene.cpp" />
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\Collision.cpp" />
     <ClCompile Include="Gameplay\Cards\Card.cpp" />
@@ -240,6 +242,8 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     </ClInclude>
     <ClInclude Include="Graphics\Animation.h" />
     <ClInclude Include="Gameplay\World\MapNode.h" />
+    <ClInclude Include="Scenes\RandomEventScene.h" />
+    <ClInclude Include="Scenes\RestScene.h" />
     <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Collision.h" />
     <ClInclude Include="Gameplay\Cards\Card.h" />
@@ -338,6 +342,9 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\Map\Cross.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Content\Map\EncounterAtlas.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\Map\Temporary.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
@@ -362,7 +369,7 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\Screens\BattleScene_ExitToMenuButton.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Content\Screens\BattleScene_GoToShopButton.png">
+    <Image Include="Content\Screens\BattleScene_GoToMapButton.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\Screens\BattleScene_PlayerDied.png">
@@ -375,6 +382,9 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\Spritesheets\Goblin.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Spritesheets\Green_Player.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\Spritesheets\Layout.png">

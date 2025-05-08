@@ -31,7 +31,7 @@ private:
 	Enemy* m_Enemy;
 	float m_EnemyPseudoThinkingTimeElapsed;
 
-	SDL_Texture* m_GoToShopButtonTexture;
+	SDL_Texture* m_GoToMapButtonTexture;
 	SDL_Texture* m_ExitButtonTexture;
 	SDL_Texture* m_MissingCardTexture;
 	SDL_Texture* m_PlayerDeathTextTexture;
@@ -74,7 +74,7 @@ private:
 	void ApplyEquation();
 
 	SDL_FRect m_ExitButtonRect;
-	SDL_FRect m_GoToShopButtonRect;
+	SDL_FRect m_GoToMapButtonRect;
 	SDL_FRect m_DiscardEquationButtonRect;
 	SDL_FRect m_SubmitButtonRect;
 	SDL_FRect m_ClearEquationButtonRect;

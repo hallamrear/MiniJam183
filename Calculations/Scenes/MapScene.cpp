@@ -6,7 +6,9 @@
 #include <System/Collision.h>
 #include <System/Input.h>
 
-MapScene::MapScene(SceneManager& manager) : Scene(manager), m_WorldMap(Services::GetWorldMap())
+MapScene::MapScene(SceneManager& manager) : Scene(manager),
+	m_WorldMap(Services::GetWorldMap()),
+	c_EncounterImageWidth(64.0f), c_EncounterImageHeight(64.0f)
 {
 	m_SelectedNodeIndex = -1;
 	m_CanSelectButton = true;
@@ -17,14 +19,10 @@ MapScene::MapScene(SceneManager& manager) : Scene(manager), m_WorldMap(Services:
 		m_NodeButtons[i] = SDL_FRect{-1.0f, -1.0f, 0.0f, 0.0f};
 	}
 
-	m_CellIconTexture = nullptr;
-	Texture::LoadPNG("Content/Map/Temporary.png", m_CellIconTexture);
+	m_EncounterAtlas = nullptr;
+	Texture::LoadPNG("Content/Map/EncounterAtlas.png", m_EncounterAtlas);
 	m_CrossTexture = nullptr;
 	Texture::LoadPNG("Content/Map/Cross.png", m_CrossTexture);
-
-	m_TextureWidth = 0.0f;
-	m_TextureHeight = 0.0f;
-	Texture::QueryTexture(m_CellIconTexture, m_TextureWidth, m_TextureHeight);
 }
 
 MapScene::~MapScene()
@@ -35,10 +33,10 @@ MapScene::~MapScene()
 		m_NodeButtons[i] = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	}
 
-	if (m_CellIconTexture != nullptr)
+	if (m_EncounterAtlas != nullptr)
 	{
-		SDL_DestroyTexture(m_CellIconTexture);
-		m_CellIconTexture = nullptr;
+		SDL_DestroyTexture(m_EncounterAtlas);
+		m_EncounterAtlas = nullptr;
 	}
 
 	if (m_CrossTexture != nullptr)
@@ -50,7 +48,8 @@ MapScene::~MapScene()
 
 void MapScene::OnEnter()
 {
-	m_WorldMap.GenerateNewMap(time(NULL), 0);
+	m_CanSelectButton = false;
+	m_ButtonPressCooldown = 2.0f;
 	RecalculateButtonRects();
 }
 
@@ -97,22 +96,16 @@ void MapScene::RecalculateButtonRects()
 	int window_h = 0;
 	SDL_GetWindowSize(&Services::GetWindow(), &window_w, &window_h);
 
-	const float padding = 8.0f;
-	const float totalWidth = c_MapWidth * m_TextureWidth + (c_MapWidth * padding);
-	const float totalHeight = c_MapLength * m_TextureHeight + (c_MapLength * padding);
-	float offset_x = (window_w / 2) - (totalWidth / 2) - (m_TextureWidth / 2);
-	float offset_y = (window_h / 2) - (m_TextureHeight / 2);
+	const float padding = SDL_max(c_EncounterImageWidth, c_EncounterImageHeight);
+	const float totalWidth = c_MapWidth * c_EncounterImageWidth + (c_MapWidth * padding);
+	const float totalHeight = c_MapLength * c_EncounterImageHeight + (c_MapLength * padding);
+	float offset_x = (window_w / 2) - (totalWidth / 2) - (c_EncounterImageWidth / 2);
+	float offset_y = (window_h / 2) - (totalHeight / 2);
 
-	if (m_SelectedNodeIndex != -1)
-	{
-		int x = m_SelectedNodeIndex % c_MapWidth;
-		int y = floor(m_SelectedNodeIndex / c_MapWidth);
-
-		x = m_WorldMap.GetCurrentNode().GetPosition().first;
-		y = m_WorldMap.GetCurrentNode().GetPosition().second;
-
-		offset_y -= ((y * m_TextureHeight) + (y * padding));
-	}
+	int x = m_WorldMap.GetCurrentNode().GetPosition().first;
+	int y = m_WorldMap.GetCurrentNode().GetPosition().second;
+	//offset_x -= ((x * c_EncounterImageWidth) + (x * padding));
+	offset_y -= ((y * c_EncounterImageHeight) + (y * padding));
 
 	int index = 0;
 	for (size_t y = 0; y < c_MapLength; y++)
@@ -131,10 +124,10 @@ void MapScene::RecalculateButtonRects()
 				continue;
 			}
 
-			m_NodeButtons[index].x = offset_x + (x * m_TextureWidth) + (x * padding);
-			m_NodeButtons[index].y = offset_y + (y * m_TextureHeight) + (y * padding);
-			m_NodeButtons[index].w = m_TextureWidth;
-			m_NodeButtons[index].h = m_TextureHeight;
+			m_NodeButtons[index].x = offset_x + (x * c_EncounterImageWidth) + (x * padding);
+			m_NodeButtons[index].y = offset_y + (y * c_EncounterImageHeight) + (y * padding);
+			m_NodeButtons[index].w = c_EncounterImageWidth;
+			m_NodeButtons[index].h = c_EncounterImageHeight;
 		}
 	}
 }
@@ -163,7 +156,49 @@ void MapScene::Update(const float& deltaTime)
 			m_SelectedNodeIndex = i;
 			m_CanSelectButton = false;
 			m_ButtonPressCooldown = 0.5f;
-			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE);
+
+			const int x = m_SelectedNodeIndex % c_MapWidth;
+			const int y = m_SelectedNodeIndex / c_MapWidth;
+
+			const MapNode& node = m_WorldMap.GetMapNode({ x, y });
+			m_WorldMap.SetCurrentNode(node);
+
+			switch (node.GetType())
+			{
+			case MapNode::ENCOUNTER_START: {  } break;
+			case MapNode::ENCOUNTER_UNKNOWN: break;
+
+			case MapNode::ENCOUNTER_ENEMY:
+			case MapNode::ENCOUNTER_ELITE:
+			case MapNode::ENCOUNTER_BOSS:
+			{ 
+				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE); 
+			} 
+			break;
+
+			case MapNode::ENCOUNTER_SHOP:
+			{ 
+				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_SHOP);
+			} 
+			break;
+
+			case MapNode::ENCOUNTER_REST: 
+			{ 
+				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_REST);
+			} 
+			break;
+
+			case MapNode::ENCOUNTER_EVENT:
+			{
+				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_RANDOM_EVENT);
+			} 
+			break;
+
+			default:
+				break;
+			}
+
+			
 			break;
 		}
 	}
@@ -210,8 +245,13 @@ void MapScene::Render(SDL_Renderer& renderer) const
 				SDL_SetRenderDrawColor(&renderer, 0, 255, 0, 255);
 			}
 
-			SDL_RenderFillRect(&renderer, &drawRect);
-			SDL_RenderTexture(&renderer, m_CellIconTexture, nullptr, &drawRect);
+			SDL_FRect srcRect{};
+			srcRect.w = c_EncounterImageWidth;
+			srcRect.h = c_EncounterImageHeight;
+			srcRect.x = c_EncounterImageWidth * (int)(node.GetType());
+			srcRect.y = 0.0f;
+
+			SDL_RenderTexture(&renderer, m_EncounterAtlas, &srcRect, &drawRect);
 
 			if (y < currentYPosition)
 			{

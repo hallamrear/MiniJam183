@@ -5,6 +5,7 @@
 #include <System/Input.h>
 #include <System/Collision.h>
 #include <Gameplay/Player/Player.h>
+#include <Gameplay/World/WorldMap.h>
 #include <System/SceneManager.h>
 
 constexpr const float c_ButtonWidth = 256.0f;
@@ -78,6 +79,8 @@ void MenuScene::Update(const float& deltaTime)
 	{
 		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_PlayButtonRect))
 		{
+			Services::GetWorldMap().ResetMap();
+			Services::GetWorldMap().GenerateNewMap(time(nullptr), 0);
 			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
 		}
 		else if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_ExitButtonRect))
