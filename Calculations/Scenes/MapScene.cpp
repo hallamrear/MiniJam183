@@ -14,6 +14,8 @@ MapScene::MapScene(SceneManager& manager) : Scene(manager),
 	m_CanSelectButton = true;
 	m_ButtonPressCooldown = -1.0f;
 
+	m_PossibleMapMovements = std::vector<const MapNode*>();
+
 	for (size_t i = 0; i < 50; i++)
 	{
 		m_NodeButtons[i] = SDL_FRect{-1.0f, -1.0f, 0.0f, 0.0f};
@@ -23,10 +25,13 @@ MapScene::MapScene(SceneManager& manager) : Scene(manager),
 	Texture::LoadPNG("Content/Map/EncounterAtlas.png", m_EncounterAtlas);
 	m_CrossTexture = nullptr;
 	Texture::LoadPNG("Content/Map/Cross.png", m_CrossTexture);
+	m_PlayerIconTexture = nullptr;
+	Texture::LoadPNG("Content/Map/PlayerIcon.png", m_PlayerIconTexture);
 }
 
 MapScene::~MapScene()
 {
+	m_PossibleMapMovements.clear();
 	m_SelectedNodeIndex = -1;
 	for (size_t i = 0; i < 50; i++)
 	{
@@ -43,6 +48,12 @@ MapScene::~MapScene()
 	{
 		SDL_DestroyTexture(m_CrossTexture);
 		m_CrossTexture = nullptr;
+	}
+
+	if (m_PlayerIconTexture != nullptr)
+	{
+		SDL_DestroyTexture(m_PlayerIconTexture);
+		m_PlayerIconTexture = nullptr;
 	}
 }
 
@@ -92,6 +103,7 @@ void MapScene::OnExit()
 
 void MapScene::RecalculateButtonRects()
 {
+	m_PossibleMapMovements.clear();
 	int window_w = 0;
 	int window_h = 0;
 	SDL_GetWindowSize(&Services::GetWindow(), &window_w, &window_h);
@@ -102,10 +114,12 @@ void MapScene::RecalculateButtonRects()
 	float offset_x = (window_w / 2) - (totalWidth / 2) - (c_EncounterImageWidth / 2);
 	float offset_y = (window_h / 2) - (totalHeight / 2);
 
-	int x = m_WorldMap.GetCurrentNode().GetPosition().first;
-	int y = m_WorldMap.GetCurrentNode().GetPosition().second;
-	//offset_x -= ((x * c_EncounterImageWidth) + (x * padding));
-	offset_y -= ((y * c_EncounterImageHeight) + (y * padding));
+	int pos_x = m_WorldMap.GetCurrentNode().GetPosition().first;
+	int pos_y = m_WorldMap.GetCurrentNode().GetPosition().second;
+	//offset_x -= ((pos_x * c_EncounterImageWidth) + (pos_x * padding));
+	//offset_y -= ((pos_y * c_EncounterImageHeight) + (pos_y * padding));
+
+	offset_y += (300.0f);
 
 	int index = 0;
 	for (size_t y = 0; y < c_MapLength; y++)
@@ -147,58 +161,61 @@ void MapScene::Update(const float& deltaTime)
 		}
 	}
 
-	for (size_t i = 0; i < mapSize; i++)
+	m_WorldMap.GetPossibleSelectionNodesFromCurrentPosition(m_PossibleMapMovements);
+	for (size_t m = 0; m < m_PossibleMapMovements.size(); m++)
 	{
-		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_NodeButtons[i])
-			&& m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON)
-			&& m_CanSelectButton)
+		int x = m_PossibleMapMovements[m]->GetPosition().first;
+		int y = m_PossibleMapMovements[m]->GetPosition().second;
+
+		int buttonIndex = (y * c_MapWidth) + x;
+
+		if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_NodeButtons[buttonIndex]) &&
+			m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON) &&
+			m_CanSelectButton == true)
 		{
-			m_SelectedNodeIndex = i;
+			m_SelectedNodeIndex = buttonIndex;
 			m_CanSelectButton = false;
 			m_ButtonPressCooldown = 0.5f;
-
-			const int x = m_SelectedNodeIndex % c_MapWidth;
-			const int y = m_SelectedNodeIndex / c_MapWidth;
 
 			const MapNode& node = m_WorldMap.GetMapNode({ x, y });
 			m_WorldMap.SetCurrentNode(node);
 
 			switch (node.GetType())
 			{
-			case MapNode::ENCOUNTER_START: {  } break;
+			case MapNode::ENCOUNTER_START: {} break;
 			case MapNode::ENCOUNTER_UNKNOWN: break;
 
 			case MapNode::ENCOUNTER_ENEMY:
 			case MapNode::ENCOUNTER_ELITE:
 			case MapNode::ENCOUNTER_BOSS:
-			{ 
-				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE); 
-			} 
+			{
+				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE);
+			}
 			break;
 
 			case MapNode::ENCOUNTER_SHOP:
-			{ 
+			{
 				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_SHOP);
-			} 
+			}
 			break;
 
-			case MapNode::ENCOUNTER_REST: 
-			{ 
+			case MapNode::ENCOUNTER_REST:
+			{
 				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_REST);
-			} 
+			}
 			break;
 
 			case MapNode::ENCOUNTER_EVENT:
 			{
 				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_RANDOM_EVENT);
-			} 
+			}
 			break;
 
 			default:
 				break;
 			}
 
-			
+
 			break;
 		}
 	}
@@ -218,6 +235,7 @@ void MapScene::Render(SDL_Renderer& renderer) const
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_RenderDebugText(&renderer, 10, 10, "SCENE_IDENTIFIER::MAP_SCENE");
 
+	const int& currentXPosition = m_WorldMap.GetCurrentNode().GetPosition().first;
 	const int& currentYPosition = m_WorldMap.GetCurrentNode().GetPosition().second;
 
 	for (int y = 0; y < c_MapLength; y++)
@@ -256,6 +274,35 @@ void MapScene::Render(SDL_Renderer& renderer) const
 			if (y < currentYPosition)
 			{
 				SDL_RenderTexture(&renderer, m_CrossTexture, nullptr, &drawRect);
+			}
+			else
+			{
+				if (y == currentYPosition)
+				{
+					if (x == currentXPosition)
+					{
+						SDL_RenderTexture(&renderer, m_PlayerIconTexture, nullptr, &drawRect);
+
+						for (size_t i = 0; i < m_PossibleMapMovements.size(); i++)
+						{
+							int possible_x = m_PossibleMapMovements[i]->GetPosition().first;
+							int possible_y = m_PossibleMapMovements[i]->GetPosition().second;
+
+							if (possible_y == currentYPosition + 1)
+							{
+								int possibleMovementIndex = (possible_y * c_MapWidth) + possible_x;
+								const SDL_FRect& endPointRect = m_NodeButtons[possibleMovementIndex];
+								SDL_FPoint startPoint = { drawRect.x + (drawRect.w / 2), drawRect.y + (drawRect.h / 2) };
+								SDL_FPoint endPoint = { endPointRect.x + (endPointRect.w / 2), endPointRect.y + (endPointRect.h / 2) };
+								SDL_RenderLine(&renderer, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+							}
+						}
+					}
+					else
+					{
+						SDL_RenderTexture(&renderer, m_CrossTexture, nullptr, &drawRect);
+					}
+				}			
 			}
 
 			std::string str = "\0";

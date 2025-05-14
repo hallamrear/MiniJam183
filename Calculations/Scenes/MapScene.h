@@ -8,6 +8,7 @@ private:
 	WorldMap& m_WorldMap;
 	SDL_Texture* m_EncounterAtlas;
 	SDL_Texture* m_CrossTexture;
+	SDL_Texture* m_PlayerIconTexture;
 	const float c_EncounterImageWidth;
 	const float c_EncounterImageHeight;
 
@@ -16,6 +17,8 @@ private:
 	bool m_CanSelectButton;
 	SDL_FRect m_NodeButtons[c_MapLength * c_MapWidth];
 	void RecalculateButtonRects();
+
+	std::vector<const MapNode*> m_PossibleMapMovements;
 
 public:
 	MapScene(SceneManager& manager);

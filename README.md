@@ -1,4 +1,4 @@
-# Mini Jam 183 - Calculations / Four Colours
+ # Mini Jam 183 - Calculations / Four Colours
 
 ## Things to work on:
 - nullptr checks in render. 

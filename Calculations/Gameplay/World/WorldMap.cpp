@@ -7,8 +7,8 @@
 
 WorldMap::WorldMap() : m_CurrentNode(m_Start)
 {
-	m_Start = MapNode(MapNode::ENCOUNTER_START, Position((c_MapWidth / 2) + 1, -1));
-	m_End = MapNode(MapNode::ENCOUNTER_BOSS, Position((c_MapWidth / 2) + 1, c_MapLength));
+	m_Start = MapNode(MapNode::ENCOUNTER_START, Position(floor(c_MapWidth / 2), -1));
+	m_End = MapNode(MapNode::ENCOUNTER_BOSS, Position(floor(c_MapWidth / 2), c_MapLength));
 	ResetMap();
 }
 
@@ -55,7 +55,7 @@ void WorldMap::Print(const Path& path)
 			case MapNode::ENCOUNTER_UNKNOWN:   std::cout << " + "; break;
 
 			default:
-				assert("Should not have hit here.", false);
+				assert("Should not have hit here.");
 				break;
 			}
 
@@ -71,8 +71,8 @@ void WorldMap::ResetMap()
 	m_Start.Reset();
 	m_End.Reset();
 
-	m_Start = MapNode(MapNode::ENCOUNTER_START, Position((c_MapWidth / 2) + 1, -1));
-	m_End = MapNode(MapNode::ENCOUNTER_BOSS, Position((c_MapWidth / 2) + 1, c_MapLength));
+	m_Start = MapNode(MapNode::ENCOUNTER_START, Position(floor(c_MapWidth / 2), -1));
+	m_End = MapNode(MapNode::ENCOUNTER_BOSS, Position(floor(c_MapWidth / 2), c_MapLength));
 
 	for (size_t y = 0; y < c_MapLength; y++)
 	{
@@ -102,6 +102,8 @@ void WorldMap::GenerateNewMap(const unsigned int& seed, const unsigned int& stre
 		}
 	}
 
+	m_Map[m_Start.GetPosition().first][m_Start.GetPosition().second + 1] = MapNode(MapNode::ENCOUNTER_TYPE::ENCOUNTER_ENEMY, { m_Start.GetPosition().first, m_Start.GetPosition().second + 1 });
+
 	std::vector<Path> paths = std::vector<Path>();
 	Path positions = Path();
 	Position currentStep = { 0, 0 };
@@ -109,13 +111,16 @@ void WorldMap::GenerateNewMap(const unsigned int& seed, const unsigned int& stre
 	for (size_t i = 0; i < possiblePaths; i++)
 	{
 		positions.clear();
-		currentStep.first = (c_MapWidth / 2) + 1;
-		currentStep.second = 0;
+
+		MapNode lastNode = m_Start;
+		currentStep = m_Start.GetPosition();
+		currentStep.second++;
+		positions.push_back(m_Map[currentStep.first][currentStep.second]);
+		lastNode = m_Map[currentStep.first][currentStep.second];
+		currentStep.second++;
 
 		while (currentStep.second < c_MapLength)
 		{
-			MapNode& lastNode = m_Map[currentStep.first][currentStep.second];
-
 			int dir = rand() % 3;
 			switch (dir)
 			{
@@ -141,6 +146,7 @@ void WorldMap::GenerateNewMap(const unsigned int& seed, const unsigned int& stre
 			
 			positions.push_back(m_Map[currentStep.first][currentStep.second]);
 			currentStep.second++;
+			lastNode = m_Map[currentStep.first][currentStep.second];
 		}
 
 		Print(positions);
@@ -186,4 +192,31 @@ const MapNode& WorldMap::GetCurrentNode() const
 void WorldMap::SetCurrentNode(const MapNode& node)
 {
 	m_CurrentNode = node;
+}
+
+void WorldMap::GetPossibleSelectionNodes(std::vector<const MapNode*>& nodes, const std::pair<int, int>& currentPosition) const
+{
+	nodes.clear();
+
+	if ((currentPosition.second + 1) >= c_MapLength)
+	{
+		nodes.push_back(&m_End);
+		return;
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		auto& node = m_Map[currentPosition.first + i - 1][currentPosition.second + 1];
+
+		if (node.GetType() != MapNode::ENCOUNTER_TYPE::ENCOUNTER_UNKNOWN &&
+			node.GetType() != MapNode::ENCOUNTER_TYPE::ENCOUNTER_START)
+		{
+			nodes.push_back(&node);
+		}
+	}
+}
+
+void WorldMap::GetPossibleSelectionNodesFromCurrentPosition(std::vector<const MapNode*>& nodes) const
+{
+	GetPossibleSelectionNodes(nodes, m_CurrentNode.GetPosition());
 }

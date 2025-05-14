@@ -345,6 +345,9 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\Map\EncounterAtlas.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Content\Map\PlayerIcon.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\Map\Temporary.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
