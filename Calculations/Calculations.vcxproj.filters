@@ -319,5 +319,11 @@
     <Image Include="Content\Map\PlayerIcon.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Content\Map\End.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Map\Start.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

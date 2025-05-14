@@ -21,7 +21,6 @@ ScalingEvilPlayer::ScalingEvilPlayer()
     };
 
     LoadAnimation("Content/Spritesheets/Blue_Player.png", details);
-
 }
 
 ScalingEvilPlayer::~ScalingEvilPlayer()

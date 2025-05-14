@@ -181,6 +181,12 @@ void WorldMap::GenerateNewMap(const unsigned int& seed, const unsigned int& stre
 
 const MapNode& WorldMap::GetMapNode(const Position& position) const
 {
+	if (position == m_Start.GetPosition())
+		return m_Start;
+
+	if (position == m_End.GetPosition())
+		return m_End;
+
 	return m_Map[position.first][position.second];
 }
 
@@ -206,7 +212,12 @@ void WorldMap::GetPossibleSelectionNodes(std::vector<const MapNode*>& nodes, con
 
 	for (int i = 0; i < 3; i++)
 	{
-		auto& node = m_Map[currentPosition.first + i - 1][currentPosition.second + 1];
+		std::pair<int, int> testLocation = { currentPosition.first + i - 1 , currentPosition.second + 1 };
+
+		if (testLocation.first < 0 || testLocation.first >= c_MapWidth)
+			continue;
+
+		auto& node = m_Map[testLocation.first][testLocation.second];
 
 		if (node.GetType() != MapNode::ENCOUNTER_TYPE::ENCOUNTER_UNKNOWN &&
 			node.GetType() != MapNode::ENCOUNTER_TYPE::ENCOUNTER_START)

@@ -23,6 +23,16 @@ bool Texture::LoadPNG(const char* filename, SDL_Texture*& texture)
 bool Texture::QueryTexture(SDL_Texture* texture, float& width, float& height)
 {
     assert(texture != nullptr);
-    SDL_GetTextureSize(texture, &width, &height);
-    return false;
+    return SDL_GetTextureSize(texture, &width, &height);
+}
+
+bool Texture::QueryTexture(SDL_Texture* texture, int& width, int& height)
+{
+    assert(texture != nullptr);
+    float w = 0.0f;
+    float h = 0.0f;
+    bool result = SDL_GetTextureSize(texture, &w, &h);
+    width = (int)w;
+    height = (int)h;
+    return result;
 }
