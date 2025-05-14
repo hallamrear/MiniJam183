@@ -26,6 +26,9 @@ MapScene::MapScene(SceneManager& manager) : Scene(manager),
 		m_NodeButtons[i] = SDL_FRect{-1.0f, -1.0f, 0.0f, 0.0f};
 	}
 
+	m_StartNodeDrawRect = m_NodeButtons[0];
+	m_EndNodeDrawRect = m_NodeButtons[0];
+
 	m_EncounterAtlas = nullptr;
 	Texture::LoadPNG("Content/Map/EncounterAtlas.png", m_EncounterAtlas);
 	m_CrossTexture = nullptr;
@@ -74,6 +77,10 @@ MapScene::~MapScene()
 
 void MapScene::OnEnter()
 {
+	int window_h = 0;
+	SDL_GetWindowSize(&Services::GetWindow(), nullptr, &window_h);
+	m_MapScrollOffset = window_h;
+
 	m_CanSelectButton = false;
 	m_ButtonPressCooldownTimer = c_ButtonPressCooldown;
 	m_IsButtonRectsDirty = true;
@@ -145,8 +152,8 @@ void MapScene::RecalculateButtonRects()
 	const float padding = SDL_max(c_EncounterImageWidth, c_EncounterImageHeight);
 	const float totalWidth = c_MapWidth * c_EncounterImageWidth + (c_MapWidth * padding);
 	const float totalHeight = c_MapLength * c_EncounterImageHeight + (c_MapLength * padding);
-	float offset_x = (window_w / 2) - (totalWidth / 2);
-	float offset_y = (window_h / 2) - (totalHeight / 2);
+	float offset_x = (window_w / 2) - ((totalWidth / 2));
+	float offset_y = (window_h / 2) - ((totalHeight / 3) * 2);
 
 	int pos_x = m_WorldMap.GetCurrentNode().GetPosition().first;
 	int pos_y = m_WorldMap.GetCurrentNode().GetPosition().second;
