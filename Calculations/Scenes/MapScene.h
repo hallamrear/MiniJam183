@@ -16,6 +16,7 @@ private:
 	const float c_MapEdgePadding;
 	const float c_ButtonPressCooldown;
 
+	SDL_Texture* m_BackgroundTexture;
 	SDL_Texture* m_StartNodeTexture;
 	SDL_FRect m_StartNodeDrawRect;
 	SDL_Texture* m_EndNodeTexture;

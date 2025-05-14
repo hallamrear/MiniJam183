@@ -36,3 +36,13 @@ bool Texture::QueryTexture(SDL_Texture* texture, int& width, int& height)
     height = (int)h;
     return result;
 }
+
+bool Texture::Destroy(SDL_Texture*& texture)
+{
+    if (texture == nullptr)
+        return false;
+
+    SDL_DestroyTexture(texture);
+    texture = nullptr;
+    return true;
+}

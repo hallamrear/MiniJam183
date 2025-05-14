@@ -39,6 +39,8 @@ MapScene::MapScene(SceneManager& manager) : Scene(manager),
 	Texture::LoadPNG("Content/Map/Start.png", m_StartNodeTexture);
 	m_EndNodeTexture = nullptr;
 	Texture::LoadPNG("Content/Map/End.png", m_EndNodeTexture);
+	m_BackgroundTexture = nullptr;
+	Texture::LoadPNG("Content/Map/Background.png", m_BackgroundTexture);
 }
 
 MapScene::~MapScene()
@@ -50,29 +52,11 @@ MapScene::~MapScene()
 		m_NodeButtons[i] = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	}
 
-	if (m_EncounterAtlas != nullptr)
-	{
-		SDL_DestroyTexture(m_EncounterAtlas);
-		m_EncounterAtlas = nullptr;
-	}
-
-	if (m_CrossTexture != nullptr)
-	{
-		SDL_DestroyTexture(m_CrossTexture);
-		m_CrossTexture = nullptr;
-	}
-
-	if (m_StartNodeTexture != nullptr)
-	{
-		SDL_DestroyTexture(m_StartNodeTexture);
-		m_StartNodeTexture = nullptr;
-	}
-
-	if (m_EndNodeTexture != nullptr)
-	{
-		SDL_DestroyTexture(m_EndNodeTexture);
-		m_EndNodeTexture = nullptr;
-	}
+	Texture::Destroy(m_EncounterAtlas);
+	Texture::Destroy(m_CrossTexture);
+	Texture::Destroy(m_StartNodeTexture);
+	Texture::Destroy(m_EndNodeTexture);
+	Texture::Destroy(m_BackgroundTexture);
 }
 
 void MapScene::OnEnter()
@@ -293,6 +277,7 @@ void MapScene::Render(SDL_Renderer& renderer) const
 	const int& currentXPosition = m_WorldMap.GetCurrentNode().GetPosition().first;
 	const int& currentYPosition = m_WorldMap.GetCurrentNode().GetPosition().second;
 
+	SDL_RenderTextureTiled(&renderer, m_BackgroundTexture, nullptr, 1.0f, nullptr);
 
 	if (m_StartNodeTexture != nullptr)
 	{

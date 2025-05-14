@@ -325,5 +325,8 @@
     <Image Include="Content\Map\Start.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Content\Map\Background.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
