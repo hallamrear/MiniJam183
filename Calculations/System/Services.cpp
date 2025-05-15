@@ -7,6 +7,7 @@ Input* Services::m_InputManager = nullptr;
 SDL_Window* Services::m_Window = nullptr;
 Player* Services::m_Player = nullptr;
 WorldMap* Services::m_WorldMap = nullptr;
+FontRenderer* Services::m_FontRenderer = nullptr;
 
 bool Services::Initialise(SDL_Renderer* renderer, SDL_Window* window)
 {
@@ -17,7 +18,7 @@ bool Services::Initialise(SDL_Renderer* renderer, SDL_Window* window)
 	m_Window = window;
 	m_Player = nullptr;
 	m_InputManager = nullptr;
-
+	m_FontRenderer = nullptr;
 	return true;
 }
 
@@ -28,7 +29,7 @@ bool Services::Shutdown()
 	m_Player = nullptr;
 	m_InputManager = nullptr;
 	m_WorldMap = nullptr;
-
+	m_FontRenderer = nullptr;
 	return true;
 }
 
@@ -50,10 +51,22 @@ void Services::ProvideWorldMap(WorldMap* worldMap)
 	m_WorldMap = worldMap;
 }
 
+void Services::ProvideFontRenderer(FontRenderer* fontRenderer)
+{
+	assert(fontRenderer);
+	m_FontRenderer = fontRenderer;
+}
+
 Input& Services::GetInputManager()
 {
 	assert(m_InputManager != nullptr);
 	return *m_InputManager;
+}
+
+FontRenderer& Services::GetFontRenderer()
+{
+	assert(m_FontRenderer != nullptr);
+	return *m_FontRenderer;
 }
 
 SDL_Renderer& Services::GetRenderer()

@@ -76,7 +76,7 @@
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Builds\$(Configuration)\$(Platform)\</OutDir>
@@ -84,7 +84,7 @@
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Builds\$(Configuration)\$(Platform)\</OutDir>
@@ -92,7 +92,7 @@
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Builds\$(Configuration)\$(Platform)\</OutDir>
@@ -100,7 +100,7 @@
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -116,12 +116,13 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)External\SDL3\lib\$(PlatformTarget);$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\SDL3\lib\$(PlatformTarget);$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget);$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;SDL3_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"
-xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"</Command>
+xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"
+xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -142,12 +143,13 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)External\SDL3\lib\$(PlatformTarget);$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\SDL3\lib\$(PlatformTarget);$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget);$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;SDL3_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"
-xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"</Command>
+xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"
+xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -164,12 +166,13 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)External\SDL3\lib\$(PlatformTarget);$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\SDL3\lib\$(PlatformTarget);$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget);$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;SDL3_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"
-xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"</Command>
+xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"
+xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -190,16 +193,18 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)External\SDL3\lib\$(PlatformTarget);$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\SDL3\lib\$(PlatformTarget);$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget);$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;SDL3_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>xcopy /Y "$(SolutionDir)External\SDL3\lib\$(PlatformTarget)\SDL3.dll" "$(OutputPath)"
-xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"</Command>
+xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll" "$(OutputPath)"
+xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="System\FontRenderer.cpp" />
     <ClCompile Include="Gameplay\Enemies\GreenPlayer.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
@@ -237,6 +242,7 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="System\FontRenderer.h" />
     <ClInclude Include="Gameplay\Enemies\GreenPlayer.h">
       <DeploymentContent>true</DeploymentContent>
     </ClInclude>
@@ -375,9 +381,15 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\Promo\itch_cover_image.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Content\Rest\LitCampfire.png" />
-    <Image Include="Content\Rest\ReturnButton.png" />
-    <Image Include="Content\Rest\UnlitCampfire.png" />
+    <Image Include="Content\Rest\LitCampfire.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Rest\ReturnButton.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Rest\UnlitCampfire.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\Screens\BattleScene_EnemyDied.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>

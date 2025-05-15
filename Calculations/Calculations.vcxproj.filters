@@ -99,6 +99,9 @@
     <ClCompile Include="Scenes\RandomEventScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="System\FontRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -180,6 +183,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scenes\RandomEventScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="System\FontRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

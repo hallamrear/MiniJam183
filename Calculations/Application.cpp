@@ -5,10 +5,12 @@
 #include <System/Input.h>
 #include <Gameplay/Player/Player.h>
 #include <Gameplay/World/WorldMap.h>
+#include <System/FontRenderer.h>
 
 Application::Application()
 {
 	m_InputManager = nullptr;
+	m_FontRenderer = nullptr;
 	m_SceneManager = nullptr;
 	m_WorldMap = nullptr;
 	m_Player = nullptr;
@@ -40,7 +42,19 @@ bool Application::Initialise()
 
 	SDL_Log("SDL setup complete.");
 
-	Services::Initialise(m_Renderer, m_Window);
+	if (Services::Initialise(m_Renderer, m_Window) == false)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to setup services.");
+		return false;
+	}
+
+	m_FontRenderer = new FontRenderer();
+	if (m_FontRenderer->Initialise(*m_Renderer, "Content/Fonts/m6x11.ttf") == false)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to initialise font renderer.");
+		return false;
+	}
+	Services::ProvideFontRenderer(m_FontRenderer);
 
 	m_Player = new Player();
 	Services::ProvidePlayer(m_Player);
@@ -110,7 +124,6 @@ bool Application::InitSDL()
 	return true;
 }
 
-
 void Application::Shutdown()
 {
 	if (m_SceneManager != nullptr)
@@ -123,6 +136,13 @@ void Application::Shutdown()
 	{
 		delete m_InputManager;
 		m_InputManager = nullptr;
+	}
+
+	if (m_FontRenderer != nullptr)
+	{
+		m_FontRenderer->Shutdown();
+		delete m_FontRenderer;
+		m_FontRenderer = nullptr;
 	}
 
 	Services::Shutdown();

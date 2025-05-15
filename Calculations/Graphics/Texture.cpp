@@ -1,11 +1,37 @@
 #include "pch.h"
 #include "Texture.h"
 #include <System/Services.h>
+#include <System/FontRenderer.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3/SDL_surface.h>
 
-bool Texture::LoadText(const char* str, SDL_Texture*& texture)
+bool Texture::LoadText(const char* str, TTF_Text*& texture)
 {
-    return false;
+    assert(texture == nullptr);
+
+    FontRenderer& fr = Services::GetFontRenderer();
+
+    texture = TTF_CreateText(&fr.GetTextEngine(), &fr.GetFont(), str, strlen(str));
+
+    if (texture == nullptr)
+    {
+        SDL_LogError(SDL_LOG_PRIORITY_ERROR, "Failed to create ttf_text for string '%s'", str);
+        return false;
+    }
+
+    return true;
+}
+
+bool Texture::SetText(const char* str, TTF_Text*& texture)
+{
+    assert(texture != nullptr);
+    return TTF_SetTextString(texture, str, strlen(str));
+}
+
+bool Texture::AppendText(const char* str, TTF_Text*& texture)
+{
+    assert(texture != nullptr);
+    return TTF_AppendTextString(texture, str, strlen(str));
 }
 
 bool Texture::LoadPNG(const char* filename, SDL_Texture*& texture)
@@ -40,6 +66,21 @@ bool Texture::QueryTexture(SDL_Texture* texture, int& width, int& height)
     width = (int)w;
     height = (int)h;
     return result;
+}
+
+bool Texture::QueryText(TTF_Text* texture, int& width, int& height)
+{
+    return TTF_GetTextSize(texture, &width, &height);
+}
+
+bool Texture::Destroy(TTF_Text*& texture)
+{
+    if (texture == nullptr)
+        return false;
+
+    TTF_DestroyText(texture);
+    texture = nullptr;
+    return true;
 }
 
 bool Texture::Destroy(SDL_Texture*& texture)

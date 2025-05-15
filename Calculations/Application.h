@@ -1,5 +1,6 @@
 #pragma once
 
+class FontRenderer;
 class SceneManager;
 class WorldMap;
 class Player;
@@ -11,6 +12,7 @@ private:
 	Input* m_InputManager;
 	Player* m_Player;
 	WorldMap* m_WorldMap;
+	FontRenderer* m_FontRenderer;
 	SDL_Renderer* m_Renderer;
 	SDL_Window* m_Window; 
 	SDL_WindowFlags m_WindowFlags;
