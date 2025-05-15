@@ -318,9 +318,6 @@ void MapScene::Render(SDL_Renderer& renderer) const
 			srcRect.h = c_EncounterImageHeight;
 			srcRect.x = c_EncounterImageWidth * (int)(node.GetType());
 			srcRect.y = 0.0f;
-
-			SDL_RenderTexture(&renderer, m_EncounterAtlas, &srcRect, &drawRect);
-
 			if (currentYPosition < 0)
 			{
 				for (size_t i = 0; i < m_PossibleMapMovements.size(); i++)
@@ -340,6 +337,8 @@ void MapScene::Render(SDL_Renderer& renderer) const
 				}
 			}
 
+			SDL_RenderTexture(&renderer, m_EncounterAtlas, &srcRect, &drawRect);
+
 			if (y < currentYPosition)
 			{
 				SDL_RenderTexture(&renderer, m_CrossTexture, nullptr, &drawRect);
@@ -350,6 +349,8 @@ void MapScene::Render(SDL_Renderer& renderer) const
 				{
 					if (x == currentXPosition)
 					{
+						srcRect.x = c_EncounterImageWidth;
+						SDL_RenderTexture(&renderer, m_EncounterAtlas, &srcRect, &drawRect);
 						SDL_RenderTexture(&renderer, m_PlayerIconTexture, nullptr, &drawRect);
 
 						for (size_t i = 0; i < m_PossibleMapMovements.size(); i++)

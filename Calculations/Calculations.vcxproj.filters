@@ -328,5 +328,17 @@
     <Image Include="Content\Map\Background.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Content\Rest\LitCampfire.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Rest\UnlitCampfire.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Rest\ReturnButton.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Content\Fonts\m6x11.ttf" />
   </ItemGroup>
 </Project>

@@ -9,7 +9,9 @@
 - Make avatars bigger and move the health bar.
 - Remove so many point checks in BattleScene::Update
 
+### ADD ATTRIBUTION INTO THE GAME
+
 ## Assets
 - Kenney Pack
-- Pixel BG's (Map BG) 
-    - https://space-spheremaps.itch.io/pixelart-starfields
+- [Pixel BG's (Map BG)](https://space-spheremaps.itch.io/pixelart-starfields)
+- [Daniel Linssen's m6x11 font](https://managore.itch.io/m6x11)

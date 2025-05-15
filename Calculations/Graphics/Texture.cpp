@@ -3,6 +3,11 @@
 #include <System/Services.h>
 #include <SDL3/SDL_surface.h>
 
+bool Texture::LoadText(const char* str, SDL_Texture*& texture)
+{
+    return false;
+}
+
 bool Texture::LoadPNG(const char* filename, SDL_Texture*& texture)
 {
     assert(texture == nullptr);

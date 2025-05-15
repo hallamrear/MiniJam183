@@ -375,6 +375,9 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\Promo\itch_cover_image.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Content\Rest\LitCampfire.png" />
+    <Image Include="Content\Rest\ReturnButton.png" />
+    <Image Include="Content\Rest\UnlitCampfire.png" />
     <Image Include="Content\Screens\BattleScene_EnemyDied.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
@@ -411,6 +414,11 @@ xcopy /Y "$(SolutionDir)External\SDL_Image\lib\$(PlatformTarget)\SDL3_image.dll"
     <Image Include="Content\TestOperandCard.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Content\Fonts\m6x11.ttf">
+      <DeploymentContent>true</DeploymentContent>
+    </Font>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
