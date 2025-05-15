@@ -19,7 +19,9 @@ WorldMap::~WorldMap()
 
 void WorldMap::Print(const Path& path)
 {
-	std::cout << "______ b ______" << std::endl;
+	#ifdef _DEBUG
+
+	std::cout << std::endl;
 
 	for (size_t y = 0; y < c_MapLength; y++)
 	{
@@ -63,7 +65,9 @@ void WorldMap::Print(const Path& path)
 		std::cout << std::endl;
 	}
 
-	std::cout << "______ e ______" << std::endl;
+	std::cout << std::endl;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+	#endif
 }
 
 void WorldMap::ResetMap()

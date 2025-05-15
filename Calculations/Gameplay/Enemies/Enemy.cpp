@@ -17,12 +17,6 @@ int Enemy::GetDamageRoll() const
 {
 	int roll = SDL_max((rand() % m_RollRange), 1);
 	int damage = SDL_max((roll - (m_RollRange / 2)) + m_BaseDamage, 1);
-
-	#ifdef _DEBUG
-	SDL_Log("Roll: %i", roll);
-	SDL_Log("Damage %i", damage);
-	#endif
-
 	return damage;
 }
 
