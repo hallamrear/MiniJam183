@@ -197,6 +197,7 @@ void Application::ProcessEvents(const float& deltaTime)
 					case SDLK_F2: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_MAP); } break;
 					case SDLK_F3: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_SHOP); } break;
 					case SDLK_F4: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE); } break;
+					case SDLK_F6: { if (m_SceneManager != nullptr) m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_RANDOM_EVENT); } break;
 
 					case SDLK_F5:
 					{

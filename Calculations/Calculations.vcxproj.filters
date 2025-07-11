@@ -352,6 +352,9 @@
     <Image Include="Content\Map\Connection.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Content\Random Encounters\AtlasImage.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Content\Fonts\m6x11.ttf" />

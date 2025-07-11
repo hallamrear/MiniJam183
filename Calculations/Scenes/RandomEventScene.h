@@ -1,9 +1,29 @@
 #pragma once
 #include <Scenes/Scene.h>
 
+class AnimationController;
+
 class RandomEventScene 
 	: public Scene
 {
+private:
+	enum ENCOUNTER_TYPE : int
+	{
+		RANDOM_ENCOUNTER_UNKNOWN_OR_NOT_SET = -1,
+		RANDOM_ENCOUNTER_NOTHING = 0,
+		RANDOM_ENCOUNTER_FREE_FULL_HEAL = 1,
+		RANDOM_ENCOUNTER_FREE_CARM = 2,
+		RANDOM_ENCOUNTER_RANDOM_FREE_HEAL = 3,
+		COUNT = 4,
+	};
+
+	AnimationController* m_RandomEventAtlas;
+	SDL_FRect m_RandomEventImageDstRect;
+
+	void GenerateRandomEncounter();
+	void DestroyRandomEncounter();
+	ENCOUNTER_TYPE m_GeneratedEncounter;
+
 public:
 	RandomEventScene(SceneManager& manager);
 	~RandomEventScene();

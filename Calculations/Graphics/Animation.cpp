@@ -35,10 +35,10 @@ AnimationController::AnimationController(const std::string& sheetPath, const int
 	m_CurrentAnimationIndex = 0;
 	m_CurrentFrame = 0;
 	m_TimeElapsed = 0.0f;
-	m_FrameSizeX = 0;
-	m_FrameSizeY = 0;
 	m_MaxFrameCount = maxFrameCount;
 	m_TimeBetweenFrames = m_AnimationDetails[m_CurrentAnimationIndex].Duration / m_AnimationDetails[m_CurrentAnimationIndex].FrameCount;
+	m_FrameSizeX = m_TextureWidth / m_MaxFrameCount;
+	m_FrameSizeY = m_TextureHeight / m_MaxFrameCount;
 }
 
 AnimationController::~AnimationController()

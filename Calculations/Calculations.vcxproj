@@ -386,6 +386,9 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
     <Image Include="Content\Promo\itch_cover_image.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Content\Random Encounters\AtlasImage.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\Rest\LitCampfire.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
