@@ -239,6 +239,7 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
     <ClCompile Include="System\Services.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Gameplay\World\WorldMap.cpp" />
+    <ClCompile Include="Graphics\Text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -271,6 +272,7 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
     <ClInclude Include="System\Services.h" />
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Gameplay\World\WorldMap.h" />
+    <ClInclude Include="Graphics\Text.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Content\Buttons\ClearButton.png">
@@ -346,6 +348,9 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\Map\Background.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Map\Connection.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\Map\Cross.png">

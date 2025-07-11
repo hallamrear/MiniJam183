@@ -6,6 +6,7 @@
 #include <System/Services.h>
 #include <System/Collision.h>
 #include <Gameplay/Player/Player.h>
+#include <Graphics/Text.h>
 
 RestScene::RestScene(SceneManager& manager) : Scene(manager), m_Window(Services::GetWindow())
 {
@@ -24,9 +25,9 @@ RestScene::RestScene(SceneManager& manager) : Scene(manager), m_Window(Services:
 	m_ReturnButtonTexture = nullptr;
 	Texture::LoadPNG("Content/Rest/ReturnButton.png", m_ReturnButtonTexture);
 	m_ReturnText = nullptr;
-	Texture::LoadText("Return", m_ReturnText);
+	Text::LoadText("RETURN", m_ReturnText);
 	m_DetailsText = nullptr;
-	Texture::LoadText("TEST", m_DetailsText);
+	Text::LoadText("TEST", m_DetailsText);
 }
 
 RestScene::~RestScene()
@@ -34,8 +35,8 @@ RestScene::~RestScene()
 	Texture::Destroy(m_LitCampfireTexture);
 	Texture::Destroy(m_UnlitCampfireTexture);
 	Texture::Destroy(m_ReturnButtonTexture);
-	Texture::Destroy(m_ReturnText);
-	Texture::Destroy(m_DetailsText);
+	Text::Destroy(m_ReturnText);
+	Text::Destroy(m_DetailsText);
 }
 
 void RestScene::OnEnter()
@@ -45,10 +46,10 @@ void RestScene::OnEnter()
 
 	Player& player = Services::GetPlayer();
 	m_HealAmount = SDL_min(player.GetMaxHealth() - player.GetCurrentHealth(), 20);
-	std::string str = "Rest here and heal for " + std::to_string(m_HealAmount);
-	Texture::SetText(str.c_str(), m_DetailsText);
+	std::string str = "REST HERE AND HEAL FOR " + std::to_string(m_HealAmount);
+	Text::SetText(str.c_str(), m_DetailsText);
 
-	Texture::QueryText(m_DetailsText, m_DetailTextOffset.x, m_DetailTextOffset.y);
+	Text::QueryText(m_DetailsText, m_DetailTextOffset.x, m_DetailTextOffset.y);
 }
 
 void RestScene::HandleEvent(const SDL_Event& e)
@@ -91,7 +92,7 @@ void RestScene::Update(const float& deltaTime)
 
 		float ratio = (float)m_WindowHeight / (float)m_WindowWidth;
 		int w = 0, h = 0;
-		Texture::QueryText(m_ReturnText, w, h);
+		Text::QueryText(m_ReturnText, w, h);
 		m_ReturnButton.w = (w);
 		m_ReturnButton.h = (h);
 		m_ReturnButton.x = floor(m_WindowWidth / 15.0f);

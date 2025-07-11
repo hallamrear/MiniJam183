@@ -8,7 +8,7 @@
 
 MapScene::MapScene(SceneManager& manager) : Scene(manager),
 	m_WorldMap(Services::GetWorldMap()),
-	c_EncounterImageWidth(64.0f), c_EncounterImageHeight(64.0f),
+	c_EncounterImageWidth(128.0f), c_EncounterImageHeight(128.0f),
 	c_MapScrollSpeed(10.0f),
 	c_MapEdgePadding(16.0f),
 	c_ButtonPressCooldown(0.5f)
@@ -78,6 +78,7 @@ void MapScene::HandleEvent(const SDL_Event& e)
 	case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
 	{
 		m_IsButtonRectsDirty = true;
+		RecalculateButtonRects();
 	}
 	break;
 
@@ -93,6 +94,7 @@ void MapScene::HandleEvent(const SDL_Event& e)
 		}
 
 		m_MapScrollOffset += y * c_MapScrollSpeed;
+
 		m_IsButtonRectsDirty = true;
 	}
 	break;
@@ -137,7 +139,7 @@ void MapScene::RecalculateButtonRects()
 	const float totalWidth = c_MapWidth * c_EncounterImageWidth + (c_MapWidth * padding);
 	const float totalHeight = c_MapLength * c_EncounterImageHeight + (c_MapLength * padding);
 	float offset_x = (window_w / 2) - ((totalWidth / 2));
-	float offset_y = (window_h / 2) - ((totalHeight / 3) * 2);
+	float offset_y = (window_h / 2) - (totalHeight / 2.5f);
 
 	int pos_x = m_WorldMap.GetCurrentNode().GetPosition().first;
 	int pos_y = m_WorldMap.GetCurrentNode().GetPosition().second;
@@ -169,7 +171,7 @@ void MapScene::RecalculateButtonRects()
 	if (m_EndNodeTexture != nullptr)
 	{
 		m_EndNodeDrawRect.w = 256.0f;
-		m_EndNodeDrawRect.h = 128.0f;
+		m_EndNodeDrawRect.h = 256.0f;
 	}
 
 	offset_y = m_MapScrollOffset;
@@ -290,7 +292,13 @@ void MapScene::Render(SDL_Renderer& renderer) const
 	{
 		SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
 		SDL_RenderRect(&renderer, &m_EndNodeDrawRect);
+		SDL_FRect srcRect{};
+		srcRect.w = c_EncounterImageWidth;
+		srcRect.h = c_EncounterImageHeight;
+		srcRect.x = c_EncounterImageWidth * (int)(MapNode::ENCOUNTER_BOSS);
+		srcRect.y = 0.0f;
 		SDL_RenderTexture(&renderer, m_EndNodeTexture, nullptr, &m_EndNodeDrawRect);
+		SDL_RenderTexture(&renderer, m_EncounterAtlas, &srcRect, &m_EndNodeDrawRect);
 	}
 
 	for (int y = 0; y < c_MapLength; y++)
@@ -381,30 +389,7 @@ void MapScene::Render(SDL_Renderer& renderer) const
 						SDL_RenderTexture(&renderer, m_CrossTexture, nullptr, &drawRect);
 					}
 				}
-				else
-				{
-					
-				}
 			}
-
-			std::string str = "\0";
-
-			switch (node.GetType())
-			{
-				case MapNode::ENCOUNTER_START:	 str = "b"; break;
-				case MapNode::ENCOUNTER_ENEMY:	 str = "E"; break;
-				case MapNode::ENCOUNTER_SHOP:	 str = "S"; break;
-				case MapNode::ENCOUNTER_REST:	 str = "R"; break;
-				case MapNode::ENCOUNTER_EVENT:	 str = "V"; break;
-				case MapNode::ENCOUNTER_ELITE:	 str = "L"; break;
-				case MapNode::ENCOUNTER_BOSS:	 str = "e"; break;
-				case MapNode::ENCOUNTER_UNKNOWN: str = "+"; break;
-				default: break;
-			}
-
-			SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
-			SDL_SetRenderDrawColor(&renderer, 0, 0, 255, 255);
-			SDL_RenderDebugText(&renderer, drawRect.x + ((drawRect.w / 2) - 4), drawRect.y + ((drawRect.h / 2) - 4), str.c_str());
 		}
 	}
 }

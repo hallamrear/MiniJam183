@@ -397,7 +397,17 @@ void BattleScene::Update(const float& deltaTime)
 			const float buttonScaledWidth = c_ButtonWidth * m_WindowSizeScalingX;
 			const float buttonScaledHeight = buttonScaledWidth * buttonRatio;
 
-			m_EndScreenMessageRect = SDL_FRect{ 0.0f, 0.0f, (float)m_WindowWidth,(float)m_WindowHeight };
+			float w = SDL_min((float)m_EnemyDeathTextTexture->w, m_WindowWidth);
+			float h = SDL_min((float)m_EnemyDeathTextTexture->h, m_WindowHeight);
+
+			m_EndScreenMessageRect = SDL_FRect
+			{ 
+				m_WindowCenterX - (w / 2.0f),
+				m_WindowCenterY - (h / 2.0f),
+				w, 
+				h
+			};
+			
 			m_ExitButtonRect =		SDL_FRect{ m_WindowCenterX - ((buttonScaledWidth * 3) / 2), m_WindowHeight - (2 * buttonScaledHeight), buttonScaledWidth, buttonScaledHeight };
 			m_GoToMapButtonRect =  SDL_FRect{ m_WindowCenterX + ((buttonScaledWidth * 3) / 2), m_WindowHeight - (2 * buttonScaledHeight), buttonScaledWidth, buttonScaledHeight };
 

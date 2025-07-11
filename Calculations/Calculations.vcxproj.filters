@@ -102,6 +102,9 @@
     <ClCompile Include="System\FontRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -186,6 +189,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="System\FontRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -341,6 +347,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Rest\ReturnButton.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Map\Connection.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -122,7 +122,6 @@ void AnimationController::Update(float DeltaTime)
 				else
 				{
 					m_TimeElapsed = 0.0f;
-					m_CurrentFrame = 0;
 					currentAnimation.HasFinished = true;
 				}
 			}
