@@ -67,6 +67,12 @@ void AnimationController::Start()
 	m_TimeElapsed = 0.0f;
 }
 
+void AnimationController::SetCurrentFrame(const int& frameIndex)
+{
+	m_CurrentFrame = SDL_max(frameIndex, 0);
+	m_CurrentFrame = SDL_min(m_AnimationDetails[m_CurrentAnimationIndex].FrameCount - 1, m_CurrentFrame);
+}
+
 void AnimationController::SetAnimationId(const unsigned int& animation, const bool& start)
 {
 	m_CurrentAnimationIndex = animation;

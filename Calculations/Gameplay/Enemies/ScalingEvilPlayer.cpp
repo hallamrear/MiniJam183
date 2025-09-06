@@ -17,10 +17,19 @@ ScalingEvilPlayer::ScalingEvilPlayer()
         /* death  */ AnimationDetails(17, c_EnemyDyingAnimationLength, false),
         /* cross  */ AnimationDetails(7,  c_EnemyAttackAnimationLength, false),
         /* jab    */ AnimationDetails(10, c_EnemyAttackAnimationLength, false),
-        /* katana */ AnimationDetails(10, c_EnemyAttackAnimationLength, false)
+        /* katana */ AnimationDetails(10, c_EnemyAttackAnimationLength, false),
+        AnimationDetails(0, 0, 0, false),
+        AnimationDetails(0, 0, 0, false),
+        AnimationDetails(0, 0, 0, false),
+        AnimationDetails(0, 0, 0, false),
+        AnimationDetails(0, 0, 0, false),
+        AnimationDetails(0, 0, 0, false),
+        AnimationDetails(0, 0, 0, false),
+        AnimationDetails(0, 0, 0, false),
+        AnimationDetails(0, 0, 0, false),
     };
 
-    LoadAnimation("Content/Spritesheets/Blue_Player.png", details);
+    LoadAnimation("Content/Spritesheets/Blue_Player.png", 16, details);
 }
 
 ScalingEvilPlayer::~ScalingEvilPlayer()

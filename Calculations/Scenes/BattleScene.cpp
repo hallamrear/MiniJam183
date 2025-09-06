@@ -5,6 +5,7 @@
 #include <System/Input.h>
 #include <Gameplay/Enemies/ScalingEvilPlayer.h>
 #include <Gameplay/Enemies/GreenPlayer.h>
+#include <Gameplay/Enemies/SkeletonEnemy.h>
 #include <System/Collision.h>
 #include <System/SceneManager.h>
 #include <Graphics/Animation.h>
@@ -152,6 +153,28 @@ void BattleScene::OnEnter()
 	}
 }
 
+Enemy* BattleScene::DetermineEnemyForBattle()
+{
+	Enemy* enemy = nullptr;
+
+	int roll = rand() % 100 + 1;
+
+	if (roll < 50 )
+	{
+		enemy = new SkeletonEnemy();
+	}
+	else if (roll < 80)
+	{
+		enemy = new GreenPlayer();
+	}
+	else
+	{
+		enemy = new ScalingEvilPlayer();
+	}
+
+	return enemy;
+}
+
 void BattleScene::SetupNewBattle()
 {
 	m_BattleState = BATTLE_STATE::PLAYER_MOVE;
@@ -166,16 +189,7 @@ void BattleScene::SetupNewBattle()
 		m_Enemy = nullptr;
 	}
 
-	int roll = rand() % 100 + 1;
-
-	if (roll > 50)
-	{
-		m_Enemy = new ScalingEvilPlayer();
-	}
-	else
-	{
-		m_Enemy = new GreenPlayer();
-	}
+	m_Enemy = DetermineEnemyForBattle();
 
 	m_Enemy->DetermineAttributes(m_Player);
 
@@ -276,7 +290,7 @@ void BattleScene::Update(const float& deltaTime)
 							m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION;
 							if (m_Enemy->GetAnimation() != nullptr)
 							{
-								m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::DEATH);
+								m_Enemy->GetAnimation()->SetAnimationId(Enemy::ANIMATION_STATES::DEATH);
 							}
 						}
 						else
@@ -286,7 +300,7 @@ void BattleScene::Update(const float& deltaTime)
 
 							if (m_Enemy->GetAnimation() != nullptr)
 							{
-								m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::IDLE);
+								m_Enemy->GetAnimation()->SetAnimationId(Enemy::ANIMATION_STATES::IDLE);
 							}
 						}
 					}
@@ -831,26 +845,30 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 			SDL_RenderDebugText(&renderer, 10, 20, "BATTLE_STATE::BATTLE_END_SCREEN");
 
 			SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
-			//Player died
-			if (m_Player.GetIsAlive() == false)
-			{
-				SDL_RenderTexture(&renderer, m_PlayerDeathTextTexture, nullptr, &m_EndScreenMessageRect);
-				SDL_RenderDebugText(&renderer, 10, 30, "PLAYER DIED");
-			}
-			else if (m_Enemy->GetIsAlive() == false) //Enemy died
-			{
-				SDL_RenderTexture(&renderer, m_EnemyDeathTextTexture, nullptr, &m_EndScreenMessageRect);
-				SDL_RenderDebugText(&renderer, 10, 30, "ENEMY DIED");
 
-				SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
-				SDL_RenderTexture(&renderer, m_ExitButtonTexture, nullptr, &m_ExitButtonRect);
-				SDL_RenderRect(&renderer, &m_ExitButtonRect);
-				SDL_RenderTexture(&renderer, m_GoToMapButtonTexture, nullptr, &m_GoToMapButtonRect);
-				SDL_RenderRect(&renderer, &m_GoToMapButtonRect);
-			}
-			else
+			if (m_Enemy != nullptr)
 			{
-				assert(false);
+				//Player died
+				if (m_Player.GetIsAlive() == false)
+				{
+					SDL_RenderTexture(&renderer, m_PlayerDeathTextTexture, nullptr, &m_EndScreenMessageRect);
+					SDL_RenderDebugText(&renderer, 10, 30, "PLAYER DIED");
+				}
+				else if (m_Enemy->GetIsAlive() == false) //Enemy died
+				{
+					SDL_RenderTexture(&renderer, m_EnemyDeathTextTexture, nullptr, &m_EndScreenMessageRect);
+					SDL_RenderDebugText(&renderer, 10, 30, "ENEMY DIED");
+
+					SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
+					SDL_RenderTexture(&renderer, m_ExitButtonTexture, nullptr, &m_ExitButtonRect);
+					SDL_RenderRect(&renderer, &m_ExitButtonRect);
+					SDL_RenderTexture(&renderer, m_GoToMapButtonTexture, nullptr, &m_GoToMapButtonRect);
+					SDL_RenderRect(&renderer, &m_GoToMapButtonRect);
+				}
+				else
+				{
+					assert(false);
+				}
 			}
 		}
 		break;

@@ -4,26 +4,24 @@
 #include <System/SceneManager.h>
 #include <Graphics/Animation.h>
 #include <System/Services.h>
+#include <System/Collision.h>
 
 RandomEventScene::RandomEventScene(SceneManager& manager)
 	: Scene(manager)
 {
 	std::vector<AnimationDetails> details = 
 	{ 
-		{1, 0.0f, false, true},
-		{1, 0.0f, false, true},
-		{1, 0.0f, false, true}
+		{ 2, 0.0f, false, true },
+		{ 2, 0.0f, false, true },
+		{ 2, 0.0f, false, true },
+		{ 2, 0.0f, false, true },
 	};
 
-	m_RandomEventAtlas = new AnimationController("Content/Random Encounters/AtlasImage.png", 1, details);
-
-	int width = 0;
-	int height = 0;
-	SDL_GetWindowSize(&Services::GetWindow(), &width, &height);
-	m_RandomEventImageDstRect.w = m_RandomEventAtlas->GetFrameSizeX();
-	m_RandomEventImageDstRect.h = m_RandomEventAtlas->GetFrameSizeX();
-	m_RandomEventImageDstRect.x = (width / 2) - (m_RandomEventImageDstRect.w / 2);
-	m_RandomEventImageDstRect.y = (height / 2) - (m_RandomEventImageDstRect.h / 2);
+	m_GeneratedEncounter = RandomEventScene::RANDOM_ENCOUNTER_UNKNOWN_OR_NOT_SET;
+	m_RandomEventAtlas = new AnimationController("Content/Random Encounters/AtlasImage.png", 4, details);
+	m_RandomEventImageDstRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
+	m_IsConsumed = false;
+	m_ClickCooldown = c_ClickSafetyTimer;
 }
 
 RandomEventScene::~RandomEventScene()
@@ -35,12 +33,9 @@ RandomEventScene::~RandomEventScene()
 	}
 }
 
-float sclickCooldown = 2.0f;
-
 void RandomEventScene::OnEnter()
 {
-	sclickCooldown = 2.0f;
-
+	m_ClickCooldown = c_ClickSafetyTimer;
 	GenerateRandomEncounter();
 }
 
@@ -58,8 +53,8 @@ void RandomEventScene::GenerateRandomEncounter()
 	case RandomEventScene::RANDOM_ENCOUNTER_FREE_FULL_HEAL:
 		SDL_Log("%i RANDOM_ENCOUNTER_FREE_FULL_HEAL", r);
 		break;
-	case RandomEventScene::RANDOM_ENCOUNTER_FREE_CARM:
-		SDL_Log("%i RANDOM_ENCOUNTER_FREE_CARM", r);
+	case RandomEventScene::RANDOM_ENCOUNTER_FREE_CARD:
+		SDL_Log("%i RANDOM_ENCOUNTER_FREE_CARD", r);
 		break;
 	case RandomEventScene::RANDOM_ENCOUNTER_RANDOM_FREE_HEAL:
 		SDL_Log("%i RANDOM_ENCOUNTER_RANDOM_FREE_HEAL", r);
@@ -72,6 +67,13 @@ void RandomEventScene::GenerateRandomEncounter()
 		break;
 	}
 
+	if (m_RandomEventAtlas != nullptr)
+	{
+		m_RandomEventAtlas->SetAnimationId(m_GeneratedEncounter);
+		m_RandomEventAtlas->SetCurrentFrame(0);
+	}
+
+	m_IsConsumed = false;
 }
 
 void RandomEventScene::DestroyRandomEncounter()
@@ -83,6 +85,7 @@ void RandomEventScene::DestroyRandomEncounter()
 	}
 
 	m_GeneratedEncounter = RandomEventScene::RANDOM_ENCOUNTER_UNKNOWN_OR_NOT_SET;
+	m_IsConsumed = true;
 }
 
 void RandomEventScene::HandleEvent(const SDL_Event& e)
@@ -93,9 +96,8 @@ void RandomEventScene::HandleEvent(const SDL_Event& e)
 	{
 		switch (e.key.key)
 		{
-		case SDLK_1: { m_RandomEventAtlas->SetAnimationId(0); } break;
-		case SDLK_2: { m_RandomEventAtlas->SetAnimationId(1); } break;
-		case SDLK_3: { m_RandomEventAtlas->SetAnimationId(2); } break;
+		case SDLK_1: { m_RandomEventAtlas->SetCurrentFrame(0); } break;
+		case SDLK_2: { m_RandomEventAtlas->SetCurrentFrame(2); } break;
 
 		default:
 			break;
@@ -112,21 +114,47 @@ void RandomEventScene::OnExit()
 {
 	DestroyRandomEncounter();
 }
-
 void RandomEventScene::Update(const float& deltaTime)
 {
-	if(sclickCooldown > 0.0f)
-		sclickCooldown -= deltaTime;
-
-	if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON) && sclickCooldown <= 0.0f)
+	if (m_ClickCooldown < 0.0f)
 	{
-		m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
+		if (m_IsConsumed)
+		{
+			if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
+			{
+				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
+			}
+		}
+		else
+		{
+			if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_RandomEventImageDstRect) &&
+				m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
+			{
+				m_IsConsumed = true;
+			}
+		}
+	}
+	else
+	{
+		m_ClickCooldown -= deltaTime;
 	}
 
 	if (m_RandomEventAtlas != nullptr)
 	{
 		m_RandomEventAtlas->Update(deltaTime);
-	}
+
+		int width = 0;
+		int height = 0;
+		SDL_GetWindowSize(&Services::GetWindow(), &width, &height);
+
+		float size = SDL_min(m_RandomEventAtlas->GetFrameSizeX(), m_RandomEventAtlas->GetFrameSizeY());
+		size = SDL_min(height, size);
+		size = SDL_min(width, size);
+		m_RandomEventImageDstRect.w = size;
+		m_RandomEventImageDstRect.h = size;
+		m_RandomEventImageDstRect.x = (width / 2) - (m_RandomEventImageDstRect.w / 2);
+		m_RandomEventImageDstRect.y = (height / 2) - (m_RandomEventImageDstRect.h / 2);
+	}	
 }
 
 void RandomEventScene::Render(SDL_Renderer& renderer) const

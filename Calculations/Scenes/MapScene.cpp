@@ -18,6 +18,7 @@ MapScene::MapScene(SceneManager& manager) : Scene(manager),
 	m_SelectedNodeIndex = -1;
 	m_CanSelectButton = true;
 	m_ButtonPressCooldownTimer = -1.0f;
+	m_ScrollSpeedMultiplier = 1.0f;
 
 	m_PossibleMapMovements = std::vector<const MapNode*>();
 
@@ -93,9 +94,25 @@ void MapScene::HandleEvent(const SDL_Event& e)
 			y *= -1;
 		}
 
-		m_MapScrollOffset += y * c_MapScrollSpeed;
+		m_MapScrollOffset += y * c_MapScrollSpeed * m_ScrollSpeedMultiplier;
 
 		m_IsButtonRectsDirty = true;
+	}
+	break;
+
+	case SDL_EVENT_KEY_DOWN:
+	{
+		switch (e.key.key)
+		{
+		case SDLK_LSHIFT:
+		{
+			m_ScrollSpeedMultiplier = 5.0f;
+		}
+		break;
+
+		default:
+			break;
+		}
 	}
 	break;
 
@@ -107,6 +124,12 @@ void MapScene::HandleEvent(const SDL_Event& e)
 		{
 			m_WorldMap.GenerateNewMap(time(NULL), 0);
 			m_IsButtonRectsDirty = true;
+		}
+		break;
+
+		case SDLK_LSHIFT:
+		{
+			m_ScrollSpeedMultiplier = 1.0f;
 		}
 		break;
 
@@ -281,26 +304,6 @@ void MapScene::Render(SDL_Renderer& renderer) const
 
 	SDL_RenderTextureTiled(&renderer, m_BackgroundTexture, nullptr, 1.0f, nullptr);
 
-	if (m_StartNodeTexture != nullptr)
-	{
-		SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
-		SDL_RenderRect(&renderer, &m_StartNodeDrawRect);
-		SDL_RenderTexture(&renderer, m_StartNodeTexture, nullptr, &m_StartNodeDrawRect);
-	}
-
-	if (m_EndNodeTexture != nullptr)
-	{
-		SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
-		SDL_RenderRect(&renderer, &m_EndNodeDrawRect);
-		SDL_FRect srcRect{};
-		srcRect.w = c_EncounterImageWidth;
-		srcRect.h = c_EncounterImageHeight;
-		srcRect.x = c_EncounterImageWidth * (int)(MapNode::ENCOUNTER_BOSS);
-		srcRect.y = 0.0f;
-		SDL_RenderTexture(&renderer, m_EndNodeTexture, nullptr, &m_EndNodeDrawRect);
-		SDL_RenderTexture(&renderer, m_EncounterAtlas, &srcRect, &m_EndNodeDrawRect);
-	}
-
 	for (int y = 0; y < c_MapLength; y++)
 	{
 		for (int x = 0; x < c_MapWidth; x++)
@@ -391,5 +394,25 @@ void MapScene::Render(SDL_Renderer& renderer) const
 				}
 			}
 		}
+	}
+
+	if (m_StartNodeTexture != nullptr)
+	{
+		SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
+		SDL_RenderRect(&renderer, &m_StartNodeDrawRect);
+		SDL_RenderTexture(&renderer, m_StartNodeTexture, nullptr, &m_StartNodeDrawRect);
+	}
+
+	if (m_EndNodeTexture != nullptr)
+	{
+		SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
+		SDL_RenderRect(&renderer, &m_EndNodeDrawRect);
+		SDL_FRect srcRect{};
+		srcRect.w = c_EncounterImageWidth;
+		srcRect.h = c_EncounterImageHeight;
+		srcRect.x = c_EncounterImageWidth * (int)(MapNode::ENCOUNTER_BOSS);
+		srcRect.y = 0.0f;
+		SDL_RenderTexture(&renderer, m_EndNodeTexture, nullptr, &m_EndNodeDrawRect);
+		SDL_RenderTexture(&renderer, m_EncounterAtlas, &srcRect, &m_EndNodeDrawRect);
 	}
 }

@@ -56,6 +56,7 @@ private:
 	bool m_CanPickCard;
 
 	void SetupNewBattle();
+	Enemy* DetermineEnemyForBattle();
 	void RenderCharacterHealthBar(SDL_Renderer& renderer) const;
 	void RenderEquation(SDL_Renderer& renderer) const;
 	void RenderCardHands(SDL_Renderer& renderer) const;

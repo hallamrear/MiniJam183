@@ -204,6 +204,7 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Gameplay\Enemies\SkeletonEnemy.cpp" />
     <ClCompile Include="System\FontRenderer.cpp" />
     <ClCompile Include="Gameplay\Enemies\GreenPlayer.cpp">
       <DeploymentContent>true</DeploymentContent>
@@ -243,6 +244,7 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Gameplay\Enemies\SkeletonEnemy.h" />
     <ClInclude Include="System\FontRenderer.h" />
     <ClInclude Include="Gameplay\Enemies\GreenPlayer.h">
       <DeploymentContent>true</DeploymentContent>

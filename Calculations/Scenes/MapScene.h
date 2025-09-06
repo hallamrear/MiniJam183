@@ -15,6 +15,7 @@ private:
 	const float c_MapScrollSpeed;
 	const float c_MapEdgePadding;
 	const float c_ButtonPressCooldown;
+	float m_ScrollSpeedMultiplier;
 
 	SDL_Texture* m_BackgroundTexture;
 	SDL_Texture* m_StartNodeTexture;

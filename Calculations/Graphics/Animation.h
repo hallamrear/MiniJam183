@@ -36,6 +36,7 @@ public:
 
 	bool HasFinished();
 	void Start();
+	void SetCurrentFrame(const int& frameIndex);
 	void SetAnimationId(const unsigned int& animation, const bool& start = true);
 	const unsigned int& GetCurrentAnimationId() const;
 	const AnimationDetails& GetCurrentAnimationDetails() const;
