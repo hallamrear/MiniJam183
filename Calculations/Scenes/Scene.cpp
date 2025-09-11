@@ -4,7 +4,7 @@
 #include <System/Services.h>
 #include <System/Input.h>
 
-Scene::Scene(SceneManager& sceneManager) : m_SceneManager(sceneManager), m_InputManager(Services::GetInputManager())
+Scene::Scene(SceneManager& sceneManager) : m_SceneManager(sceneManager), m_InputManager(Services::GetInputManager()), m_Player(Services::GetPlayer())
 {
 
 }

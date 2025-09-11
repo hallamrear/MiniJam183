@@ -108,6 +108,12 @@
     <ClCompile Include="Gameplay\Enemies\SkeletonEnemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\Enemies\MushroomEnemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\IntroScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -198,6 +204,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gameplay\Enemies\SkeletonEnemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Enemies\MushroomEnemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\IntroScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -359,6 +371,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Random Encounters\AtlasImage.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\intro.gif">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -205,6 +205,8 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Gameplay\Enemies\SkeletonEnemy.cpp" />
+    <ClCompile Include="Gameplay\Enemies\MushroomEnemy.cpp" />
+    <ClCompile Include="Scenes\IntroScene.cpp" />
     <ClCompile Include="System\FontRenderer.cpp" />
     <ClCompile Include="Gameplay\Enemies\GreenPlayer.cpp">
       <DeploymentContent>true</DeploymentContent>
@@ -245,6 +247,8 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Gameplay\Enemies\SkeletonEnemy.h" />
+    <ClInclude Include="Gameplay\Enemies\MushroomEnemy.h" />
+    <ClInclude Include="Scenes\IntroScene.h" />
     <ClInclude Include="System\FontRenderer.h" />
     <ClInclude Include="Gameplay\Enemies\GreenPlayer.h">
       <DeploymentContent>true</DeploymentContent>
@@ -347,6 +351,9 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\cat2.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\intro.gif">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\Map\Background.png">

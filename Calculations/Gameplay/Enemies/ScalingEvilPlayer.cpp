@@ -4,30 +4,20 @@
 #include <Gameplay/Player/Player.h>
 #include <Graphics/Animation.h>
 
-constexpr const float c_EnemyAttackAnimationLength = 1.0f;
-constexpr const float c_EnemyDyingAnimationLength = 2.5f;
-
 ScalingEvilPlayer::ScalingEvilPlayer()
 {
     std::vector<AnimationDetails> details;
     details =
     {
-        /* idle   */ AnimationDetails(10, c_EnemyAttackAnimationLength, true),
-        /* hurt   */ AnimationDetails(8,  c_EnemyAttackAnimationLength, false),
-        /* death  */ AnimationDetails(17, c_EnemyDyingAnimationLength, false),
-        /* cross  */ AnimationDetails(7,  c_EnemyAttackAnimationLength, false),
-        /* jab    */ AnimationDetails(10, c_EnemyAttackAnimationLength, false),
-        /* katana */ AnimationDetails(10, c_EnemyAttackAnimationLength, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
+        /* idle   */ AnimationDetails(10, c_DefaultEnemyAttackAnimationLength, true),
+        /* hurt   */ AnimationDetails(8,  c_DefaultEnemyAttackAnimationLength, false),
+        /* death  */ AnimationDetails(16, c_DefaultEnemyDyingAnimationLength, false),
+        /* cross  */ AnimationDetails(7,  c_DefaultEnemyAttackAnimationLength, false),
+        /* jab    */ AnimationDetails(10, c_DefaultEnemyAttackAnimationLength, false),
+        /* katana */ AnimationDetails(10, c_DefaultEnemyAttackAnimationLength, false)
     };
+
+    m_PossibleAttackAnimationCount = 3;
 
     LoadAnimation("Content/Spritesheets/Blue_Player.png", 16, details);
 }

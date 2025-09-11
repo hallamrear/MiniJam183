@@ -38,7 +38,7 @@ AnimationController::AnimationController(const std::string& sheetPath, const int
 	m_MaxFrameCount = maxFrameCount;
 	m_TimeBetweenFrames = m_AnimationDetails[m_CurrentAnimationIndex].Duration / m_AnimationDetails[m_CurrentAnimationIndex].FrameCount;
 	m_FrameSizeX = m_TextureWidth / m_MaxFrameCount;
-	m_FrameSizeY = m_TextureHeight / m_MaxFrameCount;
+	m_FrameSizeY = m_TextureHeight / m_AnimationCount;
 }
 
 AnimationController::~AnimationController()
@@ -112,7 +112,7 @@ void AnimationController::Update(float DeltaTime)
 	{
 		AnimationDetails& currentAnimation = m_AnimationDetails[m_CurrentAnimationIndex];
 		m_FrameSizeX = m_TextureWidth / m_MaxFrameCount;
-		m_FrameSizeY = m_TextureHeight / m_MaxFrameCount;
+		m_FrameSizeY = m_TextureHeight / m_AnimationCount;
 
 		if (currentAnimation.HasFinished == false)
 		{

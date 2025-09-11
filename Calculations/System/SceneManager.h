@@ -4,7 +4,8 @@
 
 enum SCENE_IDENTIFIER
 {
-	SCENE_MAIN_MENU = 0,
+	SCENE_INTRO = 0,
+	SCENE_MAIN_MENU,
 	SCENE_BATTLE,
 	SCENE_MAP,
 	SCENE_SHOP,
@@ -28,7 +29,7 @@ public:
 
 	void PassEventToScene(const SDL_Event& e);
 	void ChangeScene(const SCENE_IDENTIFIER& targetScene);
-
+	Scene* GetSceneByIdentifier(const SCENE_IDENTIFIER& requestedSceneIdentifier);
 
 	void Update(const float& deltaTime);
 	void Render(SDL_Renderer& renderer) const;

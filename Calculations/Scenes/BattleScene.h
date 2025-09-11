@@ -3,6 +3,7 @@
 #include <Graphics/ProgressBar.h>
 #include <Gameplay/Player/Player.h>
 #include <Gameplay/Enemies/Enemy.h>
+#include <Gameplay/World/MapNode.h>
 
 class Animation;
 class Input;
@@ -27,7 +28,6 @@ private:
 
 	ProgressBar* m_PlayerHealthBar;
 	ProgressBar* m_EnemyHealthBar;
-	Player& m_Player;
 	Enemy* m_Enemy;
 	float m_EnemyPseudoThinkingTimeElapsed;
 
@@ -52,10 +52,10 @@ private:
 	int m_LastDamageRoll = 0;
 	float m_WindowSizeScalingX;
 	float m_WindowSizeScalingY;
+	MapNode::ENCOUNTER_TYPE m_GeneratedEncounterType;
 
 	bool m_CanPickCard;
 
-	void SetupNewBattle();
 	Enemy* DetermineEnemyForBattle();
 	void RenderCharacterHealthBar(SDL_Renderer& renderer) const;
 	void RenderEquation(SDL_Renderer& renderer) const;
@@ -73,6 +73,7 @@ private:
 	void AddCardToEquation(Card* card);
 	void ClearEquation();
 	void ApplyEquation();
+	void DeterminePlayerRewards();
 
 	SDL_FRect m_ExitButtonRect;
 	SDL_FRect m_GoToMapButtonRect;
@@ -84,6 +85,8 @@ private:
 public:
 	BattleScene(SceneManager& manager);
 	~BattleScene();
+
+	void SetupNewBattle(const MapNode::ENCOUNTER_TYPE& encounterType);
 
 	virtual void OnEnter() override;
 	virtual void HandleEvent(const SDL_Event& e) override;

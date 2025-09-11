@@ -27,16 +27,7 @@ Player::Player()
         /* cross  */ AnimationDetails(7,  c_PlayerAttackAnimationLength, false),
         /* jab    */ AnimationDetails(10, c_PlayerAttackAnimationLength, false),
         /* katana */ AnimationDetails(10, c_PlayerAttackAnimationLength, false),
-        /* heal */ AnimationDetails(10, c_PlayerAttackAnimationLength, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
-        AnimationDetails(0, 0, 0, false),
+        /* heal */ AnimationDetails(10, c_PlayerAttackAnimationLength, false)
     };
 
     LoadAnimation("Content/Spritesheets/White_Player.png", 16, details);

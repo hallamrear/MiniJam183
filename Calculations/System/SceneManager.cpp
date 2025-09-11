@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SceneManager.h"
+#include <Scenes/IntroScene.h>
 #include <Scenes/MenuScene.h>
 #include <Scenes/BattleScene.h>
 #include <Scenes/ShopScene.h>
@@ -12,6 +13,7 @@ SceneManager::SceneManager()
 	m_CurrentScene = nullptr;
 
 	m_SceneList = std::unordered_map<SCENE_IDENTIFIER, Scene*>();
+	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_INTRO, new IntroScene(*this) });
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_MAIN_MENU, new MenuScene(*this) });
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_BATTLE, new BattleScene(*this) });
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_SHOP, new ShopScene(*this) });
@@ -19,7 +21,7 @@ SceneManager::SceneManager()
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_RANDOM_EVENT, new RandomEventScene(*this) });
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_REST, new RestScene(*this) });
 
-	ChangeScene(SCENE_IDENTIFIER::SCENE_MAIN_MENU);
+	ChangeScene(SCENE_IDENTIFIER::SCENE_INTRO);
 }
 
 SceneManager::~SceneManager()
@@ -45,6 +47,20 @@ void SceneManager::ChangeScene(const SCENE_IDENTIFIER& targetScene)
 {
 	m_IsPendingSceneChange = true;
 	m_PendingScene = targetScene;
+}
+
+Scene* SceneManager::GetSceneByIdentifier(const SCENE_IDENTIFIER& requestedSceneIdentifier)
+{
+	std::unordered_map<SCENE_IDENTIFIER, Scene*>::iterator found = m_SceneList.find(requestedSceneIdentifier);
+	if (found != m_SceneList.end())
+	{
+		if (found->second != nullptr)
+		{
+			return found->second;
+		}
+	}
+	
+	return nullptr;
 }
 
 void SceneManager::ApplyPendingSceneChange()

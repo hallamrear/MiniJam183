@@ -25,6 +25,7 @@ private:
 	float m_ClickCooldown;
 
 	void GenerateRandomEncounter();
+	void ApplyEncounterChanges();
 	void DestroyRandomEncounter();
 	ENCOUNTER_TYPE m_GeneratedEncounter;
 

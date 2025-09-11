@@ -18,6 +18,7 @@ enum NUMBER_CARD_VALUE
 	EIGHTEEN = 18,
 	TWENTY = 20,
 	FIFTY = 50,
+	CARD_VALUE_COUNT = 15,
 };
 
 /// <summary>

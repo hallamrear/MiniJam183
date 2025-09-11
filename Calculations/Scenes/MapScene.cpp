@@ -2,6 +2,7 @@
 #include "MapScene.h"
 #include <System/Services.h>
 #include <System/SceneManager.h>
+#include <Scenes/BattleScene.h>
 #include <Graphics/Texture.h>
 #include <System/Collision.h>
 #include <System/Input.h>
@@ -46,7 +47,12 @@ MapScene::MapScene(SceneManager& manager) : Scene(manager),
 
 MapScene::~MapScene()
 {
+	for (size_t i = 0; i < m_PossibleMapMovements.size(); i++)
+	{
+		m_PossibleMapMovements[i] = nullptr;
+	}
 	m_PossibleMapMovements.clear();
+
 	m_SelectedNodeIndex = -1;
 	for (size_t i = 0; i < 50; i++)
 	{
@@ -263,6 +269,12 @@ void MapScene::Update(const float& deltaTime)
 			case MapNode::ENCOUNTER_BOSS:
 			{
 				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_BATTLE);
+
+				BattleScene* battleScene = dynamic_cast<BattleScene*>(m_SceneManager.GetSceneByIdentifier(SCENE_IDENTIFIER::SCENE_BATTLE));
+				if (battleScene != nullptr)
+				{
+					battleScene->SetupNewBattle(node.GetType());
+				}
 			}
 			break;
 

@@ -5,12 +5,14 @@ Enemy::Enemy()
 {
 	m_BaseDamage = 0;
 	m_RollRange = 0;
+	m_PossibleAttackAnimationCount = 0;
 }
 
 Enemy::~Enemy()
 {
 	m_BaseDamage = 0;
 	m_RollRange = 0;
+	m_PossibleAttackAnimationCount = 0;
 }
 
 int Enemy::GetDamageRoll() const
@@ -26,4 +28,9 @@ void Enemy::DetermineAttributes(const Player& player)
 	m_CurrentHealth = m_MaxHealth;
 	m_RollRange = INITIAL_ENEMY_ROLL_RANGE;
 	m_BaseDamage = INITIAL_ENEMY_BASE_DAMAGE;
+}
+
+const int& Enemy::GetPossibleAttackAnimationCount() const
+{
+	return m_PossibleAttackAnimationCount;
 }

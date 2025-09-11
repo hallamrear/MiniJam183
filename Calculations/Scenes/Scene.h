@@ -2,11 +2,13 @@
 
 class SceneManager;
 class Input;
+class Player;
 
 class Scene
 {
 protected:
 	const Input& m_InputManager;
+	Player& m_Player;
 
 	SceneManager& m_SceneManager;
 	Scene(SceneManager& sceneManager);

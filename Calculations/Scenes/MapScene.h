@@ -2,7 +2,6 @@
 #include <Scenes/Scene.h>
 #include <Gameplay/World/WorldMap.h>
 
-
 class MapScene : public Scene
 {
 private:

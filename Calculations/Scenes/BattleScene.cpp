@@ -6,6 +6,7 @@
 #include <Gameplay/Enemies/ScalingEvilPlayer.h>
 #include <Gameplay/Enemies/GreenPlayer.h>
 #include <Gameplay/Enemies/SkeletonEnemy.h>
+#include <Gameplay/Enemies/MushroomEnemy.h>
 #include <System/Collision.h>
 #include <System/SceneManager.h>
 #include <Graphics/Animation.h>
@@ -31,8 +32,7 @@ constexpr const float c_ButtonHeight = 64.0f;
 constexpr const float c_MaxEnemyPseudoThinkingTime = 3.0f;
 
 BattleScene::BattleScene(SceneManager& manager)
-	: Scene(manager),
-		m_Player(Services::GetPlayer())
+	: Scene(manager)
 {
 	m_WindowSizeScalingX = 0.0f;
 	m_WindowSizeScalingY = 0.0f;
@@ -49,6 +49,7 @@ BattleScene::BattleScene(SceneManager& manager)
 
 	m_EnemyPseudoThinkingTimeElapsed = 0.0f;
 	m_BattleState = BATTLE_STATE::PLAYER_MOVE;
+	m_GeneratedEncounterType = MapNode::ENCOUNTER_TYPE::ENCOUNTER_UNKNOWN;
 	m_CanPickCard = true;
 
 	m_GoToMapButtonRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
@@ -138,8 +139,6 @@ BattleScene::~BattleScene()
 
 void BattleScene::OnEnter()
 {
-	SetupNewBattle();
-
 	if (m_PlayerHealthBar != nullptr)
 	{
 		float value = m_Player.GetCurrentHealth() / m_Player.GetMaxHealth();
@@ -175,13 +174,16 @@ Enemy* BattleScene::DetermineEnemyForBattle()
 	return enemy;
 }
 
-void BattleScene::SetupNewBattle()
+void BattleScene::SetupNewBattle(const MapNode::ENCOUNTER_TYPE& encounterType)
 {
 	m_BattleState = BATTLE_STATE::PLAYER_MOVE;
+	m_Player.GetAnimation()->SetAnimationId(Player::ANIMATION_STATES::IDLE);
 
 	ClearEquation();
 	m_Player.GetDeck().RestoreDiscardedCards();
 	m_Player.EmptyHands();
+	m_Player.DrawNumberCardsIntoHand(m_Player.GetNumbersHandSize());
+	m_Player.DrawOperandCardsIntoHand(m_Player.GetOperandHandSize());
 
 	if (m_Enemy != nullptr)
 	{
@@ -189,12 +191,30 @@ void BattleScene::SetupNewBattle()
 		m_Enemy = nullptr;
 	}
 
-	m_Enemy = DetermineEnemyForBattle();
+	switch (encounterType)
+	{
+	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_ENEMY:
+	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_BOSS:
+	{
+		m_Enemy = DetermineEnemyForBattle();
+		m_Enemy->DetermineAttributes(m_Player);
+	}
+	break;
 
-	m_Enemy->DetermineAttributes(m_Player);
 
-	m_Player.DrawNumberCardsIntoHand(m_Player.GetNumbersHandSize());
-	m_Player.DrawOperandCardsIntoHand(m_Player.GetOperandHandSize());
+	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_ELITE:
+	{
+		m_Enemy = new MushroomEnemy();
+		m_Enemy->DetermineAttributes(m_Player);
+	}
+	break;
+
+	default:
+		SDL_assert(true);
+		break;
+	}
+
+	m_GeneratedEncounterType = encounterType;
 }
 
 void BattleScene::HandleEvent(const SDL_Event& e)
@@ -234,6 +254,8 @@ void BattleScene::OnExit()
 
 	m_Player.EmptyHands();
 	ClearEquation();
+
+	m_GeneratedEncounterType = MapNode::ENCOUNTER_TYPE::ENCOUNTER_UNKNOWN;
 }
 
 void BattleScene::Update(const float& deltaTime)
@@ -285,8 +307,6 @@ void BattleScene::Update(const float& deltaTime)
 					{
 						if (m_Enemy->GetIsAlive() == false)
 						{
-							m_Player.IncreaseWinCount(1);
-							m_Player.IncreaseGold(5 * m_Player.GetWinCount());
 							m_BattleState = BATTLE_STATE::ENEMY_DYING_ANIMATION;
 							if (m_Enemy->GetAnimation() != nullptr)
 							{
@@ -334,7 +354,10 @@ void BattleScene::Update(const float& deltaTime)
 				{
 					if (m_Enemy->GetAnimation() != nullptr)
 					{
-						m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::ATTACK_1);
+						int animIndex = rand() % m_Enemy->GetPossibleAttackAnimationCount();
+						printf("%i", animIndex);
+						Enemy::ANIMATION_STATES state = (Enemy::ANIMATION_STATES)(Enemy::ANIMATION_STATES::ATTACK_1 + animIndex);
+						m_Enemy->GetAnimation()->SetAnimationId(state);
 					}
 				}
 			}
@@ -387,6 +410,7 @@ void BattleScene::Update(const float& deltaTime)
 					if (m_Enemy->GetAnimation()->HasFinished())
 					{
 						m_BattleState = BATTLE_STATE::BATTLE_END_SCREEN;
+						DeterminePlayerRewards();
 					}
 				}
 			}
@@ -454,6 +478,40 @@ void BattleScene::Update(const float& deltaTime)
 	}
 
 	CalculateUpdatedDrawPositions(deltaTime);
+}
+
+void BattleScene::DeterminePlayerRewards()
+{
+	switch (m_GeneratedEncounterType)
+	{
+	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_ENEMY:
+	{
+		m_Player.IncreaseWinCount(1);
+		m_Player.IncreaseGold(5 * m_Player.GetWinCount());
+	}
+	break;
+
+
+	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_ELITE:
+	{
+		m_Player.IncreaseWinCount(1);
+		m_Player.IncreaseGold(50 * m_Player.GetWinCount());
+	}
+	break;
+
+
+	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_BOSS:
+	{
+		m_Player.IncreaseWinCount(1);
+		m_Player.IncreaseGold(500 * m_Player.GetWinCount());
+	}
+	break;
+
+	default:
+		SDL_assert(true);
+		break;
+	}
+
 }
 
 void BattleScene::CheckForClickCollisions()

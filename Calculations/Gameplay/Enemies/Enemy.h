@@ -6,8 +6,12 @@ class Player;
 class Enemy : public Entity
 {
 protected:
+	const float c_DefaultEnemyAttackAnimationLength = 1.0f;
+	const float c_DefaultEnemyDyingAnimationLength = 2.5f;
+
 	int m_BaseDamage;
 	int m_RollRange;
+	int m_PossibleAttackAnimationCount;
 
 public:
 	enum ANIMATION_STATES
@@ -25,4 +29,6 @@ public:
 
 	virtual int GetDamageRoll() const;
 	virtual void DetermineAttributes(const Player& player);
+
+	const int& GetPossibleAttackAnimationCount() const;
 };

@@ -5,6 +5,7 @@
 #include <Graphics/Animation.h>
 #include <System/Services.h>
 #include <System/Collision.h>
+#include <Gameplay/Player/Player.h>
 
 RandomEventScene::RandomEventScene(SceneManager& manager)
 	: Scene(manager)
@@ -114,6 +115,49 @@ void RandomEventScene::OnExit()
 {
 	DestroyRandomEncounter();
 }
+
+void RandomEventScene::ApplyEncounterChanges()
+{
+	switch (m_GeneratedEncounter)
+	{
+	case RandomEventScene::RANDOM_ENCOUNTER_UNKNOWN_OR_NOT_SET:
+		break;
+	case RandomEventScene::RANDOM_ENCOUNTER_NOTHING:
+		break;
+	case RandomEventScene::RANDOM_ENCOUNTER_FREE_FULL_HEAL:
+		
+		break;
+	case RandomEventScene::RANDOM_ENCOUNTER_FREE_CARD:
+	{
+		int r = rand() % 10 + 1;
+
+		//Random Number
+		if (r > 5)
+		{
+			int random_value = rand() % NUMBER_CARD_VALUE::CARD_VALUE_COUNT;
+			m_Player.GetDeck().AddCard(NumberCard((NUMBER_CARD_VALUE)random_value));
+			printf("num card %i\n", random_value);
+		}
+		else //random operand
+		{
+			int random_op = rand() % 4;
+			OPERAND_TYPE op = (OPERAND_TYPE)(random_op);
+			m_Player.GetDeck().AddCard(OperandCard(op));
+			printf("op card %i\n", random_op);
+		}
+	}
+		break;
+	case RandomEventScene::RANDOM_ENCOUNTER_RANDOM_FREE_HEAL:
+		break;
+
+	case RandomEventScene::COUNT:
+	default:
+		break;
+	}
+
+	m_IsConsumed = true;
+}
+
 void RandomEventScene::Update(const float& deltaTime)
 {
 	if (m_ClickCooldown < 0.0f)
@@ -130,7 +174,8 @@ void RandomEventScene::Update(const float& deltaTime)
 			if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_RandomEventImageDstRect) &&
 				m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
 			{
-				m_IsConsumed = true;
+				ApplyEncounterChanges();
+				m_ClickCooldown = c_ClickSafetyTimer;
 			}
 		}
 	}
