@@ -108,7 +108,7 @@
     <ClCompile Include="System\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DevScene.cpp">
+    <ClCompile Include="Scenes\DevScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -203,7 +203,7 @@
     <ClInclude Include="System\File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DevScene.h">
+    <ClInclude Include="Scenes\DevScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

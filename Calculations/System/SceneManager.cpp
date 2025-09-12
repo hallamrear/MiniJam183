@@ -7,6 +7,7 @@
 #include <Scenes/MapScene.h>
 #include <Scenes/RandomEventScene.h>
 #include <Scenes/RestScene.h>
+#include <Scenes/DevScene.h>
 
 SceneManager::SceneManager()
 {

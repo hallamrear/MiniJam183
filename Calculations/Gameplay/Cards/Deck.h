@@ -24,6 +24,10 @@ public:
 	Deck();
 	~Deck();
 
+	void GetAllCardsInDeck(std::vector<Card*>& numbersCards);
+	void GetNumbersCardsInDeck(std::vector<NumberCard*>& numbersCards);
+	void GetOperandCardsInDeck(std::vector<OperandCard*>& numbersCards);
+
 	void DrawNumbersHand(const int& count, std::vector<NumberCard*>& handToFill);
 	void DrawOperandCardsIntoHand(const int& count, std::vector<OperandCard*>& handToFill);
 

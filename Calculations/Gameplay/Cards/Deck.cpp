@@ -99,6 +99,61 @@ Deck::~Deck()
 	DestroyTextures();
 }
 
+void Deck::GetAllCardsInDeck(std::vector<Card*>& vectorToFill)
+{
+	vectorToFill.clear();
+
+	for (auto& itr : m_HeldNumbers)
+	{
+		vectorToFill.push_back(&itr);
+	}
+
+	for (auto& itr : m_DiscaredNumbers)
+	{
+		vectorToFill.push_back(&itr);
+	}
+
+	for (auto& itr : m_HeldOperands)
+	{
+		vectorToFill.push_back(&itr);
+	}
+
+	for (auto& itr : m_DiscardedOperands)
+	{
+		vectorToFill.push_back(&itr);
+	}
+}
+
+void Deck::GetNumbersCardsInDeck(std::vector<NumberCard*>& numbersCards)
+{
+	numbersCards.clear();
+
+	for (auto& itr : m_HeldNumbers)
+	{
+		numbersCards.push_back(&itr);
+	}
+
+	for (auto& itr : m_DiscaredNumbers)
+	{
+		numbersCards.push_back(&itr);
+	}
+}
+
+void Deck::GetOperandCardsInDeck(std::vector<OperandCard*>& operandCards)
+{
+	operandCards.clear();
+
+	for (auto& itr : m_HeldOperands)
+	{
+		operandCards.push_back(&itr);
+	}
+
+	for (auto& itr : m_DiscardedOperands)
+	{
+		operandCards.push_back(&itr);
+	}
+}
+
 void Deck::DrawNumbersHand(const int& count, std::vector<NumberCard*>& handToFill)
 {
 	//Loop through I times
