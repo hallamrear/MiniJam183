@@ -204,6 +204,7 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="DevScene.cpp" />
     <ClCompile Include="System\File.cpp" />
     <ClCompile Include="Gameplay\Enemies\EnemyDefinition.cpp" />
     <ClCompile Include="Scenes\IntroScene.cpp" />
@@ -242,6 +243,7 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="DevScene.h" />
     <ClInclude Include="System\File.h" />
     <ClInclude Include="Gameplay\Enemies\EnemyDefinition.h" />
     <ClInclude Include="Scenes\IntroScene.h" />

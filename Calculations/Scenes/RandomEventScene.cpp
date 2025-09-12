@@ -134,8 +134,8 @@ void RandomEventScene::ApplyEncounterChanges()
 		//Random Number
 		if (r > 5)
 		{
-			int random_value = rand() % NUMBER_CARD_VALUE::CARD_VALUE_COUNT;
-			m_Player.GetDeck().AddCard(NumberCard((NUMBER_CARD_VALUE)random_value));
+			int random_value = rand() % c_BasicNumberCardMaxValue;
+			m_Player.GetDeck().AddCard(NumberCard(random_value));
 			printf("num card %i\n", random_value);
 		}
 		else //random operand

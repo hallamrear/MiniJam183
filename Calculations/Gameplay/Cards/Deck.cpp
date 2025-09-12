@@ -6,52 +6,50 @@ void Deck::LoadTextures()
 {
 	DestroyTextures();
 	
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::ONE, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\1.png", m_NumberCardTextures[NUMBER_CARD_VALUE::ONE]);
+	m_NumberCardTextures.insert(std::make_pair(1, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\1.png", m_NumberCardTextures[1]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::TWO, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\2.png", m_NumberCardTextures[NUMBER_CARD_VALUE::TWO]);
+	m_NumberCardTextures.insert(std::make_pair(2, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\2.png", m_NumberCardTextures[2]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::THREE, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\3.png", m_NumberCardTextures[NUMBER_CARD_VALUE::THREE]);
+	m_NumberCardTextures.insert(std::make_pair(3, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\3.png", m_NumberCardTextures[3]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::FOUR, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\4.png", m_NumberCardTextures[NUMBER_CARD_VALUE::FOUR]);
+	m_NumberCardTextures.insert(std::make_pair(4, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\4.png", m_NumberCardTextures[4]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::FIVE, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\5.png", m_NumberCardTextures[NUMBER_CARD_VALUE::FIVE]);
+	m_NumberCardTextures.insert(std::make_pair(5, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\5.png", m_NumberCardTextures[5]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::SIX, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\6.png", m_NumberCardTextures[NUMBER_CARD_VALUE::SIX]);
+	m_NumberCardTextures.insert(std::make_pair(6, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\6.png", m_NumberCardTextures[6]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::SEVEN, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\7.png", m_NumberCardTextures[NUMBER_CARD_VALUE::SEVEN]);
+	m_NumberCardTextures.insert(std::make_pair(7, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\7.png", m_NumberCardTextures[7]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::EIGHT, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\8.png", m_NumberCardTextures[NUMBER_CARD_VALUE::EIGHT]);
+	m_NumberCardTextures.insert(std::make_pair(8, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\8.png", m_NumberCardTextures[8]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::NINE, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\9.png", m_NumberCardTextures[NUMBER_CARD_VALUE::NINE]);
+	m_NumberCardTextures.insert(std::make_pair(9, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\9.png", m_NumberCardTextures[9]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::TEN, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\10.png", m_NumberCardTextures[NUMBER_CARD_VALUE::TEN]);
+	m_NumberCardTextures.insert(std::make_pair(10, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\10.png", m_NumberCardTextures[10]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::TWELVE, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\12.png", m_NumberCardTextures[NUMBER_CARD_VALUE::TWELVE]);
+	m_NumberCardTextures.insert(std::make_pair(12, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\12.png", m_NumberCardTextures[12]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::FIFTEEN, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\15.png", m_NumberCardTextures[NUMBER_CARD_VALUE::FIFTEEN]);
+	m_NumberCardTextures.insert(std::make_pair(15, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\15.png", m_NumberCardTextures[15]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::EIGHTEEN, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\18.png", m_NumberCardTextures[NUMBER_CARD_VALUE::EIGHTEEN]);
+	m_NumberCardTextures.insert(std::make_pair(18, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\18.png", m_NumberCardTextures[18]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::TWENTY, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\20.png", m_NumberCardTextures[NUMBER_CARD_VALUE::TWENTY]);
+	m_NumberCardTextures.insert(std::make_pair(20, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\20.png", m_NumberCardTextures[20]);
 
-	m_NumberCardTextures.insert(std::make_pair(NUMBER_CARD_VALUE::FIFTY, nullptr));
-	Texture::LoadPNG("Content\\Cards\\Numbers\\50.png", m_NumberCardTextures[NUMBER_CARD_VALUE::FIFTY]);
-
-
+	m_NumberCardTextures.insert(std::make_pair(50, nullptr));
+	Texture::LoadPNG("Content\\Cards\\Numbers\\50.png", m_NumberCardTextures[50]);
 
 	m_OperandCardTextures.resize(4, nullptr);
 	Texture::LoadPNG("Content\\Cards\\Operands\\Addition.png", m_OperandCardTextures[OPERAND_TYPE::ADDITION]);
@@ -189,14 +187,14 @@ void Deck::ResetDeck()
 	m_HeldOperands.push_front(OperandCard(OPERAND_TYPE::SUBTRACTION));
 	ShuffleOperandCards();
 
-	m_HeldNumbers.push_front(NumberCard((NUMBER_CARD_VALUE)4));
-	m_HeldNumbers.push_front(NumberCard((NUMBER_CARD_VALUE)4));
-	m_HeldNumbers.push_front(NumberCard((NUMBER_CARD_VALUE)3));
-	m_HeldNumbers.push_front(NumberCard((NUMBER_CARD_VALUE)3));
-	m_HeldNumbers.push_front(NumberCard((NUMBER_CARD_VALUE)2));
-	m_HeldNumbers.push_front(NumberCard((NUMBER_CARD_VALUE)2));
-	m_HeldNumbers.push_front(NumberCard((NUMBER_CARD_VALUE)1));
-	m_HeldNumbers.push_front(NumberCard((NUMBER_CARD_VALUE)1));
+	m_HeldNumbers.push_front(NumberCard(4));
+	m_HeldNumbers.push_front(NumberCard(4));
+	m_HeldNumbers.push_front(NumberCard(3));
+	m_HeldNumbers.push_front(NumberCard(3));
+	m_HeldNumbers.push_front(NumberCard(2));
+	m_HeldNumbers.push_front(NumberCard(2));
+	m_HeldNumbers.push_front(NumberCard(1));
+	m_HeldNumbers.push_front(NumberCard(1));
 	ShuffleNumbersCards();
 }
 
@@ -226,16 +224,18 @@ void Deck::RestoreDiscardedCards()
 	RestoreDiscardedOperands();	
 }
 
-SDL_Texture& Deck::GetNumberCardTexture(const NUMBER_CARD_VALUE& value) const
+SDL_Texture& Deck::GetNumberCardTexture(const NumberCard& numCard) const
 {
-	int index = (int)value;
-	assert(index > 0 || index < m_NumberCardTextures.size());
-	return *m_NumberCardTextures.at(index);
+	int index = numCard.GetValue();
+	assert(index > 0);
+	auto found = m_NumberCardTextures.find(numCard.GetValue());
+	assert(found != m_NumberCardTextures.end());
+	return *found->second;
 }
 
-SDL_Texture& Deck::GetOperandCardTexture(const OPERAND_TYPE& type) const
+SDL_Texture& Deck::GetOperandCardTexture(const OperandCard& opCard) const
 {
-	int index = (int)type;
+	int index = (int)opCard.GetOperand();
 	assert(index > 0 || index < m_OperandCardTextures.size());
 	return *m_OperandCardTextures[index];
 }

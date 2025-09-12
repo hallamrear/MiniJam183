@@ -106,7 +106,7 @@ void ShopScene::CheckButtonClicks()
 					int cost = 5;
 					if (m_ShopItems[i].IsNumberCard())
 					{
-						cost = m_ShopItems[i].GetGeneratedNumberCard().GetIntValue();
+						cost = m_ShopItems[i].GetGeneratedNumberCard().GetValue();
 					}
 
 					if (m_Player.GetGoldCount() - cost >= 0)
@@ -271,7 +271,7 @@ ShopItem::ShopItem()
 	m_HasBeenPurchased = false;
 	m_UseNumberCard = true;
 	m_OperandCard = OperandCard(OPERAND_TYPE::ADDITION);
-	m_NumberCard = NumberCard(NUMBER_CARD_VALUE::ONE);
+	m_NumberCard = NumberCard(1);
 }
 
 ShopItem::~ShopItem()
@@ -306,30 +306,20 @@ void ShopItem::GenerateRandomItem()
 
 	bool isLargeNumberCard = (rand() % 100) > (100 - c_LargeCardRollChance);
 
-	NUMBER_CARD_VALUE numValue = NUMBER_CARD_VALUE::ONE;
-
 	if (isLargeNumberCard)
 	{
-		int index = rand() % c_LargeNumberCardCount;
+		int A = (rand() % 10 + 1);
+		int B = (rand() % 10 + 1);
+		OPERAND_TYPE type = OPERAND_TYPE::ADDITION;
 
-		switch (index)
-		{
-		case 0: { numValue = NUMBER_CARD_VALUE::TWELVE; } break;
-		case 1: { numValue = NUMBER_CARD_VALUE::FIFTEEN; } break;
-		case 2: { numValue = NUMBER_CARD_VALUE::EIGHTEEN; } break;
-		case 3: { numValue = NUMBER_CARD_VALUE::TWENTY; } break;
-		case 4: { numValue = NUMBER_CARD_VALUE::FIFTY; } break;
-
-		default:
-			break;
-		}
+		m_NumberCard = NumberCard(A, B, type);
 	}
 	else
 	{
-		numValue = NUMBER_CARD_VALUE(rand() % 10 + 1);
+		int numValue = (rand() % 10 + 1);
+		m_NumberCard = NumberCard(numValue);
 	}
 
-	m_NumberCard = NumberCard(numValue);
 
 	bool isNumberCard = (rand() % 100) < c_NumberCardRollChance;
 	SetIsNumberCard(isNumberCard);

@@ -20,3 +20,25 @@ const OPERAND_TYPE& OperandCard::GetOperand() const
 {
 	return m_OperandType;
 }
+
+const char OperandCard::GetOperandCharacter() const
+{
+	switch (m_OperandType)
+	{
+	case ADDITION:
+		return '+';
+		break;
+	case SUBTRACTION:
+		return '-';
+		break;
+	case MULTIPLICATION:
+		return '*';
+		break;
+	case DIVISION:
+		return '%';
+		break;
+	default:
+		throw;
+		break;
+	}
+}

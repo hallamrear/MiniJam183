@@ -108,6 +108,9 @@
     <ClCompile Include="System\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DevScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -198,6 +201,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="System\File.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DevScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

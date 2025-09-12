@@ -39,7 +39,7 @@ public:
 	void RestoreDiscardedNumbers();
 	void RestoreDiscardedCards();
 
-	SDL_Texture& GetNumberCardTexture(const NUMBER_CARD_VALUE& value) const;
-	SDL_Texture& GetOperandCardTexture(const OPERAND_TYPE& type) const;
+	SDL_Texture& GetNumberCardTexture(const NumberCard& value) const;
+	SDL_Texture& GetOperandCardTexture(const OperandCard& type) const;
 };
 

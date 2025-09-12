@@ -1,42 +1,31 @@
 #pragma once
 #include "Card.h"
-
-enum NUMBER_CARD_VALUE
-{
-	ONE = 1,
-	TWO = 2,
-	THREE = 3,
-	FOUR = 4,
-	FIVE = 5,
-	SIX = 6,
-	SEVEN = 7,
-	EIGHT = 8,
-	NINE = 9,
-	TEN = 10,
-	TWELVE = 12,
-	FIFTEEN = 15,
-	EIGHTEEN = 18,
-	TWENTY = 20,
-	FIFTY = 50,
-	CARD_VALUE_COUNT = 15,
-};
+#include "OperandCard.h"
 
 /// <summary>
 /// A large number card is any card value > 10
 /// </summary>
 constexpr const int c_LargeNumberCardCount = 5;
+constexpr const int c_BasicNumberCardMaxValue = 10;
 
 class NumberCard : public Card
 {
 private:
-	NUMBER_CARD_VALUE m_Value;
+	int m_CombinedValueA;
+	int m_CombinedValueB;
+	OperandCard m_CombinedOp;
+	bool m_IsCombinedCard;
+
+	int m_Value;
 
 public:
+	NumberCard(const int& valueA, const int& valueB, const OPERAND_TYPE& Op);
+	NumberCard(const int& value);
+	//Generates random basic number card.
 	NumberCard();
-	NumberCard(const NUMBER_CARD_VALUE& value);
 	~NumberCard();
 
-	const NUMBER_CARD_VALUE& GetValue() const;
-	const int& GetIntValue() const;
+	const int& GetValue() const;
+	const bool& GetIsCombined() const;
 };
 

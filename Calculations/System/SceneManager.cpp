@@ -20,6 +20,7 @@ SceneManager::SceneManager()
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_MAP, new MapScene(*this) });
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_RANDOM_EVENT, new RandomEventScene(*this) });
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_REST, new RestScene(*this) });
+	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_DEBUG_TEST, new DevScene(*this)});
 
 	ChangeScene(SCENE_IDENTIFIER::SCENE_INTRO);
 }

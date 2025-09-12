@@ -650,8 +650,8 @@ void BattleScene::ApplyEquation()
 	int y = 0;
 	
 	//This should be valid because CheckForValidEquation() makes sure theyre valid pointers.
-	x = m_SelectedNumbersForEquation[0]->GetIntValue();
-	y = m_SelectedNumbersForEquation[1]->GetIntValue();
+	x = m_SelectedNumbersForEquation[0]->GetValue();
+	y = m_SelectedNumbersForEquation[1]->GetValue();
 
 	int output = 0;
 
@@ -1007,7 +1007,7 @@ void BattleScene::RenderEquation(SDL_Renderer& renderer) const
 
 	if (m_SelectedNumbersForEquation[0] != nullptr)
 	{
-		c_x = std::to_string(m_SelectedNumbersForEquation[0]->GetIntValue());
+		c_x = std::to_string(m_SelectedNumbersForEquation[0]->GetValue());
 		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetNumberCardTexture(m_SelectedNumbersForEquation[0]->GetValue()), nullptr, &m_SelectedCardDrawRects[0]);
 	}
 	else
@@ -1017,7 +1017,7 @@ void BattleScene::RenderEquation(SDL_Renderer& renderer) const
 
 	if (m_SelectedNumbersForEquation[1] != nullptr)
 	{
-		c_y = std::to_string(m_SelectedNumbersForEquation[1]->GetIntValue());
+		c_y = std::to_string(m_SelectedNumbersForEquation[1]->GetValue());
 		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetNumberCardTexture(m_SelectedNumbersForEquation[1]->GetValue()), nullptr, &m_SelectedCardDrawRects[1]);
 	}
 	else
@@ -1027,21 +1027,8 @@ void BattleScene::RenderEquation(SDL_Renderer& renderer) const
 
 	if (m_SelectedOperandForEquation != nullptr)
 	{
-		const OPERAND_TYPE& type = m_SelectedOperandForEquation->GetOperand();
-
-		switch (type)
-		{
-		case OPERAND_TYPE::ADDITION: { c_op = "+"; } break;
-		case OPERAND_TYPE::SUBTRACTION: { c_op = "-"; } break;
-		case OPERAND_TYPE::DIVISION: { c_op = "/"; } break;
-		case OPERAND_TYPE::MULTIPLICATION: { c_op = "*"; } break;
-
-		default:
-			assert(false);
-			break;
-		}
-
-		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetOperandCardTexture(type), nullptr, &m_SelectedCardDrawRects[2]);
+		c_op = m_SelectedOperandForEquation->GetOperandCharacter();
+		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetOperandCardTexture(m_SelectedOperandForEquation->GetOperand()), nullptr, &m_SelectedCardDrawRects[2]);
 	}
 	else
 	{
@@ -1051,8 +1038,8 @@ void BattleScene::RenderEquation(SDL_Renderer& renderer) const
 	if (m_SelectedNumbersForEquation[0] != nullptr && m_SelectedNumbersForEquation[1] != nullptr && m_SelectedOperandForEquation != nullptr)
 	{
 		//This should be valid because CheckForValidEquation() makes sure theyre valid pointers.
-		int x = m_SelectedNumbersForEquation[0]->GetIntValue();
-		int y = m_SelectedNumbersForEquation[1]->GetIntValue();
+		int x = m_SelectedNumbersForEquation[0]->GetValue();
+		int y = m_SelectedNumbersForEquation[1]->GetValue();
 		int output = 0;
 
 		switch (m_SelectedOperandForEquation->GetOperand())
@@ -1069,7 +1056,7 @@ void BattleScene::RenderEquation(SDL_Renderer& renderer) const
 		c_out = std::to_string(output);
 	}
 
-	SDL_RenderDebugTextFormat(&renderer, 10, 20, "%s %s %s = %s", c_x.c_str(), c_op.c_str(), c_y.c_str(), c_out.c_str());
+	SDL_RenderDebugTextFormat(&renderer, 10, 80, "%s %s %s = %s", c_x.c_str(), c_op.c_str(), c_y.c_str(), c_out.c_str());
 }
 
 void BattleScene::AddCardToEquation(Card* card)
@@ -1138,7 +1125,7 @@ void BattleScene::RenderCardHands(SDL_Renderer& renderer) const
 
 	for (size_t i = 0; i < numbersCount; i++)
 	{
-		std::string str = std::to_string(numbersHand[i]->GetIntValue());
+		std::string str = std::to_string(numbersHand[i]->GetValue());
 
 		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetNumberCardTexture(numbersHand[i]->GetValue()), nullptr, &m_NumbersHandDrawRects[i]);
 		//SDL_RenderDebugText(&renderer, m_NumbersHandDrawRects[i].x + m_NumbersHandDrawRects[i].w / 2 - 4, m_NumbersHandDrawRects[i].y + m_NumbersHandDrawRects[i].h / 2 - 4, str.c_str());

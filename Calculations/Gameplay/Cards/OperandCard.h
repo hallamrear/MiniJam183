@@ -20,5 +20,6 @@ public:
 	~OperandCard();
 
 	const OPERAND_TYPE& GetOperand() const;
+	const char GetOperandCharacter() const;
 };
 
