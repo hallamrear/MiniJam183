@@ -1,23 +1,16 @@
- # Mini Jam 183 - Calculations / Four Colours
+# Mini Jam 183 - Calculations / Four Colours
 
- 
-## Future Ideas:
+## TODO:
 - Potentially full main menu screen
     - Intro
     - Attribution
-
 - Create an actual ui system to properly scale buttons relative to screen size
     - Include a proper button system to make things more responsive and cleanup the 
-
 - Rework the card system. I want it to have a limited card range (0-10 with 0 & 10 being super rare) where you sacrifice smaller cards to create larger ones. For example: you can break 5, +, and 8 cards down to create a 13. Also, I'd like to add the ability to sacrifice division cards to undo this and get the original cards back.
-
-- Create a texture manager? So that I can actually load things at the game start.
-    - half finished.
-
-- Enemy definition parenting.
+- Implement Enemy Definition Parenting
+- Move and properly store the enemy definitions after loading.
 
 ## Bugs:
-- Properly setup the preload system.
 - nullptr checks in render. 
 - Enemy scaling
 - Make avatars bigger and move the health bar.
@@ -28,7 +21,7 @@
 - Intro screen currently just restarts until the mouse is pressed.
 
 ## Assets
-- Kenney Pack
+- [Kenney's Game Assets All-in-1](https://kenney.itch.io/kenney-game-assets)
 - [Pixel BG's (Map BG)](https://space-spheremaps.itch.io/pixelart-starfields)
 - [Daniel Linssen's m6x11 font](https://managore.itch.io/m6x11)
 - [Jesse Munguia's Skeleton Sprite Pack](https://jesse-m.itch.io/skeleton-pack)
