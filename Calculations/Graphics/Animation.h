@@ -29,7 +29,7 @@ class AnimationController
 	float m_TextureHeight = 0.0f;
 
 public:
-	AnimationController(const std::string& sheetPath, const int& maxFrameCount, const std::vector<AnimationDetails>& animationDetails);
+	AnimationController(const char* sheetPath, const int& maxFrameCount, const std::vector<AnimationDetails>& animationDetails);
 	~AnimationController();
 
 	SDL_Texture* GetSpriteSheet() const;

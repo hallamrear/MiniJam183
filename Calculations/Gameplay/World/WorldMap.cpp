@@ -204,7 +204,7 @@ void WorldMap::SetCurrentNode(const MapNode& node)
 	m_CurrentNode = node;
 }
 
-void WorldMap::GetPossibleSelectionNodes(std::vector<const MapNode*>& nodes, const std::pair<int, int>& currentPosition) const
+void WorldMap::GetPossibleSelectionNodes(std::vector<MapNode*>& nodes, const std::pair<int, int>& currentPosition)
 {
 	nodes.clear();
 
@@ -231,7 +231,7 @@ void WorldMap::GetPossibleSelectionNodes(std::vector<const MapNode*>& nodes, con
 	}
 }
 
-void WorldMap::GetPossibleSelectionNodesFromCurrentPosition(std::vector<const MapNode*>& nodes) const
+void WorldMap::GetPossibleSelectionNodesFromCurrentPosition(std::vector<MapNode*>& nodes)
 {
 	GetPossibleSelectionNodes(nodes, m_CurrentNode.GetPosition());
 }

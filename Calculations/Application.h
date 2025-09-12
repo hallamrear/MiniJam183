@@ -19,6 +19,7 @@ private:
 	bool m_IsRunning;
 	bool m_IsFullscreen;
 
+	void PreloadAssets();
 	bool InitSDL();
 	void ShutdownSDL();
 

@@ -6,6 +6,8 @@
 #include <Gameplay/Player/Player.h>
 #include <Gameplay/World/WorldMap.h>
 #include <System/FontRenderer.h>
+#include <Graphics/Texture.h>
+#include <System/File.h>
 
 Application::Application()
 {
@@ -48,8 +50,10 @@ bool Application::Initialise()
 		return false;
 	}
 
+	PreloadAssets();
+
 	m_FontRenderer = new FontRenderer();
-	if (m_FontRenderer->Initialise(*m_Renderer, "Content/Fonts/m6x11.ttf") == false)
+	if (m_FontRenderer->Initialise(*m_Renderer, "Content\\Fonts\\m6x11.ttf") == false)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to initialise font renderer.");
 		return false;
@@ -67,12 +71,33 @@ bool Application::Initialise()
 
 	m_SceneManager = new SceneManager();
 
-#ifdef _DEBUG
-	//m_SceneManager->ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
-#endif
-
 	m_IsRunning = true;
 	return true;
+}
+
+void Application::PreloadAssets()
+{
+	std::vector<File::Filepath> locatedFiles = std::vector<File::Filepath>();
+
+	if (File::GetAllFilesInDirectoryAndSubdirectories(DEFAULT_CONTENT_DIRECTORY, locatedFiles))
+	{
+		for (auto itr = locatedFiles.begin(); itr != locatedFiles.end(); /*it++*/)
+		{
+			if (itr->extension() != ".png")
+			{
+				itr = locatedFiles.erase(itr);
+			}
+			else
+			{
+				++itr;
+			}
+		}
+	}
+
+	if (locatedFiles.size() > 0)
+	{
+		Texture::PreloadTextures(locatedFiles);
+	}
 }
 
 bool Application::InitSDL()
@@ -126,6 +151,8 @@ bool Application::InitSDL()
 
 void Application::Shutdown()
 {
+	Texture::CleanupLoadedTextures();
+
 	if (m_SceneManager != nullptr)
 	{
 		delete m_SceneManager;

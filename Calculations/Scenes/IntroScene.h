@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 
-class IMG_Animation;
+struct IMG_Animation;
 
 class IntroScene :
     public Scene
@@ -14,6 +14,7 @@ private:
     int m_CurrentFrame;
     float m_CurrentFrameTimeElapsed;
     SDL_Texture* m_CurrentFrameTexture;
+    bool m_HasFinished;
 
 public:
     IntroScene(SceneManager& manager);

@@ -32,7 +32,7 @@ ShopScene::ShopScene(SceneManager& manager) : Scene(manager), m_Player(Services:
 	m_CanClickButtons = false;
 
 	m_CardBoughtTexture = nullptr;
-	Texture::LoadPNG("Content/Shop/PurchasedCardOverlay.png", m_CardBoughtTexture);
+	Texture::LoadPNG("Content\\Shop\\PurchasedCardOverlay.png", m_CardBoughtTexture);
 }
 
 ShopScene::~ShopScene()

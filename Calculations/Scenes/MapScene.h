@@ -30,7 +30,7 @@ private:
 	void RecalculateButtonRects();
 
 	float m_MapScrollOffset;
-	std::vector<const MapNode*> m_PossibleMapMovements;
+	std::vector<MapNode*> m_PossibleMapMovements;
 
 public:
 	MapScene(SceneManager& manager);

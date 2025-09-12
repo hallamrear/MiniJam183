@@ -30,7 +30,7 @@ Player::Player()
         /* heal */ AnimationDetails(10, c_PlayerAttackAnimationLength, false)
     };
 
-    LoadAnimation("Content/Spritesheets/White_Player.png", 16, details);
+    LoadAnimation("Content\\Spritesheets\\White_Player.png", 16, details);
 
     m_OperandHand = std::vector<OperandCard*>();
     m_NumbersHand = std::vector<NumberCard*>();

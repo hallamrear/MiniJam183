@@ -30,27 +30,27 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -76,7 +76,7 @@
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(SolutionDir)External\rapidjson\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Builds\$(Configuration)\$(Platform)\</OutDir>
@@ -84,7 +84,7 @@
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(SolutionDir)External\rapidjson\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Builds\$(Configuration)\$(Platform)\</OutDir>
@@ -92,7 +92,7 @@
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(SolutionDir)External\rapidjson\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Builds\$(Configuration)\$(Platform)\</OutDir>
@@ -100,7 +100,7 @@
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <CopyLocalProjectReference>true</CopyLocalProjectReference>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\SDL_Image\include;$(SolutionDir)External\SDL3\include;$(SolutionDir)External\SDL_ttf\include;$(SolutionDir)External\rapidjson\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -204,13 +204,10 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Gameplay\Enemies\SkeletonEnemy.cpp" />
-    <ClCompile Include="Gameplay\Enemies\MushroomEnemy.cpp" />
+    <ClCompile Include="System\File.cpp" />
+    <ClCompile Include="Gameplay\Enemies\EnemyDefinition.cpp" />
     <ClCompile Include="Scenes\IntroScene.cpp" />
     <ClCompile Include="System\FontRenderer.cpp" />
-    <ClCompile Include="Gameplay\Enemies\GreenPlayer.cpp">
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="Graphics\Animation.cpp" />
     <ClCompile Include="Gameplay\World\MapNode.cpp" />
     <ClCompile Include="Scenes\RandomEventScene.cpp" />
@@ -222,7 +219,6 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
     <ClCompile Include="Gameplay\Entity.cpp" />
     <ClCompile Include="Gameplay\Enemies\Enemy.cpp" />
     <ClCompile Include="Gameplay\Player\Player.cpp" />
-    <ClCompile Include="Gameplay\Enemies\ScalingEvilPlayer.cpp" />
     <ClCompile Include="Gameplay\Cards\OperandCard.cpp" />
     <ClCompile Include="Gameplay\Cards\NumberCard.cpp" />
     <ClCompile Include="Scenes\MapScene.cpp" />
@@ -246,13 +242,10 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Gameplay\Enemies\SkeletonEnemy.h" />
-    <ClInclude Include="Gameplay\Enemies\MushroomEnemy.h" />
+    <ClInclude Include="System\File.h" />
+    <ClInclude Include="Gameplay\Enemies\EnemyDefinition.h" />
     <ClInclude Include="Scenes\IntroScene.h" />
     <ClInclude Include="System\FontRenderer.h" />
-    <ClInclude Include="Gameplay\Enemies\GreenPlayer.h">
-      <DeploymentContent>true</DeploymentContent>
-    </ClInclude>
     <ClInclude Include="Graphics\Animation.h" />
     <ClInclude Include="Gameplay\World\MapNode.h" />
     <ClInclude Include="Scenes\RandomEventScene.h" />
@@ -264,7 +257,6 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
     <ClInclude Include="Gameplay\Entity.h" />
     <ClInclude Include="Gameplay\Enemies\Enemy.h" />
     <ClInclude Include="Gameplay\Player\Player.h" />
-    <ClInclude Include="Gameplay\Enemies\ScalingEvilPlayer.h" />
     <ClInclude Include="Gameplay\Cards\OperandCard.h" />
     <ClInclude Include="Gameplay\Cards\NumberCard.h" />
     <ClInclude Include="Scenes\MapScene.h" />
@@ -434,6 +426,12 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
     <Image Include="Content\Spritesheets\Layout.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Content\Spritesheets\Mushroom\Mushroom.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Content\Spritesheets\Skeleton\Skeleton.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="Content\Spritesheets\White_Player.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
@@ -448,6 +446,14 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
     <Font Include="Content\Fonts\m6x11.ttf">
       <DeploymentContent>true</DeploymentContent>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\Data\Definitions\Enemies\Green_Player.enemydef" />
+    <None Include="Content\Data\Definitions\Enemies\Blue_Player.enemydef" />
+    <None Include="Content\Data\Definitions\Enemies\Mushroom.enemydef">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Content\Data\Definitions\Enemies\Skeleton.enemydef" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

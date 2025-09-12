@@ -21,7 +21,7 @@ MapScene::MapScene(SceneManager& manager) : Scene(manager),
 	m_ButtonPressCooldownTimer = -1.0f;
 	m_ScrollSpeedMultiplier = 1.0f;
 
-	m_PossibleMapMovements = std::vector<const MapNode*>();
+	m_PossibleMapMovements = std::vector<MapNode*>();
 
 	for (size_t i = 0; i < 50; i++)
 	{
@@ -32,17 +32,17 @@ MapScene::MapScene(SceneManager& manager) : Scene(manager),
 	m_EndNodeDrawRect = m_NodeButtons[0];
 
 	m_EncounterAtlas = nullptr;
-	Texture::LoadPNG("Content/Map/EncounterAtlas.png", m_EncounterAtlas);
+	Texture::LoadPNG("Content\\Map\\EncounterAtlas.png", m_EncounterAtlas);
 	m_CrossTexture = nullptr;
-	Texture::LoadPNG("Content/Map/Cross.png", m_CrossTexture);
+	Texture::LoadPNG("Content\\Map\\Cross.png", m_CrossTexture);
 	m_PlayerIconTexture = nullptr;
-	Texture::LoadPNG("Content/Map/PlayerIcon.png", m_PlayerIconTexture);
+	Texture::LoadPNG("Content\\Map\\PlayerIcon.png", m_PlayerIconTexture);
 	m_StartNodeTexture = nullptr;
-	Texture::LoadPNG("Content/Map/Start.png", m_StartNodeTexture);
+	Texture::LoadPNG("Content\\Map\\Start.png", m_StartNodeTexture);
 	m_EndNodeTexture = nullptr;
-	Texture::LoadPNG("Content/Map/End.png", m_EndNodeTexture);
+	Texture::LoadPNG("Content\\Map\\End.png", m_EndNodeTexture);
 	m_BackgroundTexture = nullptr;
-	Texture::LoadPNG("Content/Map/Background.png", m_BackgroundTexture);
+	Texture::LoadPNG("Content\\Map\\Background.png", m_BackgroundTexture);
 }
 
 MapScene::~MapScene()

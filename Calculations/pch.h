@@ -16,6 +16,10 @@
 #include <algorithm>
 #include <random>
 
+//rapidjson
+#define RAPIDJSON_NOMEMBERITERATORCLASS
+#include <rapidjson/rapidjson.h>
+
 //SDL Includes
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -43,6 +47,8 @@ constexpr const int		INITIAL_PLAYER_NUMBER_HAND_SIZE = 4;
 constexpr const int		INITIAL_PLAYER_OPERAND_HAND_SIZE = 2;
 constexpr const int		INITIAL_ENEMY_ROLL_RANGE = 2;
 constexpr const int		INITIAL_ENEMY_BASE_DAMAGE = 5;
-constexpr const int		INITIAL_ENEMY_BONUS_DAMAGE = 1;
+
+constexpr const char*	ENEMY_DEFINITION_DIRECTORY = "Content\\Data\\Definitions\\Enemies\\";
+constexpr const char*	DEFAULT_CONTENT_DIRECTORY = "Content\\";
 
 #endif //PCH_H

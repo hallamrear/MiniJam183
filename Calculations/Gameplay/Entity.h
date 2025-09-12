@@ -14,7 +14,7 @@ protected:
 	bool m_IsAlive;
 
 	Entity();
-	bool LoadAnimation(const std::string& sheetPath, const int& maxFrameCount, const std::vector<AnimationDetails>& details);
+	bool LoadAnimation(const char* sheetPath, const int& maxFrameCount, const std::vector<AnimationDetails>& details);
 	void DestroyAnimation();
 
 public:

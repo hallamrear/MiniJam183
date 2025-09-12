@@ -3,13 +3,10 @@
 #include <Graphics/Texture.h>
 #include <System/Services.h>
 #include <System/Input.h>
-#include <Gameplay/Enemies/ScalingEvilPlayer.h>
-#include <Gameplay/Enemies/GreenPlayer.h>
-#include <Gameplay/Enemies/SkeletonEnemy.h>
-#include <Gameplay/Enemies/MushroomEnemy.h>
 #include <System/Collision.h>
 #include <System/SceneManager.h>
 #include <Graphics/Animation.h>
+#include <System/File.h>
 
 constexpr const float c_AvatarDrawWidth = 512.0f;
 constexpr const float c_AvatarDrawHeight = 512.0f;
@@ -39,6 +36,7 @@ BattleScene::BattleScene(SceneManager& manager)
 	m_EnemyPseudoThinkingTime = 0.0f;
 
 	m_Enemy = nullptr;
+	LoadEnemyDefinitions();
 
 	SDL_Window& window = Services::GetWindow();
 	m_WindowCenterX = 0;
@@ -76,26 +74,28 @@ BattleScene::BattleScene(SceneManager& manager)
 	m_SelectedOperandForEquation = nullptr;
 
 	m_MissingCardTexture = nullptr;
-	Texture::LoadPNG("Content/MissingCard.png", m_MissingCardTexture);
+	Texture::LoadPNG("Content\\MissingCard.png", m_MissingCardTexture);
 	m_PlayerDeathTextTexture = nullptr;
-	Texture::LoadPNG("Content/Screens/BattleScene_PlayerDied.png", m_PlayerDeathTextTexture);
+	Texture::LoadPNG("Content\\Screens\\BattleScene_PlayerDied.png", m_PlayerDeathTextTexture);
 	m_GoToMapButtonTexture = nullptr;
-	Texture::LoadPNG("Content/Screens/BattleScene_GoToMapButton.png", m_GoToMapButtonTexture);
+	Texture::LoadPNG("Content\\Screens\\BattleScene_GoToMapButton.png", m_GoToMapButtonTexture);
 	m_ExitButtonTexture = nullptr;
-	Texture::LoadPNG("Content/Screens/BattleScene_ExitToMenuButton.png", m_ExitButtonTexture);
+	Texture::LoadPNG("Content\\Screens\\BattleScene_ExitToMenuButton.png", m_ExitButtonTexture);
 	m_EnemyDeathTextTexture = nullptr;
-	Texture::LoadPNG("Content/Screens/BattleScene_EnemyDied.png", m_EnemyDeathTextTexture);
+	Texture::LoadPNG("Content\\Screens\\BattleScene_EnemyDied.png", m_EnemyDeathTextTexture);
 
 	m_DiscardButtonTexture = nullptr;
-	Texture::LoadPNG("Content/Buttons/DiscardButton.png", m_DiscardButtonTexture);
+	Texture::LoadPNG("Content\\Buttons\\DiscardButton.png", m_DiscardButtonTexture);
 	m_SubmitButtonTexture = nullptr;
-	Texture::LoadPNG("Content/Buttons/SubmitButton.png", m_SubmitButtonTexture);
+	Texture::LoadPNG("Content\\Buttons\\SubmitButton.png", m_SubmitButtonTexture);
 	m_ClearButtonTexture = nullptr;
-	Texture::LoadPNG("Content/Buttons/ClearButton.png", m_ClearButtonTexture);
+	Texture::LoadPNG("Content\\Buttons\\ClearButton.png", m_ClearButtonTexture);
 }
 
 BattleScene::~BattleScene()
 {
+	DestroyEnemyDefinitions();
+
 	m_SelectedNumbersForEquation[0] = nullptr;
 	m_SelectedNumbersForEquation[1] = nullptr;
 	m_SelectedOperandForEquation = nullptr;
@@ -152,23 +152,74 @@ void BattleScene::OnEnter()
 	}
 }
 
-Enemy* BattleScene::DetermineEnemyForBattle()
+//todo : move this and store properly.
+std::vector<EnemyDefinition*> vec = {};
+
+void BattleScene::LoadEnemyDefinitions()
+{	
+	std::vector<File::Filepath> filepaths = std::vector<File::Filepath>();
+	if (File::GetAllFilesInDirectory(ENEMY_DEFINITION_DIRECTORY, filepaths))
+	{
+		for (size_t i = 0; i < filepaths.size(); i++)
+		{
+			if (filepaths[i].extension() == ".enemydef")
+			{
+				EnemyDefinition* definition = new EnemyDefinition();
+
+				bool success = definition->LoadDefinitionFromFile(filepaths[i]);
+
+				if (success)
+				{
+					if (m_Enemy)
+					{
+						delete m_Enemy;
+						m_Enemy = nullptr;
+					}
+
+					vec.push_back(definition);
+					m_Enemy = new Enemy(*definition);
+				}
+				else
+				{
+					SDL_Log("Error loading enemy definition from file.");
+					
+					delete definition;
+					definition = nullptr;
+				}
+			}
+		}
+	}
+}
+
+void BattleScene::DestroyEnemyDefinitions()
+{
+	
+
+
+
+}
+
+Enemy* BattleScene::DetermineEnemyForBattle(const MapNode::ENCOUNTER_TYPE& encounterType)
 {
 	Enemy* enemy = nullptr;
 
-	int roll = rand() % 100 + 1;
+	switch (encounterType)
+	{
+	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_ENEMY:
+	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_BOSS:
+	{
+	}
+	break;
 
-	if (roll < 50 )
+
+	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_ELITE:
 	{
-		enemy = new SkeletonEnemy();
 	}
-	else if (roll < 80)
-	{
-		enemy = new GreenPlayer();
-	}
-	else
-	{
-		enemy = new ScalingEvilPlayer();
+	break;
+
+	default:
+		SDL_assert(true);
+		break;
 	}
 
 	return enemy;
@@ -185,10 +236,25 @@ void BattleScene::SetupNewBattle(const MapNode::ENCOUNTER_TYPE& encounterType)
 	m_Player.DrawNumberCardsIntoHand(m_Player.GetNumbersHandSize());
 	m_Player.DrawOperandCardsIntoHand(m_Player.GetOperandHandSize());
 
-	if (m_Enemy != nullptr)
+	//if (m_Enemy != nullptr)
+	//{
+	//	delete m_Enemy;
+	//	m_Enemy = nullptr;
+	//}
+	
+	//m_Enemy = DetermineEnemyForBattle(encounterType);
+	
+	if (m_Enemy == nullptr)
 	{
-		delete m_Enemy;
-		m_Enemy = nullptr;
+		SDL_Log("Error generating new battle scene.");
+		return;
+	}
+
+	m_Enemy->DetermineAttributes(m_Player);
+
+	if (m_Enemy->GetAnimation() != nullptr)
+	{
+		m_Enemy->GetAnimation()->SetAnimationId(Enemy::ANIMATION_STATES::IDLE);
 	}
 
 	switch (encounterType)
@@ -196,16 +262,12 @@ void BattleScene::SetupNewBattle(const MapNode::ENCOUNTER_TYPE& encounterType)
 	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_ENEMY:
 	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_BOSS:
 	{
-		m_Enemy = DetermineEnemyForBattle();
-		m_Enemy->DetermineAttributes(m_Player);
 	}
 	break;
 
 
 	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_ELITE:
 	{
-		m_Enemy = new MushroomEnemy();
-		m_Enemy->DetermineAttributes(m_Player);
 	}
 	break;
 
@@ -373,7 +435,7 @@ void BattleScene::Update(const float& deltaTime)
 					if (m_Enemy->GetAnimation()->HasFinished() && m_Player.GetAnimation()->HasFinished())
 					{
 						m_BattleState = BattleScene::PLAYER_MOVE;
-						m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::ANIMATION_STATES::IDLE);
+						m_Enemy->GetAnimation()->SetAnimationId(Enemy::ANIMATION_STATES::IDLE);
 
 						if (m_Player.GetIsAlive() == false)
 						{
@@ -648,7 +710,7 @@ void BattleScene::ChooseRandomPlayerAttackAnimation()
 	{
 		if (m_Enemy->GetAnimation() != nullptr)
 		{
-			m_Enemy->GetAnimation()->SetAnimationId(ScalingEvilPlayer::HURT);
+			m_Enemy->GetAnimation()->SetAnimationId(Enemy::ANIMATION_STATES::HURT);
 		}
 	}
 }

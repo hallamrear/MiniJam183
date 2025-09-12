@@ -57,9 +57,6 @@
     <ClCompile Include="Gameplay\Enemies\Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\Enemies\ScalingEvilPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Gameplay\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -84,9 +81,6 @@
     <ClCompile Include="System\Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\Enemies\GreenPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Gameplay\World\WorldMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -105,13 +99,13 @@
     <ClCompile Include="Graphics\Text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gameplay\Enemies\SkeletonEnemy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Gameplay\Enemies\MushroomEnemy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scenes\IntroScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameplay\Enemies\EnemyDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="System\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -155,9 +149,6 @@
     <ClInclude Include="Gameplay\Enemies\Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\Enemies\ScalingEvilPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Gameplay\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -182,9 +173,6 @@
     <ClInclude Include="System\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\Enemies\GreenPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Gameplay\World\WorldMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -203,13 +191,13 @@
     <ClInclude Include="Graphics\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gameplay\Enemies\SkeletonEnemy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Gameplay\Enemies\MushroomEnemy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Scenes\IntroScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Enemies\EnemyDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="System\File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -376,8 +364,20 @@
     <Image Include="Content\intro.gif">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Content\Spritesheets\Mushroom\Mushroom.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Spritesheets\Skeleton\Skeleton.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Content\Fonts\m6x11.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\Data\Definitions\Enemies\Mushroom.enemydef" />
+    <None Include="Content\Data\Definitions\Enemies\Blue_Player.enemydef" />
+    <None Include="Content\Data\Definitions\Enemies\Skeleton.enemydef" />
+    <None Include="Content\Data\Definitions\Enemies\Green_Player.enemydef" />
   </ItemGroup>
 </Project>

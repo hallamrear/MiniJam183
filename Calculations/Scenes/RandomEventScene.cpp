@@ -19,7 +19,7 @@ RandomEventScene::RandomEventScene(SceneManager& manager)
 	};
 
 	m_GeneratedEncounter = RandomEventScene::RANDOM_ENCOUNTER_UNKNOWN_OR_NOT_SET;
-	m_RandomEventAtlas = new AnimationController("Content/Random Encounters/AtlasImage.png", 4, details);
+	m_RandomEventAtlas = new AnimationController("Content\\Random Encounters\\AtlasImage.png", 4, details);
 	m_RandomEventImageDstRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	m_IsConsumed = false;
 	m_ClickCooldown = c_ClickSafetyTimer;

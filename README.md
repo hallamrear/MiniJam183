@@ -12,8 +12,12 @@
 - Rework the card system. I want it to have a limited card range (0-10 with 0 & 10 being super rare) where you sacrifice smaller cards to create larger ones. For example: you can break 5, +, and 8 cards down to create a 13. Also, I'd like to add the ability to sacrifice division cards to undo this and get the original cards back.
 
 - Create a texture manager? So that I can actually load things at the game start.
+    - half finished.
+
+- Enemy definition parenting.
 
 ## Bugs:
+- Properly setup the preload system.
 - nullptr checks in render. 
 - Enemy scaling
 - Make avatars bigger and move the health bar.
@@ -21,6 +25,7 @@
 - Game hangs when you beat the final boss. It goes back to the map and you can't do anything.11
 - Move number and operand card textures into a single spritesheet.
     - Potentially move them into TTF text *things* rather than textures.
+- Intro screen currently just restarts until the mouse is pressed.
 
 ## Assets
 - Kenney Pack

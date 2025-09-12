@@ -19,11 +19,11 @@ RestScene::RestScene(SceneManager& manager) : Scene(manager), m_Window(Services:
 	m_CampfireRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	m_DetailTextOffset = SDL_Point{ 0, 0 };
 	m_LitCampfireTexture = nullptr;
-	Texture::LoadPNG("Content/Rest/LitCampfire.png", m_LitCampfireTexture);
+	Texture::LoadPNG("Content\\Rest\\LitCampfire.png", m_LitCampfireTexture);
 	m_UnlitCampfireTexture = nullptr;
-	Texture::LoadPNG("Content/Rest/UnlitCampfire.png", m_UnlitCampfireTexture);
+	Texture::LoadPNG("Content\\Rest\\UnlitCampfire.png", m_UnlitCampfireTexture);
 	m_ReturnButtonTexture = nullptr;
-	Texture::LoadPNG("Content/Rest/ReturnButton.png", m_ReturnButtonTexture);
+	Texture::LoadPNG("Content\\Rest\\ReturnButton.png", m_ReturnButtonTexture);
 	m_ReturnText = nullptr;
 	Text::LoadText("RETURN", m_ReturnText);
 	m_DetailsText = nullptr;

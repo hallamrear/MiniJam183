@@ -1,36 +1,35 @@
 #include "pch.h"
 #include "Enemy.h"
 
-Enemy::Enemy()
+Enemy::Enemy(EnemyDefinition& definition) : m_Definition(definition)
 {
-	m_BaseDamage = 0;
-	m_RollRange = 0;
-	m_PossibleAttackAnimationCount = 0;
+	m_MaxHealth = definition.MaxHealth;
+
+	if (m_Definition.FrameDetails.size() > 0 && m_Definition.MaxFrameCount > 0 && m_Definition.AttackAnimationCount > 0)
+	{
+		LoadAnimation(m_Definition.SpriteLocation.c_str(), m_Definition.MaxFrameCount, m_Definition.FrameDetails);
+	}
 }
 
 Enemy::~Enemy()
 {
-	m_BaseDamage = 0;
-	m_RollRange = 0;
-	m_PossibleAttackAnimationCount = 0;
+
 }
 
 int Enemy::GetDamageRoll() const
 {
-	int roll = SDL_max((rand() % m_RollRange), 1);
-	int damage = SDL_max((roll - (m_RollRange / 2)) + m_BaseDamage, 1);
-	return damage;
+	int diff = ((rand() % m_Definition.RollRange + 1) / 2);
+	return m_Definition.BaseDamage + diff;
 }
 
 void Enemy::DetermineAttributes(const Player& player)
 {
-	m_MaxHealth = INITIAL_ENTITY_HEALTH;
 	m_CurrentHealth = m_MaxHealth;
-	m_RollRange = INITIAL_ENEMY_ROLL_RANGE;
-	m_BaseDamage = INITIAL_ENEMY_BASE_DAMAGE;
+	Heal(m_MaxHealth);
+	SetIsAlive(true);
 }
 
 const int& Enemy::GetPossibleAttackAnimationCount() const
 {
-	return m_PossibleAttackAnimationCount;
+	return m_Definition.AttackAnimationCount;
 }

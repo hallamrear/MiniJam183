@@ -25,10 +25,10 @@ AnimationDetails::~AnimationDetails()
 	Duration = 0.0f;
 }
 
-AnimationController::AnimationController(const std::string& sheetPath, const int& maxFrameCount, const std::vector<AnimationDetails>& animationDetails)
+AnimationController::AnimationController(const char* sheetPath, const int& maxFrameCount, const std::vector<AnimationDetails>& animationDetails)
 {
 	m_AnimationSheet = nullptr;
-	Texture::LoadPNG(sheetPath.c_str(), m_AnimationSheet);
+	Texture::LoadPNG(sheetPath, m_AnimationSheet);
 	m_AnimationDetails = animationDetails;
 	m_AnimationCount = m_AnimationDetails.size();
 	Texture::QueryTexture(m_AnimationSheet, m_TextureWidth, m_TextureHeight);
@@ -37,8 +37,8 @@ AnimationController::AnimationController(const std::string& sheetPath, const int
 	m_TimeElapsed = 0.0f;
 	m_MaxFrameCount = maxFrameCount;
 	m_TimeBetweenFrames = m_AnimationDetails[m_CurrentAnimationIndex].Duration / m_AnimationDetails[m_CurrentAnimationIndex].FrameCount;
-	m_FrameSizeX = m_TextureWidth / m_MaxFrameCount;
-	m_FrameSizeY = m_TextureHeight / m_AnimationCount;
+	m_FrameSizeX = (int)m_TextureWidth / m_MaxFrameCount;
+	m_FrameSizeY = (int)m_TextureHeight / m_AnimationCount;
 }
 
 AnimationController::~AnimationController()

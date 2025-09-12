@@ -1,0 +1,43 @@
+{
+	"Green_Player": {
+		"Parent": null,
+		"Sprite": "Content\\Spritesheets\\Green_Player.png",
+		"MaxHealth": 10,
+		"BaseDamage": 10,
+		"RollRange": 2,
+		"MaxFrameCount" : 16,
+		"AttackAnimationCount": 3,
+		"AnimationData": [
+			{
+				"FrameCount": 10,
+				"LengthInSecs": 1.0,
+				"IsLooping": true
+			},
+			{
+				"FrameCount": 8,
+				"LengthInSecs": 1.0,
+				"IsLooping": false
+			},
+			{
+				"FrameCount": 16,
+				"LengthInSecs": 2.5,
+				"IsLooping": false
+			},
+			{
+				"FrameCount": 7,
+				"LengthInSecs": 1.0,
+				"IsLooping": false
+			},
+			{
+				"FrameCount": 10,
+				"LengthInSecs": 1.0,
+				"IsLooping": false
+			},
+			{
+				"FrameCount": 10,
+				"LengthInSecs": 1.0,
+				"IsLooping": false
+			}
+		]
+	}
+}

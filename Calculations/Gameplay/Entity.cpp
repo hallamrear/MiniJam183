@@ -10,7 +10,7 @@ Entity::Entity()
     m_Animation = nullptr;
 }
 
-bool Entity::LoadAnimation(const std::string& sheetPath, const int& maxFrameCount, const std::vector<AnimationDetails>& details)
+bool Entity::LoadAnimation(const char* sheetPath, const int& maxFrameCount, const std::vector<AnimationDetails>& details)
 {
     if (m_Animation != nullptr)
     {

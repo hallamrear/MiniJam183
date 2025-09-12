@@ -1,17 +1,14 @@
 #pragma once
 #include <Gameplay/Entity.h>
+#include <Gameplay/Enemies/EnemyDefinition.h>
 
 class Player;
 
 class Enemy : public Entity
 {
-protected:
-	const float c_DefaultEnemyAttackAnimationLength = 1.0f;
-	const float c_DefaultEnemyDyingAnimationLength = 2.5f;
-
-	int m_BaseDamage;
-	int m_RollRange;
-	int m_PossibleAttackAnimationCount;
+private:
+	friend class EnemyDefinition;
+	EnemyDefinition& m_Definition;
 
 public:
 	enum ANIMATION_STATES
@@ -24,11 +21,11 @@ public:
 		ATTACK_3 = 5
 	};
 
-	Enemy();
+	Enemy(EnemyDefinition& definition);
 	~Enemy();
 
-	virtual int GetDamageRoll() const;
-	virtual void DetermineAttributes(const Player& player);
+	int GetDamageRoll() const;
+	void DetermineAttributes(const Player& player);
 
 	const int& GetPossibleAttackAnimationCount() const;
 };

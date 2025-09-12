@@ -56,7 +56,7 @@ private:
 
 	bool m_CanPickCard;
 
-	Enemy* DetermineEnemyForBattle();
+	Enemy* DetermineEnemyForBattle(const MapNode::ENCOUNTER_TYPE& encounterType);
 	void RenderCharacterHealthBar(SDL_Renderer& renderer) const;
 	void RenderEquation(SDL_Renderer& renderer) const;
 	void RenderCardHands(SDL_Renderer& renderer) const;
@@ -81,6 +81,10 @@ private:
 	SDL_FRect m_SubmitButtonRect;
 	SDL_FRect m_ClearEquationButtonRect;
 	SDL_FRect m_EndScreenMessageRect;
+
+	std::vector<EnemyDefinition*> m_EnemyDefinitionList;
+	void LoadEnemyDefinitions();
+	void DestroyEnemyDefinitions();
 
 public:
 	BattleScene(SceneManager& manager);

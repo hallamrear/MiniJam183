@@ -1,7 +1,7 @@
 #pragma once
 
-class TTF_TextEngine;
-class TTF_Font;
+struct TTF_TextEngine;
+struct TTF_Font;
 
 class FontRenderer
 {

@@ -18,13 +18,13 @@ MenuScene::MenuScene(SceneManager& manager) : Scene(manager)
 	m_PlayButtonRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 
 	m_BackgroundTexture = nullptr;
-	Texture::LoadPNG("Content/Menu/Background.png", m_BackgroundTexture);
+	Texture::LoadPNG("Content\\Menu\\Background.png", m_BackgroundTexture);
 
 	m_PlayButtonTexture = nullptr;
-	Texture::LoadPNG("Content/Menu/PlayButton.png", m_PlayButtonTexture);
+	Texture::LoadPNG("Content\\Menu\\PlayButton.png", m_PlayButtonTexture);
 
 	m_ExitButtonTexture = nullptr;
-	Texture::LoadPNG("Content/Menu/ExitButton.png", m_ExitButtonTexture);
+	Texture::LoadPNG("Content\\Menu\\ExitButton.png", m_ExitButtonTexture);
 }
 
 MenuScene::~MenuScene()

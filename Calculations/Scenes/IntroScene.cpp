@@ -7,12 +7,16 @@
 
 IntroScene::IntroScene(SceneManager& manager) : Scene(manager), m_Window(Services::GetWindow()), m_Renderer(Services::GetRenderer())
 {
-	m_IntroGif = IMG_LoadAnimation("Content/Intro.gif");
+	m_IntroGif = IMG_LoadAnimation("Content\\Intro.gif");
+	m_HasFinished = false;
 
-	SDL_Log("Loaded intro sequence: %i", (int)(m_IntroGif != nullptr));
-
-	if (m_IntroGif == nullptr)
+	if (m_IntroGif != nullptr)
 	{
+		SDL_Log("Loaded intro successfully.");
+	}
+	else
+	{
+		SDL_Log("Failed to load intro.");
 		SDL_LogError(SDL_LOG_CATEGORY_RENDER, SDL_GetError());
 	}
 
@@ -88,11 +92,27 @@ void IntroScene::Update(const float& deltaTime)
 					m_CurrentFrameTexture = nullptr;
 				}
 
-				m_CurrentFrameTexture = SDL_CreateTextureFromSurface(&m_Renderer, m_IntroGif->frames[m_CurrentFrame]);
-				m_CurrentFrame++;
-				m_CurrentFrame = m_CurrentFrame % m_IntroGif->count;
-				m_CurrentFrameTimeElapsed = 0.0f;
+				if (m_CurrentFrame < m_IntroGif->count - 1)
+				{
+					m_CurrentFrameTexture = SDL_CreateTextureFromSurface(&m_Renderer, m_IntroGif->frames[m_CurrentFrame]);
+					m_CurrentFrame++;
+					m_CurrentFrameTimeElapsed = 0.0f;
+				}
+				else
+				{
+					m_HasFinished = true;
+				}
 			}
+		}
+	}
+
+	if (m_HasFinished)
+	{
+		m_CurrentFrameTimeElapsed += deltaTime;
+
+		if (m_CurrentFrameTimeElapsed > 1.5f)
+		{
+			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAIN_MENU);
 		}
 	}
 

@@ -24,7 +24,7 @@ public:
 	void SetCurrentNode(const MapNode& node);
 	const MapNode& GetCurrentNode() const;
 
-	void GetPossibleSelectionNodesFromCurrentPosition(std::vector<const MapNode*>& nodes) const;
-	void GetPossibleSelectionNodes(std::vector<const MapNode*>& nodes, const std::pair<int, int>& currentPosition) const;
+	void GetPossibleSelectionNodesFromCurrentPosition(std::vector<MapNode*>& nodes);
+	void GetPossibleSelectionNodes(std::vector<MapNode*>& nodes, const std::pair<int, int>& currentPosition);
 };
 
