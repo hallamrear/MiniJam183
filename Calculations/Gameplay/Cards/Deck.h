@@ -15,7 +15,7 @@ private:
 	std::deque<OperandCard> m_HeldOperands;
 	std::deque<OperandCard> m_DiscardedOperands;
 	std::deque<NumberCard> m_HeldNumbers;
-	std::deque<NumberCard> m_DiscaredNumbers;
+	std::deque<NumberCard> m_DiscardedNumbers;
 
 	void LoadTextures();
 	void DestroyTextures();
@@ -42,6 +42,8 @@ public:
 	void RestoreDiscardedOperands();
 	void RestoreDiscardedNumbers();
 	void RestoreDiscardedCards();
+
+	void RemoveSpecificCard(Card* card);
 
 	SDL_Texture& GetNumberCardTexture(const NumberCard& value) const;
 	SDL_Texture& GetOperandCardTexture(const OperandCard& type) const;

@@ -167,6 +167,7 @@ void RandomEventScene::Update(const float& deltaTime)
 			if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
 			{
 				m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
+				m_InputManager.ConsumeButtonPress(Input::MOUSE_BUTTON::LEFT_BUTTON);
 			}
 		}
 		else
@@ -176,6 +177,7 @@ void RandomEventScene::Update(const float& deltaTime)
 			{
 				ApplyEncounterChanges();
 				m_ClickCooldown = c_ClickSafetyTimer;
+				m_InputManager.ConsumeButtonPress(Input::MOUSE_BUTTON::LEFT_BUTTON);
 			}
 		}
 	}

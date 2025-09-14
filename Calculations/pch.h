@@ -34,7 +34,7 @@ constexpr const char*	VERSION_STRING = "0.0";
 constexpr const char*	WINDOW_TITLE = "Calculations";
 constexpr const int		INITIAL_WINDOW_WIDTH = 1280;
 constexpr const int		INITIAL_WINDOW_HEIGHT = 720;
-constexpr const float	CLEAR_COLOUR[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+constexpr const float	CLEAR_COLOUR[4] = { 0.54509803921568620f, 0.42745098039215684f, 0.61176470588235300f, 1.0f };
 constexpr const float	TARGET_RESOLUTION_X = 1920;
 constexpr const float	TARGET_RESOLUTION_Y = 1080;
 

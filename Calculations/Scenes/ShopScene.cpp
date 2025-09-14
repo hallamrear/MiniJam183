@@ -122,6 +122,8 @@ void ShopScene::CheckButtonClicks()
 							m_Player.GetDeck().AddCard(m_ShopItems[i].GetGeneratedOperandCard());
 						}
 					}
+
+					m_InputManager.ConsumeButtonPress(Input::MOUSE_BUTTON::LEFT_BUTTON);
 				}
 			}	
 		}

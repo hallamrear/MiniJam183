@@ -84,7 +84,7 @@ void Deck::DestroyTextures()
 Deck::Deck()
 {
 	m_HeldNumbers = std::deque<NumberCard>();
-	m_DiscaredNumbers = std::deque<NumberCard>();
+	m_DiscardedNumbers = std::deque<NumberCard>();
 	m_HeldOperands = std::deque<OperandCard>();
 	m_DiscardedOperands = std::deque<OperandCard>();
 	m_NumberCardTextures = std::unordered_map<int, SDL_Texture*>();
@@ -108,7 +108,7 @@ void Deck::GetAllCardsInDeck(std::vector<Card*>& vectorToFill)
 		vectorToFill.push_back(&itr);
 	}
 
-	for (auto& itr : m_DiscaredNumbers)
+	for (auto& itr : m_DiscardedNumbers)
 	{
 		vectorToFill.push_back(&itr);
 	}
@@ -133,7 +133,7 @@ void Deck::GetNumbersCardsInDeck(std::vector<NumberCard*>& numbersCards)
 		numbersCards.push_back(&itr);
 	}
 
-	for (auto& itr : m_DiscaredNumbers)
+	for (auto& itr : m_DiscardedNumbers)
 	{
 		numbersCards.push_back(&itr);
 	}
@@ -168,7 +168,7 @@ void Deck::DrawNumbersHand(const int& count, std::vector<NumberCard*>& handToFil
 		//Add front card to hand.
 		handToFill.push_back(&m_HeldNumbers.front());
 		//Discard the same card.
-		m_DiscaredNumbers.push_front(m_HeldNumbers.front());
+		m_DiscardedNumbers.push_front(m_HeldNumbers.front());
 		//Remove from front of held cards.
 		m_HeldNumbers.pop_front();
 	}
@@ -242,6 +242,7 @@ void Deck::ResetDeck()
 	m_HeldOperands.push_front(OperandCard(OPERAND_TYPE::SUBTRACTION));
 	ShuffleOperandCards();
 
+	/*
 	m_HeldNumbers.push_front(NumberCard(4));
 	m_HeldNumbers.push_front(NumberCard(4));
 	m_HeldNumbers.push_front(NumberCard(3));
@@ -250,6 +251,13 @@ void Deck::ResetDeck()
 	m_HeldNumbers.push_front(NumberCard(2));
 	m_HeldNumbers.push_front(NumberCard(1));
 	m_HeldNumbers.push_front(NumberCard(1));
+	*/
+
+	m_HeldNumbers.push_front(NumberCard(4));
+	m_HeldNumbers.push_front(NumberCard(3));
+	m_HeldNumbers.push_front(NumberCard(2));
+	m_HeldNumbers.push_front(NumberCard(1));
+
 	ShuffleNumbersCards();
 }
 
@@ -265,10 +273,10 @@ void Deck::RestoreDiscardedOperands()
 
 void Deck::RestoreDiscardedNumbers()
 {
-	while (!m_DiscaredNumbers.empty())
+	while (!m_DiscardedNumbers.empty())
 	{
-		m_HeldNumbers.push_front(m_DiscaredNumbers.front());
-		m_DiscaredNumbers.pop_front();
+		m_HeldNumbers.push_front(m_DiscardedNumbers.front());
+		m_DiscardedNumbers.pop_front();
 	}
 	ShuffleNumbersCards();
 }
@@ -277,6 +285,73 @@ void Deck::RestoreDiscardedCards()
 {
 	RestoreDiscardedNumbers();
 	RestoreDiscardedOperands();	
+}
+
+void Deck::RemoveSpecificCard(Card* card)
+{
+	if (card == nullptr)
+		return;
+
+	CARD_TYPE type = card->GetCardType();
+
+	switch (type)
+	{
+	case OPERAND_CARD:
+	{
+		OperandCard* opCard = dynamic_cast<OperandCard*>(card);
+
+		if (opCard)
+		{
+			for (size_t i = 0; i < m_HeldOperands.size(); i++)
+			{
+				if (&m_HeldOperands[i] == opCard)
+				{
+					m_HeldOperands.erase(m_HeldOperands.begin() + i);
+					return;
+				}
+			}
+
+			for (size_t i = 0; i < m_DiscardedOperands.size(); i++)
+			{
+				if (&m_DiscardedOperands[i] == opCard)
+				{
+					m_DiscardedOperands.erase(m_DiscardedOperands.begin() + i);
+					return;
+				}
+			}
+		}
+	}
+	break;
+
+	case NUMBER_CARD:
+	{
+		NumberCard* numCard = dynamic_cast<NumberCard*>(card);
+
+		for (size_t i = 0; i < m_HeldNumbers.size(); i++)
+		{
+			if (&m_HeldNumbers[i] == numCard)
+			{
+				m_HeldNumbers.erase(m_HeldNumbers.begin() + i);
+				return;
+			}
+		}
+
+		for (size_t i = 0; i < m_DiscardedNumbers.size(); i++)
+		{
+			if (&m_DiscardedNumbers[i] == numCard)
+			{
+				m_DiscardedNumbers.erase(m_DiscardedNumbers.begin() + i);
+				return;
+			}
+		}
+	}
+		break;
+	default:
+		throw;
+		break;
+	}
+
+	throw;
 }
 
 SDL_Texture& Deck::GetNumberCardTexture(const NumberCard& numCard) const

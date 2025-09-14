@@ -19,6 +19,8 @@ public:
 	~Input();
 
 	void HandleEvent(const SDL_Event& e);
+	
+	const void ConsumeButtonPress(const MOUSE_BUTTON& button);
 
 	bool GetMouseButtonDown(const MOUSE_BUTTON& button) const;
 	const int& GetMouseX() const;

@@ -119,6 +119,7 @@ void IntroScene::Update(const float& deltaTime)
 	if (m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
 	{
 		m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAIN_MENU);
+		m_InputManager.ConsumeButtonPress(Input::MOUSE_BUTTON::LEFT_BUTTON);
 	}
 }
 

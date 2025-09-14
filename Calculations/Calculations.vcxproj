@@ -437,12 +437,6 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
     <Image Include="Content\Spritesheets\White_Player.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Content\TestNumberCard.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\TestOperandCard.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Content\Fonts\m6x11.ttf">

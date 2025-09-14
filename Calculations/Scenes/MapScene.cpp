@@ -300,6 +300,7 @@ void MapScene::Update(const float& deltaTime)
 				break;
 			}
 
+			m_InputManager.ConsumeButtonPress(Input::MOUSE_BUTTON::LEFT_BUTTON);
 
 			break;
 		}

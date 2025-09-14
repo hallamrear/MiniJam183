@@ -82,11 +82,13 @@ void MenuScene::Update(const float& deltaTime)
 			Services::GetWorldMap().ResetMap();
 			Services::GetWorldMap().GenerateNewMap(time(nullptr), 0);
 			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
+			m_InputManager.ConsumeButtonPress(Input::MOUSE_BUTTON::LEFT_BUTTON);
 		}
 		else if (Collision::PointInRect(m_InputManager.GetMouseX(), m_InputManager.GetMouseY(), m_ExitButtonRect))
 		{
 			SDL_Event event = { SDL_EVENT_QUIT };
 			SDL_PushEvent(&event);
+			m_InputManager.ConsumeButtonPress(Input::MOUSE_BUTTON::LEFT_BUTTON);
 		}
 	}
 }

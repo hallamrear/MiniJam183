@@ -102,6 +102,7 @@ void RestScene::Update(const float& deltaTime)
 			m_InputManager.GetMouseButtonDown(Input::MOUSE_BUTTON::LEFT_BUTTON))
 		{
 			m_SceneManager.ChangeScene(SCENE_IDENTIFIER::SCENE_MAP);
+			m_InputManager.ConsumeButtonPress(Input::MOUSE_BUTTON::LEFT_BUTTON);
 		}
 	}
 	else
@@ -118,6 +119,7 @@ void RestScene::Update(const float& deltaTime)
 			Player& player = Services::GetPlayer();
 			player.Heal(m_HealAmount);
 			m_HealAmount = 0;
+			m_InputManager.ConsumeButtonPress(Input::MOUSE_BUTTON::LEFT_BUTTON);
 		}
 	}
 }

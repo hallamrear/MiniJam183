@@ -48,6 +48,11 @@ void Input::HandleEvent(const SDL_Event& e)
     }
 }
 
+const void Input::ConsumeButtonPress(const MOUSE_BUTTON& button)
+{
+    m_MouseButtons[button] = false;
+}
+
 bool Input::GetMouseButtonDown(const MOUSE_BUTTON& button) const
 {
     return m_MouseButtons[button];
