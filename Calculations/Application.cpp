@@ -236,6 +236,12 @@ void Application::ProcessEvents(const float& deltaTime)
 						}
 					}
 					break;
+					
+					case SDLK_F8:
+					{
+						
+					}
+					break;
 
 					default:
 						break;

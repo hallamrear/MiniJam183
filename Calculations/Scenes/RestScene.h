@@ -1,6 +1,9 @@
 #pragma once
 #include "Scene.h"
 
+struct TTF_Text;
+struct SDL_Texture;
+
 class RestScene :
     public Scene
 {

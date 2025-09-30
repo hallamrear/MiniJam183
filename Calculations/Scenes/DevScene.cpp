@@ -2,6 +2,7 @@
 #include "DevScene.h"
 #include <Gameplay/Player/Player.h>
 #include <Graphics/Text.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <System/Input.h>
 #include <System/Services.h>
 #include <System/Collision.h>
@@ -201,12 +202,15 @@ void DevScene::CheckForSelectionButtonClicks()
 		m_Player.GetDeck().RemoveSpecificCard(m_RightNumberCardSet[m_RightCardPreviewIndex]);
 		m_InputManager.ConsumeButtonPress(Input::MOUSE_BUTTON::LEFT_BUTTON);
 
-		UpdateCardAndButtonRects();
-
 		m_OperandCardPreviewIndex = 0;
 		m_LeftCardPreviewIndex = 0;
 		m_RightCardPreviewIndex = 0;
 		IncrementRightCardPreview();
+
+		UpdateCardAndButtonRects();
+
+		printf("LEFT : Size %i - Index %i\n", m_LeftNumberCardSet.size(), m_LeftCardPreviewIndex);
+		printf("RIGHT : Size %i - Index %i\n", m_RightNumberCardSet.size(), m_RightCardPreviewIndex);
 	}
 }
 
@@ -354,7 +358,11 @@ void DevScene::IncrementLeftCardPreview()
 	if (m_LeftCardPreviewIndex == m_RightCardPreviewIndex)
 	{
 		m_LeftCardPreviewIndex++;
+		m_LeftCardPreviewIndex = m_LeftCardPreviewIndex % m_LeftNumberCardSet.size();
 	}
+
+	printf("LEFT : Size %i - Index %i\n", m_LeftNumberCardSet.size(), m_LeftCardPreviewIndex);
+	printf("RIGHT : Size %i - Index %i\n", m_RightNumberCardSet.size(), m_RightCardPreviewIndex);
 }
 
 void DevScene::DecrementLeftCardPreview()
@@ -375,6 +383,9 @@ void DevScene::DecrementLeftCardPreview()
 	{
 		m_LeftCardPreviewIndex += m_LeftNumberCardSet.size();
 	}
+
+	printf("LEFT : Size %i - Index %i\n", m_LeftNumberCardSet.size(), m_LeftCardPreviewIndex);
+	printf("RIGHT : Size %i - Index %i\n", m_RightNumberCardSet.size(), m_RightCardPreviewIndex);
 }
 
 void DevScene::IncrementOperandCardPreview()
@@ -401,7 +412,11 @@ void DevScene::IncrementRightCardPreview()
 	if (m_RightCardPreviewIndex == m_LeftCardPreviewIndex)
 	{
 		m_RightCardPreviewIndex++;
+		m_RightCardPreviewIndex = m_RightCardPreviewIndex % m_RightNumberCardSet.size();
 	}
+
+	printf("LEFT : Size %i - Index %i\n", m_LeftNumberCardSet.size(), m_LeftCardPreviewIndex);
+	printf("RIGHT : Size %i - Index %i\n", m_RightNumberCardSet.size(), m_RightCardPreviewIndex);
 }
 
 void DevScene::DecrementRightCardPreview()
@@ -422,6 +437,9 @@ void DevScene::DecrementRightCardPreview()
 	{
 		m_RightCardPreviewIndex += m_RightNumberCardSet.size();
 	}
+
+	printf("LEFT : Size %i - Index %i\n", m_LeftNumberCardSet.size(), m_LeftCardPreviewIndex);
+	printf("RIGHT : Size %i - Index %i\n", m_RightNumberCardSet.size(), m_RightCardPreviewIndex);
 }
 
 void DevScene::ResetCardConstruction()

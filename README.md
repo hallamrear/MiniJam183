@@ -9,6 +9,7 @@
 - Rework the card system. I want it to have a limited card range (0-10 with 0 & 10 being super rare) where you sacrifice smaller cards to create larger ones. For example: you can break 5, +, and 8 cards down to create a 13. Also, I'd like to add the ability to sacrifice division cards to undo this and get the original cards back.
 - Implement Enemy Definition Parenting
 - Move and properly store the enemy definitions after loading.
+- Pull out scaling values to be calculated and stored elsewhere rather than being calculated per scene.
 
 ## Bugs:
 - nullptr checks in render. 

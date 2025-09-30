@@ -284,61 +284,10 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
     <Image Include="Content\Buttons\SubmitButton.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Content\Cards\Numbers\1.png">
+    <Image Include="Content\Cards\Blank_Card.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Content\Cards\Numbers\10.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\12.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\15.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\18.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\2.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\20.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\3.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\4.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\5.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\50.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\6.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\7.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\8.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Numbers\9.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Operands\Addition.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Operands\Division.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Operands\Multiplication.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="Content\Cards\Operands\Subtraction.png">
+    <Image Include="Content\Cards\OperandSheet.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\cat.png">
@@ -383,7 +332,7 @@ xcopy /Y "$(SolutionDir)External\SDL_ttf\lib\$(PlatformTarget)\SDL3_ttf.dll" "$(
     <Image Include="Content\Menu\PlayButton.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Content\MissingCard.png">
+    <Image Include="Content\Cards\MissingCard.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Content\Promo\itch_cover_image.png">

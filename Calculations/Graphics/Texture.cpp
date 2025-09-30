@@ -2,6 +2,7 @@
 #include "Texture.h"
 #include <System/Services.h>
 #include <SDL3/SDL_surface.h>
+#include <SDL3_image/SDL_image.h>
 
 std::unordered_map<std::string, SDL_Texture*> Texture::m_TextureMap = std::unordered_map<std::string, SDL_Texture*>();
 

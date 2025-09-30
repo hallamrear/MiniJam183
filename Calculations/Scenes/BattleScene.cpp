@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "BattleScene.h"
 #include <Graphics/Texture.h>
+#include <Graphics/Text.h>
 #include <System/Services.h>
 #include <System/Input.h>
 #include <System/Collision.h>
 #include <System/SceneManager.h>
 #include <Graphics/Animation.h>
 #include <System/File.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 constexpr const float c_AvatarDrawWidth = 512.0f;
 constexpr const float c_AvatarDrawHeight = 512.0f;
@@ -57,8 +59,8 @@ BattleScene::BattleScene(SceneManager& manager)
 	m_SelectedCardDrawRects[1] = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	m_SelectedCardDrawRects[2] = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 
-	m_PlayerHealthBar = new ProgressBar(SDL_FRect{ (INITIAL_WINDOW_WIDTH / 4) * 1 - 100.0f, (INITIAL_WINDOW_HEIGHT / 4) * 3, 200.0f, 20.0f });
-	m_EnemyHealthBar  = new ProgressBar(SDL_FRect{ (INITIAL_WINDOW_WIDTH / 4) * 3 - 100.0f, (INITIAL_WINDOW_HEIGHT / 4) * 3, 200.0f, 20.0f });
+	m_PlayerHealthBar = new ProgressBar(SDL_FRect{ (INITIAL_WINDOW_WIDTH / 4) * 1 - 50.0f, (INITIAL_WINDOW_HEIGHT / 4) * 3, 200.0f, 20.0f });
+	m_EnemyHealthBar  = new ProgressBar(SDL_FRect{ (INITIAL_WINDOW_WIDTH / 4) * 3 - 50.0f, (INITIAL_WINDOW_HEIGHT / 4) * 3, 200.0f, 20.0f });
 
 	m_OperandHandDrawRects = std::vector<SDL_FRect>();
 	m_NumbersHandDrawRects = std::vector<SDL_FRect>();
@@ -74,7 +76,7 @@ BattleScene::BattleScene(SceneManager& manager)
 	m_SelectedOperandForEquation = nullptr;
 
 	m_MissingCardTexture = nullptr;
-	Texture::LoadPNG("Content\\MissingCard.png", m_MissingCardTexture);
+	Texture::LoadPNG("Content\\Cards\\MissingCard.png", m_MissingCardTexture);
 	m_PlayerDeathTextTexture = nullptr;
 	Texture::LoadPNG("Content\\Screens\\BattleScene_PlayerDied.png", m_PlayerDeathTextTexture);
 	m_GoToMapButtonTexture = nullptr;
@@ -996,6 +998,10 @@ void BattleScene::Render(SDL_Renderer& renderer) const
 		default:
 			break;
 	}
+
+	SDL_SetRenderDrawColorFloat(&renderer, 0.94901960784313720f, 0.82745098039215680f, 0.67058823529411760f, 1.0f);
+	SDL_FRect FloorLine{ 0, 265, 1280, 8 };
+	SDL_RenderFillRect(&renderer, &FloorLine);
 }
 
 void BattleScene::RenderEquation(SDL_Renderer& renderer) const
@@ -1008,7 +1014,11 @@ void BattleScene::RenderEquation(SDL_Renderer& renderer) const
 	if (m_SelectedNumbersForEquation[0] != nullptr)
 	{
 		c_x = std::to_string(m_SelectedNumbersForEquation[0]->GetValue());
-		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetNumberCardTexture(m_SelectedNumbersForEquation[0]->GetValue()), nullptr, &m_SelectedCardDrawRects[0]);
+
+		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetBlankCardTexture(), nullptr, &m_SelectedCardDrawRects[0]);
+		int x = m_SelectedCardDrawRects[0].x + m_SelectedCardDrawRects[0].w / 2;
+		int y = m_SelectedCardDrawRects[0].y + m_SelectedCardDrawRects[0].h / 2;
+		TTF_DrawRendererText(&m_Player.GetDeck().GetNumberTextTexture(*m_SelectedNumbersForEquation[0]), x, y);
 	}
 	else
 	{
@@ -1018,7 +1028,10 @@ void BattleScene::RenderEquation(SDL_Renderer& renderer) const
 	if (m_SelectedNumbersForEquation[1] != nullptr)
 	{
 		c_y = std::to_string(m_SelectedNumbersForEquation[1]->GetValue());
-		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetNumberCardTexture(m_SelectedNumbersForEquation[1]->GetValue()), nullptr, &m_SelectedCardDrawRects[1]);
+		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetBlankCardTexture(), nullptr, &m_SelectedCardDrawRects[1]);
+		int x = m_SelectedCardDrawRects[1].x + m_SelectedCardDrawRects[1].w / 2;
+		int y = m_SelectedCardDrawRects[1].y + m_SelectedCardDrawRects[1].h / 2;
+		TTF_DrawRendererText(&m_Player.GetDeck().GetNumberTextTexture(*m_SelectedNumbersForEquation[1]), x, y);
 	}
 	else
 	{
@@ -1028,7 +1041,12 @@ void BattleScene::RenderEquation(SDL_Renderer& renderer) const
 	if (m_SelectedOperandForEquation != nullptr)
 	{
 		c_op = m_SelectedOperandForEquation->GetOperandCharacter();
-		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetOperandCardTexture(m_SelectedOperandForEquation->GetOperand()), nullptr, &m_SelectedCardDrawRects[2]);
+		SDL_FRect srcRect;
+		srcRect.w = c_CardWidth;
+		srcRect.h = c_CardHeight;
+		srcRect.x = (int)(m_SelectedOperandForEquation->GetOperand()) * m_SelectedCardDrawRects[2].w;
+		srcRect.y = 0.0f;
+		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetOperandCardTexture(), &srcRect, &m_SelectedCardDrawRects[2]);
 	}
 	else
 	{
@@ -1125,10 +1143,21 @@ void BattleScene::RenderCardHands(SDL_Renderer& renderer) const
 
 	for (size_t i = 0; i < numbersCount; i++)
 	{
-		std::string str = std::to_string(numbersHand[i]->GetValue());
+		if (numbersHand[i] != nullptr)
+		{
+			SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetBlankCardTexture(), nullptr, &m_NumbersHandDrawRects[i]);
 
-		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetNumberCardTexture(numbersHand[i]->GetValue()), nullptr, &m_NumbersHandDrawRects[i]);
-		//SDL_RenderDebugText(&renderer, m_NumbersHandDrawRects[i].x + m_NumbersHandDrawRects[i].w / 2 - 4, m_NumbersHandDrawRects[i].y + m_NumbersHandDrawRects[i].h / 2 - 4, str.c_str());
+			TTF_Text* numberText = &m_Player.GetDeck().GetNumberTextTexture(*numbersHand[i]);
+
+			if (numberText != nullptr)
+			{
+				int t_w = 0; int t_h = 0;
+				Text::QueryText(numberText, t_w, t_h);
+				int t_x = m_NumbersHandDrawRects[i].x + (m_NumbersHandDrawRects[i].w / 2);
+				int t_y = m_NumbersHandDrawRects[i].y + (m_NumbersHandDrawRects[i].h / 2) - (t_h / 2);
+				TTF_DrawRendererText(numberText, t_x, t_y);
+			}
+		}
 	}
 
 	const std::vector<OperandCard*>& operandHand = m_Player.GetOperandHand();
@@ -1151,7 +1180,11 @@ void BattleScene::RenderCardHands(SDL_Renderer& renderer) const
 			break;
 		}
 
-		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetOperandCardTexture(type), nullptr, &m_OperandHandDrawRects[i]);
-		//SDL_RenderDebugText(&renderer, m_OperandHandDrawRects[i].x + m_OperandHandDrawRects[i].w / 2 - 4, m_OperandHandDrawRects[i].y + m_OperandHandDrawRects[i].h / 2 - 4, str.c_str());
+		SDL_FRect srcRect = { };
+		srcRect.w = c_CardWidth;
+		srcRect.h = c_CardHeight;
+		srcRect.x = (int)type * c_CardWidth;
+		srcRect.y = 0.0f;
+		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetOperandCardTexture(), &srcRect, &m_OperandHandDrawRects[i]);
 	}
 }

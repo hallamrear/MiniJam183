@@ -18,6 +18,8 @@ bool Text::LoadText(const char* str, TTF_Text*& texture)
         return false;
     }
 
+    SetTextColour({ CLEAR_COLOUR[0], CLEAR_COLOUR[1], CLEAR_COLOUR[2], CLEAR_COLOUR[3] }, texture);
+
     return true;
 }
 
@@ -25,6 +27,12 @@ bool Text::SetText(const char* str, TTF_Text*& texture)
 {
     assert(texture != nullptr);
     return TTF_SetTextString(texture, str, strlen(str));
+}
+
+bool Text::SetTextColour(const SDL_FColor& colour, TTF_Text*& texture)
+{
+    assert(texture != nullptr);
+    return TTF_SetTextColorFloat(texture, colour.r, colour.g, colour.b, colour.a);
 }
 
 bool Text::AppendText(const char* str, TTF_Text*& texture)

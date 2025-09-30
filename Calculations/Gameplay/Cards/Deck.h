@@ -5,12 +5,14 @@
 #include <unordered_map>
 
 class Card;
+struct TTF_Text;
 
 class Deck
 {
 private:
-	std::unordered_map<int, SDL_Texture*> m_NumberCardTextures;
-	std::vector<SDL_Texture*> m_OperandCardTextures;
+	std::unordered_map<int, TTF_Text*> m_NumberTextures;
+	SDL_Texture* m_OperandTexture;
+	SDL_Texture* m_BlankCardTexture;
 
 	std::deque<OperandCard> m_HeldOperands;
 	std::deque<OperandCard> m_DiscardedOperands;
@@ -45,7 +47,8 @@ public:
 
 	void RemoveSpecificCard(Card* card);
 
-	SDL_Texture& GetNumberCardTexture(const NumberCard& value) const;
-	SDL_Texture& GetOperandCardTexture(const OperandCard& type) const;
+	TTF_Text& GetNumberTextTexture(const NumberCard& numCard);
+	SDL_Texture& GetOperandCardTexture() const;
+	SDL_Texture& GetBlankCardTexture() const;
 };
 

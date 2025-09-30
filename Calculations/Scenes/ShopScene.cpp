@@ -6,6 +6,8 @@
 #include <System/SceneManager.h>
 #include <System/Input.h>
 #include <Graphics/Texture.h>
+#include <Graphics/Text.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 constexpr const int c_LargeCardRollChance = 25;
 constexpr const int c_NumberCardRollChance = 70;
@@ -87,7 +89,6 @@ void ShopScene::Update(const float& deltaTime)
 	SDL_GetWindowSize(&window, &m_WindowWidth, &m_WindowHeight);
 	m_WindowCentreX = m_WindowWidth / 2;
 	m_WindowCentreY = m_WindowHeight / 2;
-
 	CalculateShopRects();
 	CalculateButtonRects();
 	CheckButtonClicks();
@@ -231,11 +232,26 @@ void ShopScene::Render(SDL_Renderer& renderer) const
 
 		if (m_ShopItems[i].IsNumberCard())
 		{
-			SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetNumberCardTexture(m_ShopItems[i].GetGeneratedNumberCard().GetValue()), nullptr, &m_ShopSlotRects[i]);
+			TTF_Text* numText = &m_Player.GetDeck().GetNumberTextTexture(m_ShopItems[i].GetGeneratedNumberCard().GetValue());
+
+			if (numText != nullptr)
+			{
+				SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetBlankCardTexture(), nullptr, &m_ShopSlotRects[i]);
+				int t_w, t_h;
+				Text::QueryText(numText, t_w, t_h);
+				int t_x = m_ShopSlotRects[i].x + (m_ShopSlotRects[i].w / 2) - (t_w / 2);
+				int t_y = m_ShopSlotRects[i].y + (m_ShopSlotRects[i].h / 2) - (t_h / 2);
+				TTF_DrawRendererText(numText, t_x, t_y);
+			}
 		}
 		else
 		{
-			SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetOperandCardTexture(m_ShopItems[i].GetGeneratedOperandCard().GetOperand()), nullptr, &m_ShopSlotRects[i]);
+			SDL_FRect srcRect = { };
+			srcRect.w = c_CardWidth;
+			srcRect.h = c_CardHeight;
+			srcRect.x = ((int)m_ShopItems[i].GetGeneratedOperandCard().GetOperand()) * c_CardWidth;
+			srcRect.y = 0.0f;
+			SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetOperandCardTexture(), &srcRect, &m_ShopSlotRects[i]);
 		}
 
 		if (m_ShopItems[i].HasBeenPurchased())
@@ -261,7 +277,6 @@ void ShopScene::Render(SDL_Renderer& renderer) const
 	SDL_SetRenderDrawColorFloat(&renderer, 1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_RenderRect(&renderer, &m_ExitBattleButtonRect);
 	SDL_RenderDebugText(&renderer, m_ExitBattleButtonRect.x + 10, m_ExitBattleButtonRect.y + 10, "TO NEXT BATTLE");
-
 
 	SDL_RenderDebugTextFormat(&renderer, 10, 20, "Player Wins: %i", m_Player.GetWinCount());
 	SDL_RenderDebugTextFormat(&renderer, 10, 30, "Player Gold: %i", m_Player.GetGoldCount());

@@ -397,3 +397,6 @@ FodyWeavers.xsd
 
 #Add Specific External include folders
 !External/**
+
+#Removing specific temporary folder I use to hold assets.
+Calculations/Content/Temp/**

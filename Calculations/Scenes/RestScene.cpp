@@ -7,6 +7,7 @@
 #include <System/Collision.h>
 #include <Gameplay/Player/Player.h>
 #include <Graphics/Text.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 RestScene::RestScene(SceneManager& manager) : Scene(manager), m_Window(Services::GetWindow())
 {
