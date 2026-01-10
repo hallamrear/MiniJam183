@@ -1016,9 +1016,18 @@ void BattleScene::RenderEquation(SDL_Renderer& renderer) const
 		c_x = std::to_string(m_SelectedNumbersForEquation[0]->GetValue());
 
 		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetBlankCardTexture(), nullptr, &m_SelectedCardDrawRects[0]);
-		int x = m_SelectedCardDrawRects[0].x + m_SelectedCardDrawRects[0].w / 2;
-		int y = m_SelectedCardDrawRects[0].y + m_SelectedCardDrawRects[0].h / 2;
-		TTF_DrawRendererText(&m_Player.GetDeck().GetNumberTextTexture(*m_SelectedNumbersForEquation[0]), x, y);
+
+		TTF_Text* numberText = &m_Player.GetDeck().GetNumberTextTexture(*m_SelectedNumbersForEquation[0]);
+
+		if (numberText != nullptr)
+		{
+			int t_w = 0; int t_h = 0;
+			Text::QueryText(numberText, t_w, t_h);
+			t_w -= 2; t_h -= 4;
+			int t_x = m_SelectedCardDrawRects[0].x + (m_SelectedCardDrawRects[0].w / 2) - (t_w / 2);
+			int t_y = m_SelectedCardDrawRects[0].y + (m_SelectedCardDrawRects[0].h / 2) - (t_h / 2);
+			TTF_DrawRendererText(numberText, t_x, t_y);
+		}
 	}
 	else
 	{
@@ -1029,9 +1038,18 @@ void BattleScene::RenderEquation(SDL_Renderer& renderer) const
 	{
 		c_y = std::to_string(m_SelectedNumbersForEquation[1]->GetValue());
 		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetBlankCardTexture(), nullptr, &m_SelectedCardDrawRects[1]);
-		int x = m_SelectedCardDrawRects[1].x + m_SelectedCardDrawRects[1].w / 2;
-		int y = m_SelectedCardDrawRects[1].y + m_SelectedCardDrawRects[1].h / 2;
-		TTF_DrawRendererText(&m_Player.GetDeck().GetNumberTextTexture(*m_SelectedNumbersForEquation[1]), x, y);
+
+		TTF_Text* numberText = &m_Player.GetDeck().GetNumberTextTexture(*m_SelectedNumbersForEquation[1]);
+
+		if (numberText != nullptr)
+		{
+			int t_w = 0; int t_h = 0;
+			Text::QueryText(numberText, t_w, t_h);
+			t_w -= 2; t_h -= 4;
+			int t_x = m_SelectedCardDrawRects[1].x + (m_SelectedCardDrawRects[1].w / 2) - (t_w / 2);
+			int t_y = m_SelectedCardDrawRects[1].y + (m_SelectedCardDrawRects[1].h / 2) - (t_h / 2);
+			TTF_DrawRendererText(numberText, t_x, t_y);
+		}
 	}
 	else
 	{
@@ -1044,7 +1062,7 @@ void BattleScene::RenderEquation(SDL_Renderer& renderer) const
 		SDL_FRect srcRect;
 		srcRect.w = c_CardWidth;
 		srcRect.h = c_CardHeight;
-		srcRect.x = (int)(m_SelectedOperandForEquation->GetOperand()) * m_SelectedCardDrawRects[2].w;
+		srcRect.x = (int)(m_SelectedOperandForEquation->GetOperand()) * c_CardWidth;
 		srcRect.y = 0.0f;
 		SDL_RenderTexture(&renderer, &m_Player.GetDeck().GetOperandCardTexture(), &srcRect, &m_SelectedCardDrawRects[2]);
 	}
@@ -1153,7 +1171,8 @@ void BattleScene::RenderCardHands(SDL_Renderer& renderer) const
 			{
 				int t_w = 0; int t_h = 0;
 				Text::QueryText(numberText, t_w, t_h);
-				int t_x = m_NumbersHandDrawRects[i].x + (m_NumbersHandDrawRects[i].w / 2);
+				t_w -= 2; t_h -= 4;
+				int t_x = m_NumbersHandDrawRects[i].x + (m_NumbersHandDrawRects[i].w / 2) - (t_w / 2);
 				int t_y = m_NumbersHandDrawRects[i].y + (m_NumbersHandDrawRects[i].h / 2) - (t_h / 2);
 				TTF_DrawRendererText(numberText, t_x, t_y);
 			}

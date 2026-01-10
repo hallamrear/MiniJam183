@@ -29,6 +29,8 @@ private:
 	void DestroyRandomEncounter();
 	ENCOUNTER_TYPE m_GeneratedEncounter;
 
+	std::string m_EventString;
+
 public:
 	RandomEventScene(SceneManager& manager);
 	~RandomEventScene();

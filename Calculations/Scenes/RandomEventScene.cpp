@@ -23,6 +23,7 @@ RandomEventScene::RandomEventScene(SceneManager& manager)
 	m_RandomEventImageDstRect = SDL_FRect{ 0.0f, 0.0f, 0.0f, 0.0f };
 	m_IsConsumed = false;
 	m_ClickCooldown = c_ClickSafetyTimer;
+	m_EventString = "";
 }
 
 RandomEventScene::~RandomEventScene()
@@ -45,20 +46,26 @@ void RandomEventScene::GenerateRandomEncounter()
 	int r = rand() % ENCOUNTER_TYPE::COUNT;
 
 	m_GeneratedEncounter = (ENCOUNTER_TYPE)(r);
+	m_IsConsumed = false;
 
 	switch (m_GeneratedEncounter)
 	{
 	case RandomEventScene::RANDOM_ENCOUNTER_NOTHING:
 		SDL_Log("%i RANDOM_ENCOUNTER_NOTHING", r);
+		m_EventString = "Unfortunate! You didn't get anything from this event.\n";
+		m_IsConsumed = true;
 		break;
 	case RandomEventScene::RANDOM_ENCOUNTER_FREE_FULL_HEAL:
 		SDL_Log("%i RANDOM_ENCOUNTER_FREE_FULL_HEAL", r);
+		m_EventString = "You got a free full heal!.\n";
 		break;
 	case RandomEventScene::RANDOM_ENCOUNTER_FREE_CARD:
 		SDL_Log("%i RANDOM_ENCOUNTER_FREE_CARD", r);
+		m_EventString = "You got a random card to add to your deck!.\n";
 		break;
 	case RandomEventScene::RANDOM_ENCOUNTER_RANDOM_FREE_HEAL:
 		SDL_Log("%i RANDOM_ENCOUNTER_RANDOM_FREE_HEAL", r);
+		m_EventString = "You got a free heal but of a random amount!.\n";
 		break;
 
 	default:
@@ -73,8 +80,6 @@ void RandomEventScene::GenerateRandomEncounter()
 		m_RandomEventAtlas->SetAnimationId(m_GeneratedEncounter);
 		m_RandomEventAtlas->SetCurrentFrame(0);
 	}
-
-	m_IsConsumed = false;
 }
 
 void RandomEventScene::DestroyRandomEncounter()
@@ -85,6 +90,7 @@ void RandomEventScene::DestroyRandomEncounter()
 		break;
 	}
 
+	m_EventString = "";
 	m_GeneratedEncounter = RandomEventScene::RANDOM_ENCOUNTER_UNKNOWN_OR_NOT_SET;
 	m_IsConsumed = true;
 }
@@ -125,7 +131,8 @@ void RandomEventScene::ApplyEncounterChanges()
 	case RandomEventScene::RANDOM_ENCOUNTER_NOTHING:
 		break;
 	case RandomEventScene::RANDOM_ENCOUNTER_FREE_FULL_HEAL:
-		
+		m_Player.Heal(m_Player.GetMaxHealth());
+		SDL_Log("Random event healed to full.\n");
 		break;
 	case RandomEventScene::RANDOM_ENCOUNTER_FREE_CARD:
 	{
@@ -148,6 +155,16 @@ void RandomEventScene::ApplyEncounterChanges()
 	}
 		break;
 	case RandomEventScene::RANDOM_ENCOUNTER_RANDOM_FREE_HEAL:
+	{
+		int healthMissing = m_Player.GetMaxHealth() - m_Player.GetCurrentHealth();
+
+		if (healthMissing > 0)
+		{
+			int healAmount = rand() % healthMissing + 1;
+			m_Player.Heal(healAmount);
+			SDL_Log("Random event healed by %i\n", healAmount);
+		}
+	}
 		break;
 
 	case RandomEventScene::COUNT:
@@ -208,7 +225,18 @@ void RandomEventScene::Render(SDL_Renderer& renderer) const
 {
 	SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
 	SDL_RenderDebugText(&renderer, 10, 10, "SCENE_IDENTIFIER::SCENE_RANDOM_EVENT");
-	SDL_RenderDebugText(&renderer, 256, 256, "This scene will give you a random event e.g. free cards, free heal, lose money etc.");
+	SDL_RenderDebugText(&renderer, 256, 64, "This scene will give you a random event e.g. free cards, free heal, lose money etc.");
+
+	if (m_IsConsumed)
+	{
+		SDL_RenderDebugText(&renderer, 256, 80, "Click to head back to the menu!");
+	}
+	else
+	{
+		std::string str = "";
+		SDL_RenderDebugText(&renderer, 256, 80, m_EventString.c_str());
+		SDL_RenderDebugText(&renderer, 256, 96, "Click to consume!");
+	}
 
 	if (m_RandomEventAtlas != nullptr)
 	{
