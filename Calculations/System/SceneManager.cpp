@@ -24,7 +24,11 @@ SceneManager::SceneManager()
 	m_SceneList.insert({ SCENE_IDENTIFIER::SCENE_DEBUG_TEST, new DevScene(*this)});
 
 	ChangeScene(SCENE_IDENTIFIER::SCENE_INTRO);
+
+#ifdef _DEBUG
 	ChangeScene(SCENE_IDENTIFIER::SCENE_DEBUG_TEST);
+#endif // _DEBUG
+
 }
 
 SceneManager::~SceneManager()
