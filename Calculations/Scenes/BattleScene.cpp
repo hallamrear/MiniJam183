@@ -154,11 +154,13 @@ void BattleScene::OnEnter()
 	}
 }
 
-//todo : move this and store properly.
-std::vector<EnemyDefinition*> vec = {};
-
 void BattleScene::LoadEnemyDefinitions()
 {	
+	if (m_EnemyDefinitionList.size() > 0)
+	{
+		DestroyEnemyDefinitions();
+	}
+
 	std::vector<File::Filepath> filepaths = std::vector<File::Filepath>();
 	if (File::GetAllFilesInDirectory(ENEMY_DEFINITION_DIRECTORY, filepaths))
 	{
@@ -178,8 +180,7 @@ void BattleScene::LoadEnemyDefinitions()
 						m_Enemy = nullptr;
 					}
 
-					vec.push_back(definition);
-					m_Enemy = new Enemy(*definition);
+					m_EnemyDefinitionList.push_back(definition);
 				}
 				else
 				{
@@ -195,15 +196,28 @@ void BattleScene::LoadEnemyDefinitions()
 
 void BattleScene::DestroyEnemyDefinitions()
 {
-	
+	for (size_t i = 0; i < m_EnemyDefinitionList.size(); i++)
+	{
+		if (m_EnemyDefinitionList[i] != nullptr)
+		{
+			delete m_EnemyDefinitionList[i];
+			m_EnemyDefinitionList[i] = nullptr;
+		}
+	}
 
-
-
+	m_EnemyDefinitionList.clear();
 }
 
 Enemy* BattleScene::DetermineEnemyForBattle(const MapNode::ENCOUNTER_TYPE& encounterType)
 {
 	Enemy* enemy = nullptr;
+
+	int index = rand() % m_EnemyDefinitionList.size();
+
+	if (index >= 0)
+	{
+		enemy = new Enemy(*m_EnemyDefinitionList[index]);
+	}
 
 	switch (encounterType)
 	{
@@ -216,6 +230,7 @@ Enemy* BattleScene::DetermineEnemyForBattle(const MapNode::ENCOUNTER_TYPE& encou
 
 	case MapNode::ENCOUNTER_TYPE::ENCOUNTER_ELITE:
 	{
+
 	}
 	break;
 
@@ -238,13 +253,13 @@ void BattleScene::SetupNewBattle(const MapNode::ENCOUNTER_TYPE& encounterType)
 	m_Player.DrawNumberCardsIntoHand(m_Player.GetNumbersHandSize());
 	m_Player.DrawOperandCardsIntoHand(m_Player.GetOperandHandSize());
 
-	//if (m_Enemy != nullptr)
-	//{
-	//	delete m_Enemy;
-	//	m_Enemy = nullptr;
-	//}
+	if (m_Enemy != nullptr)
+	{
+		delete m_Enemy;
+		m_Enemy = nullptr;
+	}
 	
-	//m_Enemy = DetermineEnemyForBattle(encounterType);
+	m_Enemy = DetermineEnemyForBattle(encounterType);
 	
 	if (m_Enemy == nullptr)
 	{

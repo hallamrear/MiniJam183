@@ -43,11 +43,7 @@ AnimationController::AnimationController(const char* sheetPath, const int& maxFr
 
 AnimationController::~AnimationController()
 {
-	if (m_AnimationSheet)
-	{
-		SDL_DestroyTexture(m_AnimationSheet);
-		m_AnimationSheet = nullptr;
-	}
+	
 }
 
 SDL_Texture* AnimationController::GetSpriteSheet() const
