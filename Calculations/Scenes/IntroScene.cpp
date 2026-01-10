@@ -125,6 +125,10 @@ void IntroScene::Update(const float& deltaTime)
 
 void IntroScene::Render(SDL_Renderer& renderer) const
 {
+	SDL_FRect bgRect = { 0.0f, 0.0f, INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT };
+	SDL_SetRenderDrawColorFloat(&renderer, 0.0f, 0.0f, 0.0f, 1.0f);
+	SDL_RenderFillRect(&renderer, &bgRect);
+
 	if (m_IntroGif != nullptr && m_CurrentFrameTexture != nullptr)
 	{
 		SDL_RenderTexture(&renderer, m_CurrentFrameTexture, nullptr, &m_DrawRect);

@@ -119,11 +119,13 @@ bool Application::InitSDL()
 
 	SDL_Log("Initialised SDL Subsystems.");
 
-	SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE;
+	SDL_WindowFlags flags = 0;
 
-	#ifndef _DEBUG
-	flags |= SDL_WINDOW_MAXIMIZED;
-	#endif // _DEBUG
+	//#ifndef _DEBUG
+	//flags |= SDL_WINDOW_MAXIMIZED;
+	//#endif // _DEBUG
+
+	//flags |= SDL_WINDOW_RESIZABLE;
 
 	m_Window = SDL_CreateWindow(WINDOW_TITLE, INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, flags);
 
